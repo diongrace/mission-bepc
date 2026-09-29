@@ -1,0 +1,25 @@
+import puppeteer from 'puppeteer-core';
+const dir='C:/Users/LENOVO/AppData/Local/Temp/claude/C--Users-LENOVO/4006b4b6-8be9-42a0-a785-44aaa1f39fd0/scratchpad/';
+const nav=await puppeteer.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true,args:['--use-fake-ui-for-media-stream','--use-fake-device-for-media-stream']});
+const p=await nav.newPage(); await p.setViewport({width:390,height:844,deviceScaleFactor:2,isMobile:true,hasTouch:true});
+const errs=[]; p.on('pageerror',e=>errs.push(e.message)); p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
+await p.goto('file:///'+dir+'mission-bepc-test.html');
+const c=async s=>{await p.waitForSelector(s);await p.$eval(s,e=>e.click())};
+await c('[data-mat="anglais"]'); await c('[data-chap="en-oral-bepc"]'); await p.waitForSelector('[data-oral]');
+console.log('entrées oral:',(await p.$$('[data-oral]')).length);
+await p.screenshot({path:dir+'oral-menu.png',fullPage:true});
+await c('[data-oral="image:classe"]'); await p.waitForSelector('#chrono');
+await c('[data-rec]'); await new Promise(r=>setTimeout(r,1500)); await c('[data-rec]'); await new Promise(r=>setTimeout(r,500));
+console.log('enregistrement audio visible:', await p.$eval('[data-enreg] audio',a=>!a.classList.contains('cache')&&!!a.src));
+await p.$eval('#modele',d=>d.open=true); await new Promise(r=>setTimeout(r,200));
+await p.screenshot({path:dir+'oral-image.png',fullPage:true});
+await c('#suivant'); console.log('suivante:', await p.$eval('h2',e=>e.textContent));
+await c('#retour'); await c('[data-oral="texte:awa"]'); await p.waitForSelector('[data-q]');
+for(let k=0;k<4;k++) await p.$eval(`[data-q="${k}"] [data-rep]`,b=>b.click());
+console.log('bilan texte:', await p.$eval('.badge-nouveau',e=>e.textContent));
+await p.screenshot({path:dir+'oral-texte.png',fullPage:true});
+await c('#retour'); await c('[data-oral="conversation"]'); console.log('conversation:', (await p.$$('[data-enreg]')).length,'questions');
+await c('#retour'); await c('[data-niv]'); let n=0; while(!(await p.$('.fin'))){await c('[data-choix]');await c('#verifier');await p.waitForSelector('#retour-exo > div');await c('#verifier');n++;}
+console.log('quiz oral:',n,'questions', await p.$eval('.score',e=>e.textContent));
+console.log('largeur', await p.evaluate(()=>document.documentElement.scrollWidth),'erreurs',errs);
+await nav.close();
