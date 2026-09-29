@@ -181,6 +181,11 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.boutons-ligne{display:flex;flex-wrap:wrap;gap:8px}
+.boutons-ligne > *{flex:1 1 140px;text-align:center}
+.lien-bouton{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.texte-rep.bilan{font-size:14.5px;line-height:1.45;white-space:pre-wrap}
+.texte-rep.code{font-family:ui-monospace,Consolas,monospace;font-size:12px;word-break:break-all}
 :root{--zoom:1}
 .app,.nav{zoom:var(--zoom)}
 .ecran{width:100%;max-width:720px;margin-inline:auto}
@@ -3877,11 +3882,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     if (window.speechSynthesis) { try { speechSynthesis.cancel(); } catch (x) {} }
     arreterEnregistrement();
     if (chronoSujet) { clearInterval(chronoSujet); chronoSujet = null; }
-    const onglet = ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral"].includes(e) ? "matieres" : e;
+    const onglet = e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral"].includes(e) ? "matieres" : e;
     document.querySelectorAll(".nav button").forEach(b => b.setAttribute("aria-current", b.dataset.aller === onglet ? "page" : "false"));
     if (["chapitre", "theme", "sujet", "oral"].includes(e) && params) { etat.dernier = { e, p: params }; sauver(); }
     document.querySelector(".nav").classList.toggle("cache", e === "exercice" || e === "fin");
-    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
+    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
     window.scrollTo(0, 0);
   }
   document.querySelectorAll(".nav button").forEach(b => b.addEventListener("click", () => aller(b.dataset.aller)));
@@ -4064,6 +4069,81 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     champ.addEventListener("input", maj);
     vue.querySelectorAll("[data-idee]").forEach(b => b.addEventListener("click", () => { champ.value = b.dataset.idee; maj(); }));
     if (window.matchMedia("(hover:hover)").matches) champ.focus();
+  }
+
+  // ---------- Suivi : bilan à partager et sauvegarde ----------
+  function texteBilan() {
+    const r = rang(), j = aujourdhui();
+    const d = new Date(), sept = []; for (let k = 0; k < 7; k++) { const x = new Date(d); x.setDate(d.getDate() - k); sept.push(x.getFullYear() + "-" + String(x.getMonth() + 1).padStart(2, "0") + "-" + String(x.getDate()).padStart(2, "0")); }
+    const missions7 = sept.filter(x => etat.missions[x]).length;
+    const mats = MATIERES.filter(m => m.chapitres).map(m => `• ${m.nom} : ${pctMatiere(m)} % (${m.chapitres.filter(chapitreMaitrise).length}/${m.chapitres.length} chapitres maîtrisés)`);
+    const comps = Object.entries(etat.comp).filter(([, s]) => s.total >= 3).map(([id, s]) => ({ nom: COMPETENCES[id] || id, pct: Math.round(s.ok / s.total * 100), total: s.total }));
+    const faibles = comps.filter(c => c.pct < 60).sort((a, b) => a.pct - b.pct).slice(0, 6);
+    const forts = comps.filter(c => c.pct >= 80).sort((a, b) => b.total - a.total).slice(0, 4);
+    const sujets = SUJETS.filter(s => noteSujet(s.id)).map(s => `• ${s.titre} : ${String(noteSujet(s.id).meilleure).replace(".", ",")}/20`);
+    return [`Bilan Mission BEPC ${/^[aeiouyéèh]/i.test(PRENOM) ? "d'" : "de "}${PRENOM} — ${j.split("-").reverse().join("/")}`, "",
+      `Niveau ${r.niveau} (${r.nom}) · ${etat.xp} points · série de ${serieActuelle()} jour(s)`,
+      `Missions du jour faites cette semaine : ${missions7}/7`,
+      `Bonnes réponses au total : ${etat.bonnes} · séances : ${etat.sessions}`, "",
+      "Par matière :", ...mats, "",
+      sujets.length ? "Sujets type BEPC :" : "Sujets type BEPC : aucun pour l'instant", ...sujets, "",
+      faibles.length ? "À retravailler :" : "À retravailler : rien de signalé (pas assez de réponses ou tout va bien)", ...faibles.map(c => `• ${c.nom} : ${c.pct} % de réussite (${c.total} questions)`),
+      ...(forts.length ? ["", "Points forts :", ...forts.map(c => `• ${c.nom} : ${c.pct} %`)] : [])].join("\n");
+  }
+  const PREFIXE = "MBEPC1:";
+  const codeSauvegarde = () => PREFIXE + btoa(unescape(encodeURIComponent(JSON.stringify(etat))));
+  function lireCode(code) {
+    code = String(code).trim().replace(/\s+/g, "");
+    if (!code.startsWith(PREFIXE)) throw new Error("Ce texte n'est pas un code Mission BEPC (il doit commencer par MBEPC1:).");
+    let o; try { o = JSON.parse(decodeURIComponent(escape(atob(code.slice(PREFIXE.length))))); } catch (e) { throw new Error("Le code est incomplet ou abîmé. Copie-le en entier, sans rien couper."); }
+    if (!o || typeof o !== "object" || typeof o.xp !== "number" || !o.meilleurs) throw new Error("Le code ne contient pas de progression valide.");
+    return o;
+  }
+  async function copier(texte, bouton) {
+    const avant = bouton.textContent;
+    try { await navigator.clipboard.writeText(texte); bouton.textContent = "Copié ✓"; }
+    catch (e) { const t = bouton.closest(".carte").querySelector("textarea"); if (t) { t.focus(); t.select(); } bouton.textContent = "Sélectionné : fais « Copier »"; }
+    setTimeout(() => { bouton.textContent = avant; }, 2500);
+  }
+  function afficherSuivi() {
+    const bilan = texteBilan(), code = codeSauvegarde(), wa = t => "https://wa.me/?text=" + encodeURIComponent(t);
+    const peutPartager = !!navigator.share && location.protocol === "https:" && !/claude/.test(location.hostname);
+    vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ Mes progrès</button>
+      <h2>Suivi et sauvegarde</h2>
+      <div class="carte" style="display:grid;gap:10px"><span class="etiquette">1 · Mon bilan pour la famille</span>
+        <p style="color:var(--encre-2);font-size:14px">Envoie ce résumé à ton grand frère ou à tes parents, par exemple chaque dimanche.</p>
+        <textarea class="texte-rep bilan" id="bilan" rows="12" readonly>${bilan.replace(/</g, "&lt;")}</textarea>
+        <div class="boutons-ligne">
+          <a class="bouton vert lien-bouton" href="${wa(bilan)}" target="_blank" rel="noopener">Envoyer par WhatsApp</a>
+          <button type="button" class="bouton second" id="copier-bilan">Copier</button>
+          ${peutPartager ? '<button type="button" class="bouton second" id="partager-bilan">Partager…</button>' : ""}
+        </div></div>
+      <div class="carte" style="display:grid;gap:10px"><span class="etiquette">2 · Sauvegarder ma progression</span>
+        <p style="color:var(--encre-2);font-size:14px">Tes points, badges, notes et brouillons sont gardés <b>seulement dans ce téléphone</b>. Envoie-toi ce code de temps en temps (par WhatsApp, à toi-même ou à ton grand frère) : avec lui, tu retrouves tout sur un autre téléphone.</p>
+        <textarea class="texte-rep code" id="code" rows="4" readonly>${code}</textarea>
+        <div class="boutons-ligne">
+          <a class="bouton vert lien-bouton" href="${wa("Code de sauvegarde Mission BEPC (à coller dans Progrès > Suivi et sauvegarde > Restaurer) :\n" + code)}" target="_blank" rel="noopener">Envoyer le code</a>
+          <button type="button" class="bouton second" id="copier-code">Copier le code</button>
+        </div>
+        <small style="color:var(--encre-2)">Taille du code : ${Math.ceil(code.length / 1024)} Ko de texte.</small></div>
+      <div class="carte" style="display:grid;gap:10px"><span class="etiquette">3 · Restaurer sur ce téléphone</span>
+        <p style="color:var(--encre-2);font-size:14px">Colle ici un code de sauvegarde. Attention : la progression actuelle de ce téléphone sera remplacée.</p>
+        <textarea class="texte-rep" id="restaurer" rows="3" placeholder="Colle le code qui commence par MBEPC1:"></textarea>
+        <button type="button" class="bouton second" id="btn-restaurer" style="border-color:var(--rouge);color:var(--rouge)">Restaurer ma progression</button>
+        <p class="message" id="msg-restaurer" style="text-align:left"></p></div>
+    </section>`;
+    vue.querySelector("#retour").addEventListener("click", () => aller("progres"));
+    vue.querySelector("#copier-bilan").addEventListener("click", e => copier(bilan, e.currentTarget));
+    vue.querySelector("#copier-code").addEventListener("click", e => copier(code, e.currentTarget));
+    const pb = vue.querySelector("#partager-bilan"); if (pb) pb.addEventListener("click", () => navigator.share({ title: "Bilan Mission BEPC", text: bilan }).catch(() => {}));
+    const btn = vue.querySelector("#btn-restaurer"), msg = vue.querySelector("#msg-restaurer");
+    btn.addEventListener("click", () => {
+      let o; try { o = lireCode(vue.querySelector("#restaurer").value); } catch (e) { msg.style.color = "var(--rouge)"; msg.textContent = e.message; return; }
+      if (btn.dataset.confirmer !== "1") { btn.dataset.confirmer = "1"; btn.textContent = `Confirmer : restaurer ${o.xp} points`; msg.style.color = "var(--encre-2)"; msg.textContent = "Touche encore pour confirmer. La progression actuelle sera remplacée."; return; }
+      etat = Object.assign(vide(), o); sauver(); appliquerReglages();
+      msg.style.color = "var(--vert)"; msg.textContent = `Progression restaurée : ${etat.xp} points, ${etat.badges.length} badge(s).`;
+      btn.dataset.confirmer = ""; btn.textContent = "Restaurer ma progression";
+    });
   }
 
   // ---------- Exemple corrigé pas à pas (dans chaque chapitre) ----------
@@ -4575,6 +4655,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const faibles = comps.filter(c => c.pct < 60 && c.total >= 3);
     const couleur = p => p >= 80 ? "var(--vert)" : p >= 60 ? "var(--or)" : "var(--rouge)";
     vue.innerHTML = `<section class="ecran"><h2>Mes progrès</h2>
+      <button type="button" class="reprendre" id="vers-suivi" style="--c:var(--vert)"><span class="icone" style="background:var(--vert)">↗</span><span class="txt"><small>Pour la famille</small><b>Envoyer mon bilan · sauvegarder</b><small>Un résumé à partager, et un code pour ne rien perdre</small></span><span class="fleche">›</span></button>
       <div class="stats"><div class="stat"><b>${etat.xp}</b><small>points</small></div><div class="stat"><b>${serieActuelle()}</b><small>jours d'affilée</small></div><div class="stat"><b>${etat.bonnes}</b><small>bonnes réponses</small></div></div>
       <div class="carte" style="display:grid;gap:6px"><span class="etiquette">Rang</span><b style="font-family:var(--titre);font-size:22px">Niveau ${r.niveau} · ${r.nom}</b>
         <div class="barre-xp"><i style="width:${r.pct}%"></i></div><small style="color:var(--encre-2);font-weight:700">${r.suivant ? r.reste + " points avant « " + r.suivant + " »" : "Rang maximum atteint !"}</small></div>
@@ -4596,6 +4677,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         <button type="button" class="bouton second" id="effacer" style="border-color:var(--rouge);color:var(--rouge)">Tout effacer</button></div>
       <p style="text-align:center;color:var(--encre-2);font-size:13px">Application de ${NOM_COMPLET} · programme officiel de 3e, Côte d'Ivoire</p>
     </section>`;
+    vue.querySelector("#vers-suivi").addEventListener("click", () => aller("suivi"));
     vue.querySelectorAll("[data-taille]").forEach(b => b.addEventListener("click", () => { etat.reglages = Object.assign({}, etat.reglages, { taille: b.dataset.taille }); sauver(); appliquerReglages(); afficherProgres(); }));
     vue.querySelectorAll("[data-theme-choix]").forEach(b => b.addEventListener("click", () => { etat.reglages = Object.assign({}, etat.reglages, { theme: b.dataset.themeChoix }); sauver(); appliquerReglages(); afficherProgres(); }));
     const eff = vue.querySelector("#effacer");
