@@ -39,7 +39,7 @@
     enonce: `<p>Écoute la phrase (autant de fois que tu veux), puis écris-la exactement.</p><div style="display:flex;gap:8px;flex-wrap:wrap">${btnEcoute(phrase, "fr-FR", "Écouter la dictée")}${btnEcoute(phrase, "fr-FR", "Lentement", false, 0.6)}</div>`,
     explication: expl }));
 
-  const MAT_FR = { id: "francais", nom: "Français", icone: "Aa", couleur: "#B8452B", examen: "Écrit (rédaction + orthographe) et oral",
+  const MAT_FR = { id: "francais", nom: "Français", icone: "Aa", couleur: "#B8452B", examen: "Écrit (rédaction + orthographe)",
     chapitres: [
       { id: "fr-dictee", titre: "Dictées (orthographe du BEPC)", special: "dictee",
         cours: rg("L'épreuve d'orthographe", "Au BEPC, l'orthographe est une épreuve écrite à part. Chaque faute compte : relis-toi toujours en vérifiant les accords.") +

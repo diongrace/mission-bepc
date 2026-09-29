@@ -173,7 +173,7 @@
         ] }
     ] };
 
-  const MAT_EDHC = { id: "edhc", nom: "EDHC", icone: "⚖", couleur: "#2E7F8C", examen: "Écrit et oral",
+  const MAT_EDHC = { id: "edhc", nom: "EDHC", icone: "⚖", couleur: "#2E7F8C", examen: "Écrit",
     chapitres: [
       { id: "edhc-parents", titre: "Les devoirs des parents et l'épanouissement de l'enfant", theme: "Droits de l'Homme et DIH",
         cours: rg("Texte de référence", "La <b>Convention relative aux droits de l'enfant</b> (ONU, 20 novembre 1989), ratifiée par la Côte d'Ivoire.") +

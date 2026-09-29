@@ -1812,7 +1812,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         ] }
     ] };
 
-  const MAT_EDHC = { id: "edhc", nom: "EDHC", icone: "⚖", couleur: "#2E7F8C", examen: "Écrit et oral",
+  const MAT_EDHC = { id: "edhc", nom: "EDHC", icone: "⚖", couleur: "#2E7F8C", examen: "Écrit",
     chapitres: [
       { id: "edhc-parents", titre: "Les devoirs des parents et l'épanouissement de l'enfant", theme: "Droits de l'Homme et DIH",
         cours: rg("Texte de référence", "La <b>Convention relative aux droits de l'enfant</b> (ONU, 20 novembre 1989), ratifiée par la Côte d'Ivoire.") +
@@ -2048,7 +2048,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     enonce: `<p>Écoute la phrase (autant de fois que tu veux), puis écris-la exactement.</p><div style="display:flex;gap:8px;flex-wrap:wrap">${btnEcoute(phrase, "fr-FR", "Écouter la dictée")}${btnEcoute(phrase, "fr-FR", "Lentement", false, 0.6)}</div>`,
     explication: expl }));
 
-  const MAT_FR = { id: "francais", nom: "Français", icone: "Aa", couleur: "#B8452B", examen: "Écrit (rédaction + orthographe) et oral",
+  const MAT_FR = { id: "francais", nom: "Français", icone: "Aa", couleur: "#B8452B", examen: "Écrit (rédaction + orthographe)",
     chapitres: [
       { id: "fr-dictee", titre: "Dictées (orthographe du BEPC)", special: "dictee",
         cours: rg("L'épreuve d'orthographe", "Au BEPC, l'orthographe est une épreuve écrite à part. Chaque faute compte : relis-toi toujours en vérifiant les accords.") +
@@ -3937,7 +3937,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       <button type="button" class="recherche-faux" id="vers-chercher">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>'}<span>Chercher dans tout le programme…</span></button>
       <div class="grille-matieres">${MATIERES.map(m => { const pct = pctMatiere(m);
         return `<button type="button" class="carte-matiere" data-mat="${m.id}" style="--c:${m.couleur}"><span class="icone" style="background:${m.couleur}">${m.icone}</span>
-          <span class="txt"><b>${m.nom}</b><small>${m.id === "actu" ? "Actualité pour la rédaction, l'EDHC et l'oral" : m.id === "sujets" ? SUJETS.length + " sujets complets, corrigés et barèmes" : (m.examen || "Écrit") + " · " + m.chapitres.length + " chapitres"}</small><small>${sousTitreMat(m)}</small></span>
+          <span class="txt"><b>${m.nom}</b><small>${m.id === "actu" ? "Actualité pour la rédaction, l'EDHC et l'oral d'anglais" : m.id === "sujets" ? SUJETS.length + " sujets complets, corrigés et barèmes" : (m.examen || "Écrit") + " · " + m.chapitres.length + " chapitres"}</small><small>${sousTitreMat(m)}</small></span>
           ${anneau(pct, m.couleur)}</button>`; }).join("")}</div></section>`;
     vue.querySelector("#vers-chercher").addEventListener("click", () => aller("chercher"));
     vue.querySelectorAll("[data-mat]").forEach(b => b.addEventListener("click", () => ouvrirMat(b.dataset.mat)));
@@ -4308,7 +4308,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   function afficherThemes() {
     vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ Mes matières</button>
       <h2>Grands thèmes 2026</h2>
-      <p style="color:var(--encre-2)">L'actualité de 2026 qui peut servir en rédaction, en EDHC (écrit et oral), en anglais, en SVT et en géographie. Pour chaque thème : l'essentiel, des chiffres, des arguments, un plan de rédaction, des réponses modèles pour l'oral et un quiz.</p>
+      <p style="color:var(--encre-2)">L'actualité de 2026 qui peut servir en rédaction, en EDHC, en anglais (écrit et oral), en SVT et en géographie. Pour chaque thème : l'essentiel, des chiffres, des arguments, un plan de rédaction, des réponses modèles pour l'oral et un quiz.</p>
       <div class="liste">${CHAP_THEMES.map(c => {
         const th = c.theme, ok = reussi(c, c.niveaux[0]), m = meilleur(c.id, "quiz");
         return `<button type="button" class="theme-carte" data-theme="${c.id}"><span class="icone" style="background:${th.couleur}">${th.lettre}</span>
@@ -4329,10 +4329,10 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       <details class="bloc"><summary>Arguments et idées</summary><div class="corps">${th.arguments.map(([t, l]) => `<h4>${t}</h4><ul>${l.map(x => `<li>${x}</li>`).join("")}</ul>`).join("")}</div></details>
       <details class="bloc"><summary>Sujet de rédaction et plan</summary><div class="corps"><p class="sujet">${th.redaction.sujet}</p><ol class="plan">${th.redaction.plan.map(x => `<li>${x}</li>`).join("")}</ol>
         <p style="color:var(--encre-2);font-size:14px">Astuce : un argument = une idée + une explication + un exemple. Utilise les chiffres de 2026 !</p></div></details>
-      <details class="bloc"><summary>Oral d'EDHC</summary><div class="corps"><p class="sujet">${th.oral.sujet}</p>
+      <details class="bloc"><summary>EDHC : donner son avis argumenté</summary><div class="corps"><p class="sujet">${th.oral.sujet}</p>
         <div>${btnEcoute(th.oral.reponse, "fr-FR", "Écouter la réponse modèle")}</div>
         <div class="modele">${th.oral.reponse}</div>
-        <p style="color:var(--encre-2);font-size:14px">Entraîne-toi : lis la réponse, cache-la, puis redis-la avec tes propres mots en 1 à 2 minutes.</p></div></details>
+        <p style="color:var(--encre-2);font-size:14px">Entraîne-toi : lis la réponse, cache-la, puis réécris-la avec tes propres mots. C'est la méthode pour les questions d'avis en EDHC et pour la rédaction.</p></div></details>
       <details class="bloc"><summary>Oral d'anglais</summary><div class="corps"><p class="sujet" lang="en">${th.anglais.question}</p>
         <div>${btnEcoute(th.anglais.reponse, "en-GB", "Listen")}</div>
         <div class="modele" lang="en">${th.anglais.reponse}</div>
