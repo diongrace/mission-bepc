@@ -162,6 +162,19 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.mots{display:grid;gap:10px;border-left:5px solid var(--vert)}
+.mots-tete{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.mots-tete .etiquette{color:var(--vert)}
+.mots dl{margin:0;display:grid;gap:10px}
+.mot{display:grid;gap:2px;padding-bottom:10px;border-bottom:1px dashed var(--trait)}
+.mot:last-child{border-bottom:0;padding-bottom:0}
+.mot dt{font-family:var(--titre);font-size:17px;color:var(--vert)}
+.mot dd{margin:0;line-height:1.55}
+.mot-ex{display:block;margin-top:3px;color:var(--encre-2);font-size:14.5px}
+.mot-ex b{color:var(--encre-2)}
+.mots-astuce{font-size:13px;color:var(--encre-2);margin:0}
+.def-q{margin-top:8px;background:var(--papier);border-left:4px solid var(--vert);border-radius:0 10px 10px 0;padding:10px 12px;font-style:italic}
+.def-apercu{display:block;font-weight:600!important;color:var(--encre-2);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .az{display:grid;gap:10px}
 .az-etape{border:1px solid var(--trait);border-radius:14px;padding:12px;display:grid;gap:8px;background:var(--carte)}
 .az-tete{display:flex;align-items:center;gap:10px}
@@ -434,6 +447,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
 /*EXEMPLES*/
 /*SUJETSDATA*/
 /*FRANCAIS2*/
+/*MOTS*/
 /*GUIDES*/
 /*ACTU*/
 
@@ -514,7 +528,20 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   const CHAP_THEMES = THEMES.map(th => ({ id: th.id, titre: th.titre, ecran: "theme", theme: th,
     niveaux: [N("quiz", "Quiz", 6, 5, genQuizTheme(th), "6 questions, 5 bonnes pour valider le thème")] }));
   MATIERES[0].chapitres.forEach(c => c.matiere = "maths");
-  MATIERES.filter(m => m.chapitres).forEach(m => m.chapitres.forEach(c => { c.exemple = EXEMPLES[c.id]; }));
+  function genDefinitions(c) {
+    const l = c.mots, comp = "def-" + c.id;
+    return l.map((m, k) => () => {
+      const autres = melanger(l.filter((_, j) => j !== k)).slice(0, 3), sens = Math.random() < 0.5;
+      const expl = `<b>${m[0]}</b> : ${m[1]}<br><i>Exemple : ${m[2]}</i>`, rappel = { titre: m[0], texte: m[1] };
+      return sens
+        ? { comp, enonce: `Quel mot correspond à cette définition ?<div class="def-q">« ${m[1]} »</div>`, type: "qcm", choix: melanger([m[0], ...autres.map(a => a[0])]), reponse: m[0], affiche: m[0], explication: expl, rappel }
+        : { comp, enonce: `Que signifie <b>« ${m[0]} »</b> ?`, type: "qcm", choix: melanger([m[1], ...autres.map(a => a[1])]), reponse: m[1], affiche: m[1], explication: expl, rappel };
+    });
+  }
+  MATIERES.filter(m => m.chapitres).forEach(m => m.chapitres.forEach(c => {
+    c.exemple = EXEMPLES[c.id]; c.mots = MOTS[c.id];
+    if (c.mots && c.mots.length >= 4 && c.special !== "dictee") c.niveaux[0].gens = c.niveaux[0].gens.concat(genDefinitions(c));
+  }));
   MATIERES.splice(1, 0, { id: "actu", nom: "Grands thèmes 2026", icone: "★", couleur: "#D1495B" }, { id: "sujets", nom: "Sujets type BEPC", icone: "✍", couleur: "#18283A", examen: "Entraînement complet" });
   const themesValides = () => CHAP_THEMES.filter(c => reussi(c, c.niveaux[0])).length;
   const COMPETENCES = {
@@ -523,6 +550,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     "l-developper": "Développer", "l-factoriser": "Factoriser", "l-produitnul": "Produit nul, même carré", "l-fraction": "Fractions rationnelles",
     "t-longueur": "Thalès : calculer une longueur", "t-reconnaitre": "Thalès : quotients égaux", "t-reciproque": "Réciproque de Thalès",
     "r-definition": "Racine carrée, valeur absolue", "r-simplifier": "Simplifier une racine", "r-operations": "Calculer avec des racines", "r-radical": "Conjugué, dénominateur", ...Object.fromEntries(THEMES.map(t => ["a-" + t.id, "Actu : " + t.titre])), ...COMP_MATHS2, "fr-dictee": "Français : dictées", "pc-calcul": "Physique-Chimie : calculs",
+    ...Object.fromEntries(MATIERES.filter(m => m.chapitres).flatMap(m => m.chapitres.map(c => ["def-" + c.id, "Définitions · " + c.titre.replace(/^[^·]+· /, "")]))),
     ...Object.fromEntries(AUTRES.flatMap(M => M.chapitres.map(c => ["m-" + c.id, M.nom + " : " + c.titre.replace(/^[^·]+· /, "")])))
   };
   const chapitres = () => MATIERES[0].chapitres;
@@ -724,6 +752,13 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     vue.querySelectorAll("[data-sujet]").forEach(b => b.addEventListener("click", () => aller("sujet", b.dataset.sujet)));
   }
   const ongletChapitre = {};
+  function blocMots(c) {
+    if (!c.mots) return "";
+    const lecture = c.mots.map(m => `${m[0]} : ${m[1]} Par exemple : ${m[2].replace(/<[^>]+>/g, "")}`).join(" ");
+    return `<div class="mots carte"><div class="mots-tete"><span class="etiquette">Les mots à connaître</span>${btnEcoute(lecture, "fr-FR", "Écouter", false)}</div>
+      <dl>${c.mots.map(m => `<div class="mot"><dt>${m[0]}</dt><dd>${m[1]}<span class="mot-ex"><b>Exemple :</b> ${m[2]}</span></dd></div>`).join("")}</dl>
+      <p class="mots-astuce">Au BEPC, « Définis… » = recopie la définition, puis donne un exemple.</p></div>`;
+  }
   function afficherChapitre(id) {
     const c = chapitreDe(id);
     const M = matiereDe(c.matiere);
@@ -736,7 +771,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         ${c.exemple ? `<button type="button" role="tab" data-onglet="exemple" aria-selected="${actif === "exemple"}">Exemple</button>` : ""}
         <button type="button" role="tab" data-onglet="exos" aria-selected="${actif === "exos"}">Exercices</button>
       </div>
-      <div class="panneau" data-panneau="cours" ${actif === "cours" ? "" : "hidden"}>${animsDe(c.id).map(blocAnim).join("")}<div class="cours-corps carte">${c.cours}</div>
+      <div class="panneau" data-panneau="cours" ${actif === "cours" ? "" : "hidden"}>${blocMots(c)}${animsDe(c.id).map(blocAnim).join("")}<div class="cours-corps carte">${c.cours}</div>
         <button type="button" class="bouton" data-aller-onglet="${c.exemple ? "exemple" : "exos"}">${c.exemple ? "Voir un exemple corrigé ›" : "Passer aux exercices ›"}</button></div>
       <div class="panneau" data-panneau="exemple" ${actif === "exemple" ? "" : "hidden"}>${blocExemple(c.exemple)}
         <button type="button" class="bouton" data-aller-onglet="exos">Passer aux exercices ›</button></div>
@@ -761,6 +796,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     vue.querySelector("#retour").addEventListener("click", () => aller("matiere", c.matiere));
     vue.querySelectorAll("[data-niv]").forEach(b => b.addEventListener("click", () => lancerSession(c, c.niveaux.find(n => n.id === b.dataset.niv))));
     const r = vue.querySelector("#rapide"); if (r) r.addEventListener("click", () => lancerSession(c, c.niveaux.find(n => n.id === "maitrise"), true));
+    brancherEcoute();
     if (c.special === "oral") brancherBlocOral();
     if (c.special === "resume") brancherBlocResume();
     if (c.special === "argu") brancherBlocArgu();
@@ -771,6 +807,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   // ---------- Chercher dans tout le programme ----------
   const sansAccent = t => String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/<[^>]+>/g, " ");
   let INDEX = null;
+  const INDEX_DEF = Object.fromEntries(Object.entries(MOTS).flatMap(([id, l]) => l.map(m => [m[0] + "|" + id, m[1]])));
   function construireIndex() {
     const l = [];
     MATIERES.filter(m => m.chapitres).forEach(M => M.chapitres.forEach(c => l.push({ titre: c.titre.replace(/^[^·]+· /, ""), sous: M.nom + (c.theme ? " · " + c.theme : ""), couleur: M.couleur, icone: M.icone, go: ["chapitre", c.id],
@@ -778,6 +815,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     CHAP_THEMES.forEach(c => l.push({ titre: c.titre, sous: "Grands thèmes 2026", couleur: "#D1495B", icone: "★", go: ["theme", c.id], t: sansAccent(c.titre), corps: sansAccent(c.theme.faits.join(" ") + " " + c.theme.arguments.flat(2).join(" ")) }));
     SUJETS.forEach(s => l.push({ titre: s.titre, sous: "Sujet type BEPC · " + s.duree, couleur: "#18283A", icone: "✍", go: ["sujet", s.id], t: sansAccent(s.titre), corps: sansAccent(s.questions.map(x => x.enonce).join(" ") + " " + (s.document || "")) }));
     IMAGES.forEach(im => l.push({ titre: im.titre + " (" + im.fr + ")", sous: "Oral d'anglais · décrire une image", couleur: "#C23B6B", icone: "En", go: ["oral", "image:" + im.id], t: sansAccent(im.titre + " " + im.fr), corps: sansAccent(im.modele) }));
+    MATIERES.filter(m => m.chapitres).forEach(M => M.chapitres.forEach(c => (c.mots || []).forEach(m => l.push({ titre: m[0], sous: "Définition · " + M.nom + " · " + c.titre.replace(/^[^·]+· /, ""), couleur: M.couleur, icone: "≡", go: ["chapitre", c.id], cours: true, t: sansAccent(m[0] + " definition"), corps: sansAccent(m[1] + " " + m[2]) }))));
     ANIMS.forEach(a => { const c = chapitreDe(a.chap), M = matiereDe(c.matiere); l.push({ titre: a.titre, sous: "Animation · " + M.nom, couleur: M.couleur, icone: "▶", go: ["anim", a.id], t: sansAccent(a.titre + " animation video " + c.titre), corps: "" }); });
     TEXTES.forEach(tx => l.push({ titre: tx.titre, sous: "Oral d'anglais · lire un texte", couleur: "#C23B6B", icone: "En", go: ["oral", "texte:" + tx.id], t: sansAccent(tx.titre), corps: sansAccent(tx.texte) }));
     return l;
@@ -791,7 +829,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   }
   let derniereRecherche = "";
   function afficherChercher() {
-    const idees = ["Thalès", "Pythagore", "racine carrée", "VIH", "indépendance", "ONU", "passé simple", "dictée", "cacao", "lentilles", "impôt", "vote"];
+    const idees = ["thèse", "enzyme", "impérialisme", "Thalès", "médiane", "VIH", "indépendance", "impôt indirect", "réfuter", "passé simple", "lentilles", "cacao"];
     vue.innerHTML = `<section class="ecran large"><h2>Chercher</h2>
       <div class="champ-recherche">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>'}<input type="search" id="recherche" placeholder="Une leçon, un mot du cours, un thème…" autocomplete="off" aria-label="Chercher dans le programme"></div>
       <div class="idees" id="idees">${idees.map(i => `<button type="button" data-idee="${i}">${i}</button>`).join("")}</div>
@@ -803,8 +841,8 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       const r = chercher(champ.value);
       vue.querySelector("#idees").hidden = !!champ.value.trim();
       nb.textContent = champ.value.trim() ? (r.length ? r.length + (r.length > 1 ? " résultats" : " résultat") : "Aucun résultat. Essaie un autre mot, sans faute de frappe.") : "Quelques idées pour commencer :";
-      res.innerHTML = r.map((x, i) => `<button type="button" class="theme-carte" data-res="${i}"><span class="icone" style="background:${x.couleur}">${x.icone}</span><span class="txt"><b>${x.titre}</b><small>${x.sous}</small></span><span style="color:var(--bleu);font-weight:800">›</span></button>`).join("");
-      res.querySelectorAll("[data-res]").forEach(b => b.addEventListener("click", () => aller(...r[+b.dataset.res].go)));
+      res.innerHTML = r.map((x, i) => `<button type="button" class="theme-carte" data-res="${i}"><span class="icone" style="background:${x.couleur}">${x.icone}</span><span class="txt"><b>${x.titre}</b><small>${x.sous}</small>${x.cours ? `<small class="def-apercu">${(INDEX_DEF[x.titre + "|" + x.go[1]] || "")}</small>` : ""}</span><span style="color:var(--bleu);font-weight:800">›</span></button>`).join("");
+      res.querySelectorAll("[data-res]").forEach(b => b.addEventListener("click", () => { const x = r[+b.dataset.res]; if (x.cours) ongletChapitre[x.go[1]] = "cours"; aller(...x.go); }));
     };
     champ.value = derniereRecherche; maj();
     champ.addEventListener("input", maj);
