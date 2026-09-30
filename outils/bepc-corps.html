@@ -162,6 +162,38 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.bulle-mot{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 24px));z-index:30;background:var(--carte);border:2px solid #0E8A7E;border-radius:18px;padding:12px 14px 14px;box-shadow:0 12px 34px rgba(10,30,50,.28);display:grid;gap:6px;animation:bulle-entree .18s ease-out}
+@keyframes bulle-entree{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+.bulle-tete{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#0E8A7E}
+.bulle-x{border:0;background:var(--papier);border-radius:10px;width:32px;height:32px;cursor:pointer;font-size:15px}
+.bulle-ligne{display:flex;align-items:center;gap:10px}
+.bulle-t{font-family:var(--titre);font-size:26px;line-height:1.1}
+.bulle-note{color:var(--encre-2);font-weight:700;font-size:13px}
+.bulle-sens{font-size:17px;font-weight:700;line-height:1.4}
+.bulle-sens.faux{color:var(--rouge)}
+.bulle-pied{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:4px}
+.bulle-carnet{border:0;background:none;color:#0E8A7E;font-weight:800;cursor:pointer;padding:6px 0}
+::highlight(mot-touche){background-color:rgba(14,138,126,.28)}
+[lang=en],[lang=es]{-webkit-touch-callout:none}
+details.traduction{border:1.5px dashed #0E8A7E;border-radius:14px;padding:10px 14px;background:var(--carte)}
+details.traduction summary{cursor:pointer;font-weight:800;color:#0E8A7E;list-style-position:inside}
+details.traduction[open]{display:grid;gap:8px}
+details.traduction p{line-height:1.6}
+details.traduction small{color:var(--encre-2);font-weight:700}
+.essai-mot{display:grid;gap:10px}
+.essai-mot .essai{background:var(--papier);border-radius:12px;padding:10px 12px;font-weight:700}
+.essai-mot .essai span{font-size:17px;border-bottom:2px dotted #0E8A7E}
+.liste-carnet{display:grid;gap:8px}
+.mot-carnet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:10px;align-items:center;background:var(--carte);border:1px solid var(--trait);border-radius:14px;padding:10px 12px}
+.mot-carnet.su{border-color:var(--vert)}
+.mc-mot{display:grid;min-width:0;overflow-wrap:anywhere}
+.mc-mot b{font-family:var(--titre);font-size:19px;line-height:1.15}
+.mc-mot small{color:var(--encre-2);font-size:12.5px}
+.mc-sens{font-size:14.5px;line-height:1.4;overflow-wrap:anywhere}
+.mc-actions{display:flex;align-items:center;gap:6px}
+.mc-suppr{border:0;background:var(--papier);border-radius:9px;width:30px;height:30px;cursor:pointer;color:var(--encre-2)}
+.mot-quiz{font-family:var(--titre);font-size:30px;line-height:1.1}
+@media (max-width:520px){.mot-carnet{grid-template-columns:minmax(0,1fr) auto}.mc-sens{grid-column:1/-1;grid-row:2}}
 .hero-progres{gap:14px}
 .hero-progres .hero-niveau small{display:block;opacity:.85;font-weight:700;font-size:13px}
 .hero-progres .hero-niveau b{font-size:21px}
@@ -758,11 +790,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     arreterEnregistrement();
     nettoyerAnims();
     if (chronoSujet) { clearInterval(chronoSujet); chronoSujet = null; }
-    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier", "guide"].includes(e) ? "matieres" : e;
+    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier", "guide", "carnet"].includes(e) ? "matieres" : e;
     document.querySelectorAll(".nav button").forEach(b => b.setAttribute("aria-current", b.dataset.aller === onglet ? "page" : "false"));
     if (["chapitre", "theme", "sujet", "oral"].includes(e) && params) { etat.dernier = { e, p: params }; sauver(); }
     document.querySelector(".nav").classList.toggle("cache", e === "exercice" || e === "fin");
-    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, guide: afficherGuide, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
+    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, guide: afficherGuide, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, carnet: afficherCarnet, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
     window.scrollTo(0, 0);
   }
   document.querySelectorAll(".nav button").forEach(b => b.addEventListener("click", () => aller(b.dataset.aller)));
@@ -812,7 +844,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const autre = aTravailler.length ? aTravailler[jour % aTravailler.length] : chapitreDe("fr-dictee");
     const d = decrireDernier(etat.dernier), debut = !meilleur("bases", "test");
     const jours = Math.max(0, Math.ceil((DATE_BEPC - new Date()) / 86400000));
-    const pastilles = [["animations", "Animations", "#7A4FB5", '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'], ["sujets", "Sujets BEPC", "#4F6A8F", ICONES.sujets], ["dictee", "Dictée", "#B8452B", ICONES.francais], ["oral", "Oral d'anglais", "#C23B6B", ICONES.anglais], ["themes", "Grands thèmes", "#D1495B", ICONES.actu]];
+    const pastilles = [["animations", "Animations", "#7A4FB5", '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'], ["sujets", "Sujets BEPC", "#4F6A8F", ICONES.sujets], ["dictee", "Dictée", "#B8452B", ICONES.francais], ["oral", "Oral d'anglais", "#C23B6B", ICONES.anglais], ["themes", "Grands thèmes", "#D1495B", ICONES.actu], ["carnet", "Carnet de mots", "#0E8A7E", ICONE_CARNET]];
     vue.innerHTML = `<section class="ecran large accueil">
       <header class="hero">
         <div class="hero-haut"><div class="avatar" aria-hidden="true">AZ</div><div class="hero-qui"><small>${salutation()}</small><b>${salutTitre()}</b></div>
@@ -856,7 +888,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     vue.querySelectorAll("[data-mat]").forEach(b => b.addEventListener("click", () => ouvrirMat(b.dataset.mat)));
     vue.querySelectorAll("[data-raccourci]").forEach(b => b.addEventListener("click", () => {
       const k = b.dataset.raccourci;
-      if (k === "animations") aller("animations"); else if (k === "sujets") aller("sujets"); else if (k === "themes") aller("themes");
+      if (k === "animations") aller("animations"); else if (k === "sujets") aller("sujets"); else if (k === "themes") aller("themes"); else if (k === "carnet") aller("carnet");
       else if (k === "dictee") aller("chapitre", "fr-dictee"); else { ongletChapitre["en-oral-bepc"] = "exos"; aller("chapitre", "en-oral-bepc"); }
     }));
   }
@@ -885,11 +917,13 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
           <span class="txt"><b>${c.titre.replace(/^[^·]+· /, "")}</b><small>${animsDe(c.id).length ? '<span class="pastille vert">▶ animation</span> ' : ""}${c.titre.includes(" · ") ? c.titre.split(" · ")[0] + " · " : ""}${c.periode || c.niveaux.length + " niveaux"}${c.id === moment ? ' · <span class="pastille">En classe</span>' : ""}</small><span class="mini"><i style="width:${p}%;background:${M.couleur}"></i></span></span>
           <span class="etoiles" aria-label="${et} niveau(x) réussi(s) sur ${c.niveaux.length}">${"★".repeat(et)}${"☆".repeat(c.niveaux.length - et)}</span></button>`;
       }).join("")}</div>
+      ${id === "anglais" || id === "espagnol" ? `<button type="button" class="lien-actu" id="vers-carnet" style="border-color:#0E8A7E"><span class="ic-mini" style="background:#0E8A7E;width:36px;height:36px;border-radius:10px">${ICONE_CARNET}</span><span style="flex:1;display:grid"><b>Mon carnet de mots</b><small style="color:var(--encre-2)">Touche un mot ${id === "anglais" ? "anglais" : "espagnol"} dans un texte pour le traduire · ${(etat.carnet || []).filter(x => x.l === (id === "anglais" ? "en" : "es")).length} mot(s) gardé(s)</small></span>›</button>` : ""}
       ${sm.length ? `<span class="etiquette">S'entraîner comme au BEPC</span>` + sm.map(x => `<button type="button" class="lien-actu" data-sujet="${x.id}" style="border-color:${M.couleur}"><span style="font-size:22px">✍</span><span style="flex:1;display:grid"><b>${x.titre}</b><small>Sujet complet · corrigé détaillé · barème</small></span><span style="color:var(--bleu);font-weight:800">›</span></button>`).join("") : ""}
     </section>`;
     vue.querySelector("#retour").addEventListener("click", () => aller("matieres"));
     vue.querySelectorAll("[data-chap]").forEach(b => b.addEventListener("click", () => aller("chapitre", b.dataset.chap)));
     vue.querySelectorAll("[data-sujet]").forEach(b => b.addEventListener("click", () => aller("sujet", b.dataset.sujet)));
+    const vc = vue.querySelector("#vers-carnet"); if (vc) vc.addEventListener("click", () => aller("carnet", id === "anglais" ? "en" : "es"));
   }
   const ongletChapitre = {};
   function blocMots(c) {
@@ -911,7 +945,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         ${c.exemple ? `<button type="button" role="tab" data-onglet="exemple" aria-selected="${actif === "exemple"}">Exemple</button>` : ""}
         <button type="button" role="tab" data-onglet="exos" aria-selected="${actif === "exos"}">Exercices</button>
       </div>
-      <div class="panneau" data-panneau="cours" ${actif === "cours" ? "" : "hidden"}>${blocMots(c)}${animsDe(c.id).map(blocAnim).join("")}<div class="cours-corps carte">${c.cours}</div>
+      <div class="panneau" data-panneau="cours" ${actif === "cours" ? "" : "hidden"}>${blocMots(c)}${animsDe(c.id).map(blocAnim).join("")}<div class="cours-corps carte"${/^e[ns]-/.test(c.id) ? ` data-trad="${c.id.slice(0, 2)}"` : ""}>${c.cours}</div>
         <button type="button" class="bouton" data-aller-onglet="${c.exemple ? "exemple" : "exos"}">${c.exemple ? "Voir un exemple corrigé ›" : "Passer aux exercices ›"}</button></div>
       <div class="panneau" data-panneau="exemple" ${actif === "exemple" ? "" : "hidden"}>${blocExemple(c.exemple)}
         <button type="button" class="bouton" data-aller-onglet="exos">Passer aux exercices ›</button></div>
@@ -1071,6 +1105,8 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
 /*ANIMS*/
 /*SUJETSECRAN*/
 /*ORALECRAN*/
+/*DICO*/
+/*TRADUCTION*/
   // ---------- Grands thèmes 2026 ----------
   const hautParleur = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>`;
   const voixOk = "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
@@ -1125,7 +1161,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         <p style="color:var(--encre-2);font-size:14px">Entraîne-toi : lis la réponse, cache-la, puis réécris-la avec tes propres mots. C'est la méthode pour les questions d'avis en EDHC et pour la rédaction.</p></div></details>
       <details class="bloc"><summary>Oral d'anglais</summary><div class="corps"><p class="sujet" lang="en">${th.anglais.question}</p>
         <div>${btnEcoute(th.anglais.reponse, "en-GB", "Listen")}</div>
-        <div class="modele" lang="en">${th.anglais.reponse}</div>
+        <div class="modele" lang="en">${th.anglais.reponse}</div>${blocTraduction("theme:" + th.id)}
         <p style="color:var(--encre-2);font-size:14px">Écoute, répète phrase par phrase, puis réponds sans regarder.</p></div></details>
       <details class="bloc"><summary>Vocabulaire français → anglais</summary><div class="corps"><table class="vocab">${th.vocab.map(([f, e]) => `<tr><td>${f}</td><td lang="en">${e}</td><td>${btnEcoute(e.split(" / ")[0].replace(/\(.*\)/, ""), "en-GB", "Écouter " + e, true)}</td></tr>`).join("")}</table></div></details>
       <button type="button" class="bouton${reussi(c, niv) ? " vert" : ""}" id="quiz">${m ? `Refaire le quiz (meilleur : ${m}/6)` : "Faire le quiz : 6 questions"}</button>
@@ -1189,11 +1225,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         <span class="exo-titre">${s.i + 1}/${s.questions.length}</span></div>
       <span class="exo-titre">${titre}${q.defi ? ' · <span class="pastille">Défi</span>' : ""}</span>
       ${q.figure || ""}
-      <div class="question">${q.enonce}</div>
+      <div class="question"${langueDeComp(q.comp) ? ` data-trad="${langueDeComp(q.comp)}"` : ""}>${q.enonce}</div>
       ${zone}
       <div id="indice" class="indice cache" aria-live="polite"></div>
       <p class="message" id="message" aria-live="polite"></p>
-      <div id="retour-exo"></div>
+      <div id="retour-exo"${langueDeComp(q.comp) ? ` data-trad="${langueDeComp(q.comp)}"` : ""}></div>
       <div class="actions-q"><button type="button" class="bouton second" id="btn-indice">Indice</button><button type="button" class="bouton" id="verifier">Vérifier</button></div>
     </section>`;
     s.valide = false;

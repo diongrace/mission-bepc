@@ -69,7 +69,7 @@
           <p style="font-size:14px;color:var(--encre-2)">Pour situer : <span lang="en"><b>in the middle, on the left, on the right, in the foreground, in the background, at the top, at the bottom</b></span>.</p></div></details>
         ${blocEnregistreur("image-" + im.id, "Étape 3 · Décris l'image à voix haute (1 à 2 minutes)")}
         <details class="bloc" id="modele"><summary>Étape 4 · La description modèle</summary><div class="corps">
-          <div>${btnEcoute(im.modele, "en-GB", "Écouter le modèle")}</div><div class="modele" lang="en">${im.modele}</div>
+          <div>${btnEcoute(im.modele, "en-GB", "Écouter le modèle")}</div><div class="modele" lang="en">${im.modele}</div>${blocTraduction("img:" + im.id)}
           <p style="font-size:14px;color:var(--encre-2)">As-tu dit ce que montre l'image, les positions, les actions en <b>-ing</b> et ton avis ? Refais ta description en ajoutant ce qui manquait.</p></div></details>
         <button type="button" class="bouton" id="suivant">Image suivante : <span lang="en">${suiv.titre}</span></button>
       </section>`;
@@ -87,7 +87,7 @@
         <h2 lang="en">${tx.titre}</h2>
         <div class="carte" style="display:grid;gap:10px"><span class="etiquette">Étape 1 · Écoute et lis</span>
           <div style="display:flex;gap:8px;flex-wrap:wrap">${btnEcoute(tx.texte, "en-GB", "Écouter le texte")}${btnEcoute(tx.texte, "en-GB", "Lentement", false, 0.65)}</div>
-          <div class="modele" lang="en" style="font-size:16.5px">${tx.texte}</div></div>
+          <div class="modele" lang="en" style="font-size:16.5px">${tx.texte}</div>${blocTraduction("txt:" + tx.id)}</div>
         ${blocEnregistreur("lecture-" + tx.id, "Étape 2 · Lis le texte à voix haute et réécoute-toi")}
         <span class="etiquette">Étape 3 · Les questions du jury</span>
         <div class="liste" id="questions">${tx.questions.map((q, k) => `<div class="carte" style="display:grid;gap:8px" data-q="${k}"><b lang="en">${q[0]}</b>
@@ -95,7 +95,7 @@
         <details class="bloc" id="modele"><summary>Étape 4 · Dis ce que tu as compris</summary><div class="corps">
           <p>Résume le texte avec tes mots en commençant par <b lang="en">« This text is about… »</b>, puis écoute le modèle.</p>
           ${blocEnregistreur("resume-" + tx.id, "Ton résumé oral")}
-          <div>${btnEcoute(tx.resume, "en-GB", "Écouter le modèle")}</div><div class="modele" lang="en">${tx.resume}</div></div></details>
+          <div>${btnEcoute(tx.resume, "en-GB", "Écouter le modèle")}</div><div class="modele" lang="en">${tx.resume}</div>${blocTraduction("res:" + tx.id)}</div></details>
         <details class="bloc"><summary>Les mots du texte</summary><div class="corps"><table class="vocab">${tx.vocab.map(([e, f]) => `<tr><td lang="en">${e}</td><td style="color:var(--encre)">${f}</td><td>${btnEcoute(e, "en-GB", "Écouter " + e, true)}</td></tr>`).join("")}</table></div></details>
         <button type="button" class="bouton" id="suivant">Texte suivant : <span lang="en">${suiv.titre}</span></button>
       </section>`;
@@ -124,7 +124,7 @@
         <div class="liste">${CONVERSATION.map(([qu, rep], k) => `<div class="carte" style="display:grid;gap:10px">
           <div style="display:flex;gap:10px;align-items:center"><b lang="en" style="flex:1;font-size:17px">${qu}</b>${btnEcoute(qu, "en-GB", "Écouter la question", true)}</div>
           ${blocEnregistreur("conv-" + k, "Ta réponse")}
-          <details class="bloc"><summary>Réponse modèle</summary><div class="corps"><div>${btnEcoute(rep, "en-GB", "Écouter")}</div><div class="modele" lang="en">${rep}</div></div></details></div>`).join("")}</div>
+          <details class="bloc"><summary>Réponse modèle</summary><div class="corps"><div>${btnEcoute(rep, "en-GB", "Écouter")}</div><div class="modele" lang="en">${rep}</div>${blocTraduction("conv:" + k)}</div></details></div>`).join("")}</div>
       </section>`;
       marquerOral("conversation", "vue", 5);
     }

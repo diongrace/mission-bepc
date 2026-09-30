@@ -181,6 +181,38 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.bulle-mot{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 24px));z-index:30;background:var(--carte);border:2px solid #0E8A7E;border-radius:18px;padding:12px 14px 14px;box-shadow:0 12px 34px rgba(10,30,50,.28);display:grid;gap:6px;animation:bulle-entree .18s ease-out}
+@keyframes bulle-entree{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+.bulle-tete{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#0E8A7E}
+.bulle-x{border:0;background:var(--papier);border-radius:10px;width:32px;height:32px;cursor:pointer;font-size:15px}
+.bulle-ligne{display:flex;align-items:center;gap:10px}
+.bulle-t{font-family:var(--titre);font-size:26px;line-height:1.1}
+.bulle-note{color:var(--encre-2);font-weight:700;font-size:13px}
+.bulle-sens{font-size:17px;font-weight:700;line-height:1.4}
+.bulle-sens.faux{color:var(--rouge)}
+.bulle-pied{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:4px}
+.bulle-carnet{border:0;background:none;color:#0E8A7E;font-weight:800;cursor:pointer;padding:6px 0}
+::highlight(mot-touche){background-color:rgba(14,138,126,.28)}
+[lang=en],[lang=es]{-webkit-touch-callout:none}
+details.traduction{border:1.5px dashed #0E8A7E;border-radius:14px;padding:10px 14px;background:var(--carte)}
+details.traduction summary{cursor:pointer;font-weight:800;color:#0E8A7E;list-style-position:inside}
+details.traduction[open]{display:grid;gap:8px}
+details.traduction p{line-height:1.6}
+details.traduction small{color:var(--encre-2);font-weight:700}
+.essai-mot{display:grid;gap:10px}
+.essai-mot .essai{background:var(--papier);border-radius:12px;padding:10px 12px;font-weight:700}
+.essai-mot .essai span{font-size:17px;border-bottom:2px dotted #0E8A7E}
+.liste-carnet{display:grid;gap:8px}
+.mot-carnet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:10px;align-items:center;background:var(--carte);border:1px solid var(--trait);border-radius:14px;padding:10px 12px}
+.mot-carnet.su{border-color:var(--vert)}
+.mc-mot{display:grid;min-width:0;overflow-wrap:anywhere}
+.mc-mot b{font-family:var(--titre);font-size:19px;line-height:1.15}
+.mc-mot small{color:var(--encre-2);font-size:12.5px}
+.mc-sens{font-size:14.5px;line-height:1.4;overflow-wrap:anywhere}
+.mc-actions{display:flex;align-items:center;gap:6px}
+.mc-suppr{border:0;background:var(--papier);border-radius:9px;width:30px;height:30px;cursor:pointer;color:var(--encre-2)}
+.mot-quiz{font-family:var(--titre);font-size:30px;line-height:1.1}
+@media (max-width:520px){.mot-carnet{grid-template-columns:minmax(0,1fr) auto}.mc-sens{grid-column:1/-1;grid-row:2}}
 .hero-progres{gap:14px}
 .hero-progres .hero-niveau small{display:block;opacity:.85;font-weight:700;font-size:13px}
 .hero-progres .hero-niveau b{font-size:21px}
@@ -4741,11 +4773,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     arreterEnregistrement();
     nettoyerAnims();
     if (chronoSujet) { clearInterval(chronoSujet); chronoSujet = null; }
-    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier", "guide"].includes(e) ? "matieres" : e;
+    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier", "guide", "carnet"].includes(e) ? "matieres" : e;
     document.querySelectorAll(".nav button").forEach(b => b.setAttribute("aria-current", b.dataset.aller === onglet ? "page" : "false"));
     if (["chapitre", "theme", "sujet", "oral"].includes(e) && params) { etat.dernier = { e, p: params }; sauver(); }
     document.querySelector(".nav").classList.toggle("cache", e === "exercice" || e === "fin");
-    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, guide: afficherGuide, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
+    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, guide: afficherGuide, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, carnet: afficherCarnet, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
     window.scrollTo(0, 0);
   }
   document.querySelectorAll(".nav button").forEach(b => b.addEventListener("click", () => aller(b.dataset.aller)));
@@ -4795,7 +4827,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const autre = aTravailler.length ? aTravailler[jour % aTravailler.length] : chapitreDe("fr-dictee");
     const d = decrireDernier(etat.dernier), debut = !meilleur("bases", "test");
     const jours = Math.max(0, Math.ceil((DATE_BEPC - new Date()) / 86400000));
-    const pastilles = [["animations", "Animations", "#7A4FB5", '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'], ["sujets", "Sujets BEPC", "#4F6A8F", ICONES.sujets], ["dictee", "Dictée", "#B8452B", ICONES.francais], ["oral", "Oral d'anglais", "#C23B6B", ICONES.anglais], ["themes", "Grands thèmes", "#D1495B", ICONES.actu]];
+    const pastilles = [["animations", "Animations", "#7A4FB5", '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'], ["sujets", "Sujets BEPC", "#4F6A8F", ICONES.sujets], ["dictee", "Dictée", "#B8452B", ICONES.francais], ["oral", "Oral d'anglais", "#C23B6B", ICONES.anglais], ["themes", "Grands thèmes", "#D1495B", ICONES.actu], ["carnet", "Carnet de mots", "#0E8A7E", ICONE_CARNET]];
     vue.innerHTML = `<section class="ecran large accueil">
       <header class="hero">
         <div class="hero-haut"><div class="avatar" aria-hidden="true">AZ</div><div class="hero-qui"><small>${salutation()}</small><b>${salutTitre()}</b></div>
@@ -4839,7 +4871,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     vue.querySelectorAll("[data-mat]").forEach(b => b.addEventListener("click", () => ouvrirMat(b.dataset.mat)));
     vue.querySelectorAll("[data-raccourci]").forEach(b => b.addEventListener("click", () => {
       const k = b.dataset.raccourci;
-      if (k === "animations") aller("animations"); else if (k === "sujets") aller("sujets"); else if (k === "themes") aller("themes");
+      if (k === "animations") aller("animations"); else if (k === "sujets") aller("sujets"); else if (k === "themes") aller("themes"); else if (k === "carnet") aller("carnet");
       else if (k === "dictee") aller("chapitre", "fr-dictee"); else { ongletChapitre["en-oral-bepc"] = "exos"; aller("chapitre", "en-oral-bepc"); }
     }));
   }
@@ -4868,11 +4900,13 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
           <span class="txt"><b>${c.titre.replace(/^[^·]+· /, "")}</b><small>${animsDe(c.id).length ? '<span class="pastille vert">▶ animation</span> ' : ""}${c.titre.includes(" · ") ? c.titre.split(" · ")[0] + " · " : ""}${c.periode || c.niveaux.length + " niveaux"}${c.id === moment ? ' · <span class="pastille">En classe</span>' : ""}</small><span class="mini"><i style="width:${p}%;background:${M.couleur}"></i></span></span>
           <span class="etoiles" aria-label="${et} niveau(x) réussi(s) sur ${c.niveaux.length}">${"★".repeat(et)}${"☆".repeat(c.niveaux.length - et)}</span></button>`;
       }).join("")}</div>
+      ${id === "anglais" || id === "espagnol" ? `<button type="button" class="lien-actu" id="vers-carnet" style="border-color:#0E8A7E"><span class="ic-mini" style="background:#0E8A7E;width:36px;height:36px;border-radius:10px">${ICONE_CARNET}</span><span style="flex:1;display:grid"><b>Mon carnet de mots</b><small style="color:var(--encre-2)">Touche un mot ${id === "anglais" ? "anglais" : "espagnol"} dans un texte pour le traduire · ${(etat.carnet || []).filter(x => x.l === (id === "anglais" ? "en" : "es")).length} mot(s) gardé(s)</small></span>›</button>` : ""}
       ${sm.length ? `<span class="etiquette">S'entraîner comme au BEPC</span>` + sm.map(x => `<button type="button" class="lien-actu" data-sujet="${x.id}" style="border-color:${M.couleur}"><span style="font-size:22px">✍</span><span style="flex:1;display:grid"><b>${x.titre}</b><small>Sujet complet · corrigé détaillé · barème</small></span><span style="color:var(--bleu);font-weight:800">›</span></button>`).join("") : ""}
     </section>`;
     vue.querySelector("#retour").addEventListener("click", () => aller("matieres"));
     vue.querySelectorAll("[data-chap]").forEach(b => b.addEventListener("click", () => aller("chapitre", b.dataset.chap)));
     vue.querySelectorAll("[data-sujet]").forEach(b => b.addEventListener("click", () => aller("sujet", b.dataset.sujet)));
+    const vc = vue.querySelector("#vers-carnet"); if (vc) vc.addEventListener("click", () => aller("carnet", id === "anglais" ? "en" : "es"));
   }
   const ongletChapitre = {};
   function blocMots(c) {
@@ -4894,7 +4928,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         ${c.exemple ? `<button type="button" role="tab" data-onglet="exemple" aria-selected="${actif === "exemple"}">Exemple</button>` : ""}
         <button type="button" role="tab" data-onglet="exos" aria-selected="${actif === "exos"}">Exercices</button>
       </div>
-      <div class="panneau" data-panneau="cours" ${actif === "cours" ? "" : "hidden"}>${blocMots(c)}${animsDe(c.id).map(blocAnim).join("")}<div class="cours-corps carte">${c.cours}</div>
+      <div class="panneau" data-panneau="cours" ${actif === "cours" ? "" : "hidden"}>${blocMots(c)}${animsDe(c.id).map(blocAnim).join("")}<div class="cours-corps carte"${/^e[ns]-/.test(c.id) ? ` data-trad="${c.id.slice(0, 2)}"` : ""}>${c.cours}</div>
         <button type="button" class="bouton" data-aller-onglet="${c.exemple ? "exemple" : "exos"}">${c.exemple ? "Voir un exemple corrigé ›" : "Passer aux exercices ›"}</button></div>
       <div class="panneau" data-panneau="exemple" ${actif === "exemple" ? "" : "hidden"}>${blocExemple(c.exemple)}
         <button type="button" class="bouton" data-aller-onglet="exos">Passer aux exercices ›</button></div>
@@ -5784,7 +5818,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       <h2>${s.titre}</h2>
       <div class="carte" style="display:grid;gap:8px"><span class="etiquette">Consignes · durée ${s.duree}</span><p>${s.consignes}</p>
         <button type="button" class="bouton second" id="chrono-sujet">Démarrer le chrono</button></div>
-      ${s.document || ""}
+      ${s.document || ""}${blocTraduction("sujet:" + s.id)}
       ${s.questions.map((q, i) => `<div class="carte question-sujet" data-i="${i}" style="display:grid;gap:10px">
         <div style="display:flex;gap:8px;align-items:baseline;justify-content:space-between"><b style="font-family:var(--titre);font-size:17px">${q.num}</b><span class="pastille">${fmt(q.points)} pt${q.points > 1 ? "s" : ""}</span></div>
         <div>${q.enonce}</div>
@@ -5911,7 +5945,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
           <p style="font-size:14px;color:var(--encre-2)">Pour situer : <span lang="en"><b>in the middle, on the left, on the right, in the foreground, in the background, at the top, at the bottom</b></span>.</p></div></details>
         ${blocEnregistreur("image-" + im.id, "Étape 3 · Décris l'image à voix haute (1 à 2 minutes)")}
         <details class="bloc" id="modele"><summary>Étape 4 · La description modèle</summary><div class="corps">
-          <div>${btnEcoute(im.modele, "en-GB", "Écouter le modèle")}</div><div class="modele" lang="en">${im.modele}</div>
+          <div>${btnEcoute(im.modele, "en-GB", "Écouter le modèle")}</div><div class="modele" lang="en">${im.modele}</div>${blocTraduction("img:" + im.id)}
           <p style="font-size:14px;color:var(--encre-2)">As-tu dit ce que montre l'image, les positions, les actions en <b>-ing</b> et ton avis ? Refais ta description en ajoutant ce qui manquait.</p></div></details>
         <button type="button" class="bouton" id="suivant">Image suivante : <span lang="en">${suiv.titre}</span></button>
       </section>`;
@@ -5929,7 +5963,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         <h2 lang="en">${tx.titre}</h2>
         <div class="carte" style="display:grid;gap:10px"><span class="etiquette">Étape 1 · Écoute et lis</span>
           <div style="display:flex;gap:8px;flex-wrap:wrap">${btnEcoute(tx.texte, "en-GB", "Écouter le texte")}${btnEcoute(tx.texte, "en-GB", "Lentement", false, 0.65)}</div>
-          <div class="modele" lang="en" style="font-size:16.5px">${tx.texte}</div></div>
+          <div class="modele" lang="en" style="font-size:16.5px">${tx.texte}</div>${blocTraduction("txt:" + tx.id)}</div>
         ${blocEnregistreur("lecture-" + tx.id, "Étape 2 · Lis le texte à voix haute et réécoute-toi")}
         <span class="etiquette">Étape 3 · Les questions du jury</span>
         <div class="liste" id="questions">${tx.questions.map((q, k) => `<div class="carte" style="display:grid;gap:8px" data-q="${k}"><b lang="en">${q[0]}</b>
@@ -5937,7 +5971,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         <details class="bloc" id="modele"><summary>Étape 4 · Dis ce que tu as compris</summary><div class="corps">
           <p>Résume le texte avec tes mots en commençant par <b lang="en">« This text is about… »</b>, puis écoute le modèle.</p>
           ${blocEnregistreur("resume-" + tx.id, "Ton résumé oral")}
-          <div>${btnEcoute(tx.resume, "en-GB", "Écouter le modèle")}</div><div class="modele" lang="en">${tx.resume}</div></div></details>
+          <div>${btnEcoute(tx.resume, "en-GB", "Écouter le modèle")}</div><div class="modele" lang="en">${tx.resume}</div>${blocTraduction("res:" + tx.id)}</div></details>
         <details class="bloc"><summary>Les mots du texte</summary><div class="corps"><table class="vocab">${tx.vocab.map(([e, f]) => `<tr><td lang="en">${e}</td><td style="color:var(--encre)">${f}</td><td>${btnEcoute(e, "en-GB", "Écouter " + e, true)}</td></tr>`).join("")}</table></div></details>
         <button type="button" class="bouton" id="suivant">Texte suivant : <span lang="en">${suiv.titre}</span></button>
       </section>`;
@@ -5966,12 +6000,1383 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         <div class="liste">${CONVERSATION.map(([qu, rep], k) => `<div class="carte" style="display:grid;gap:10px">
           <div style="display:flex;gap:10px;align-items:center"><b lang="en" style="flex:1;font-size:17px">${qu}</b>${btnEcoute(qu, "en-GB", "Écouter la question", true)}</div>
           ${blocEnregistreur("conv-" + k, "Ta réponse")}
-          <details class="bloc"><summary>Réponse modèle</summary><div class="corps"><div>${btnEcoute(rep, "en-GB", "Écouter")}</div><div class="modele" lang="en">${rep}</div></div></details></div>`).join("")}</div>
+          <details class="bloc"><summary>Réponse modèle</summary><div class="corps"><div>${btnEcoute(rep, "en-GB", "Écouter")}</div><div class="modele" lang="en">${rep}</div>${blocTraduction("conv:" + k)}</div></details></div>`).join("")}</div>
       </section>`;
       marquerOral("conversation", "vue", 5);
     }
     vue.querySelector("#retour").addEventListener("click", () => aller("chapitre", "en-oral-bepc"));
     brancherEcoute(); brancherEnregistreurs();
+  }
+
+  // =========================================================
+  // Dictionnaire anglais → français intégré (hors ligne). Une ligne = mot=traduction
+  // =========================================================
+  const DICO_EN_BRUT = `a=un, une
+about=à propos de, sur ; environ
+above=au-dessus de
+absorb=absorber
+according to=selon
+act=agir
+active=actif (la voix active)
+activities=activités
+activity=activité
+addicted=dépendant (à une drogue)
+addiction=dépendance, addiction
+adjective=adjectif
+adult=adulte
+advice=conseil(s)
+africa=Afrique
+after=après
+afternoon=après-midi
+against=contre
+agent=agent (celui qui fait l'action)
+ago=il y a (dans le passé) : two years ago = il y a deux ans
+ai=IA (intelligence artificielle)
+all=tout, tous, toutes
+allow=permettre, autoriser
+almost=presque
+already=déjà
+also=aussi
+although=bien que
+always=toujours
+am=suis (I am = je suis)
+america=Amérique
+an=un, une (devant une voyelle)
+and=et
+animal=animal
+another=un autre, une autre
+answer=réponse ; répondre
+apple=pomme
+app=application
+apps=applications (sur le téléphone)
+are=es, sommes, êtes, sont (verbe be)
+area=zone, quartier
+aren't=ne sont pas (are not)
+arm=bras
+around=autour de
+arrive=arriver
+as=comme ; aussi… que (as tall as = aussi grand que)
+asia=Asie
+ask=demander ; poser (une question)
+at=à
+ate=mangea, a mangé (passé de eat)
+attention=attention
+august=août
+auxiliary=auxiliaire
+avoid=éviter
+baby=bébé
+background=arrière-plan (au fond de l'image)
+bad=mauvais
+badder=✗ forme fausse : le comparatif de bad est worse
+bag=sac
+ball=ballon, balle
+banana=banane
+banner=banderole
+base=base (forme de base du verbe)
+basket=panier
+beach=plage
+beat=battre (vaincre) ; battit
+because=parce que
+become=devenir
+bed=lit
+been=été (participe passé de be)
+before=avant
+began=commença (passé de begin)
+begin=commencer
+beginned=✗ forme fausse : le passé de begin est began
+begun=commencé (participe passé de begin)
+behind=derrière
+bench=banc
+best=le meilleur ; meilleur(e)s
+better=meilleur, mieux
+big=grand, gros
+bigger=plus grand
+biggest=le plus grand
+bird=oiseau
+birthday=anniversaire
+bite=piqûre, morsure ; piquer, mordre
+black=noir
+blackboard=tableau noir
+blocked=bouché, bloqué
+blue=bleu
+body=corps
+boil=bouillir
+book=livre
+born=né (be born = naître)
+borrow=emprunter
+both=les deux
+bottle=bouteille
+bought=acheta, acheté (passé et participe de buy)
+boughted=✗ forme fausse : le passé de buy est bought
+boy=garçon
+brain=cerveau
+bread=pain
+breakfast=petit-déjeuner
+bridge=pont
+broke=cassa (passé de break)
+broken=cassé (participe passé de break)
+brother=frère
+brought=apporta, apporté (passé de bring) — à ne pas confondre avec bought
+bucket=seau
+build=construire
+building=bâtiment, immeuble
+built=construisit, construit (passé de build)
+bus=bus, car
+but=mais
+buy=acheter
+buyed=✗ forme fausse : le passé de buy est bought
+by=par ; près de
+can=pouvoir, savoir faire (I can swim = je sais nager)
+can't=ne peut pas (cannot)
+cans=✗ forme fausse : can ne prend jamais de -s
+car=voiture
+carbon dioxide=dioxyde de carbone (CO₂)
+carbon=carbone
+carry=porter, transporter
+catch=attraper
+cause=causer, provoquer ; cause
+celebrate=célébrer, fêter
+centre=centre
+change=changement ; changer
+cheap=bon marché, pas cher
+cheat=tricher
+check=vérifier
+cheese=fromage
+child=enfant
+children=enfants
+church=église
+city=ville
+cities=villes
+citizen=citoyen
+citizenship=citoyenneté
+civic=civique
+class=classe
+classmate=camarade de classe
+classroom=salle de classe
+clause=proposition (partie de phrase)
+clean=propre ; nettoyer
+clean-up=nettoyage
+climate=climat
+close=fermer ; proche
+cloud=nuage
+coach=entraîneur
+cocoa=cacao
+code=code
+cold=froid
+colour=couleur
+come=venir
+communicate=communiquer
+comparative=comparatif
+complete=compléter ; complet
+compulsory=obligatoire
+conditional=conditionnel
+confident=confiant, sûr de soi
+congratulate=féliciter
+consultation=consultation (chez le médecin)
+continue=continuer
+continuous=continu (forme en -ing : be + V-ing)
+cooking=cuisine (faire la cuisine)
+cool=cool, génial ; frais
+cough=toux
+could=pouvait, pourrait (passé ou forme polie de can)
+country=pays
+countries=pays (pluriel)
+covered=couvert
+cream=crème
+cross=croix
+cup=coupe (sport) ; tasse
+customer=client(e)
+cyberbullying=harcèlement en ligne
+damage=abîmer, endommager ; dégâts
+dancing=danser (la danse)
+dangerous=dangereux
+dark=sombre, foncé
+date=date
+day=jour, journée
+dear=cher, chère (au début d'une lettre)
+december=décembre
+deforestation=déforestation
+describe=décrire
+desk=table, bureau (d'élève)
+destroy=détruire
+dictionary=dictionnaire
+dictionaries=dictionnaires
+did=fit, a fait (passé de do) ; auxiliaire du passé
+didn't=ne… pas (au passé : did not)
+die=mourir
+difficult=difficile
+difficulter=✗ forme fausse : on dit more difficult
+dioxide=dioxyde
+dirty=sale
+disappear=disparaître
+discipline=discipline
+disease=maladie
+dish=plat
+do=faire ; auxiliaire des questions et négations au présent
+doctor=médecin, docteur
+does=fait ; auxiliaire (he / she / it) au présent
+doesn't=ne… pas (does not)
+don't=ne… pas (do not)
+done=fait (participe passé de do)
+door=porte
+down=en bas, vers le bas
+drain=caniveau, égout
+dream=rêver ; rêve
+drink=boire
+drive=conduire
+drop=laisser tomber, abandonner
+drug=drogue ; médicament
+dry=sec
+dustbin=poubelle
+during=pendant
+each other=l'un l'autre, mutuellement
+each=chaque
+early=tôt
+easy=facile
+eat=manger
+eated=✗ forme fausse : le passé de eat est ate
+eaten=mangé (participe passé de eat)
+education=éducation
+educational=éducatif
+egg=œuf
+eight=huit
+elephant=éléphant (the Elephants = l'équipe nationale ivoirienne)
+eliminate=éliminer
+end=fin ; finir
+energy=énergie
+engineer=ingénieur
+england=Angleterre
+english=anglais
+environment=environnement
+ethnic=ethnique
+europe=Europe
+even=même
+evening=soir, soirée
+ever=déjà (dans une question), jamais
+every=chaque, tous les (every day = tous les jours)
+everybody=tout le monde
+exam=examen
+example=exemple
+exercise=exercice
+expensive=cher, coûteux
+explain=expliquer
+export=exporter ; exportation
+exposed=exposé
+fail=échouer, rater (un examen)
+fair play=fair-play, esprit sportif
+fair=juste, loyal
+fake news=fausses informations
+fake=faux
+false=faux
+family=famille
+fan=supporter, fan
+farm=ferme, plantation
+farmer=agriculteur, planteur
+farming=agriculture
+father=père
+favourite=préféré
+fell=tomba, a baissé (passé de fall)
+female=femelle, féminin
+fever=fièvre
+fewer=moins de (avec un nom pluriel)
+fifteen=quinze
+fight=combattre, lutter contre
+film=film
+find=trouver
+finish=finir
+first=premier ; d'abord
+five=cinq
+flood=inondation ; inonder
+fly=voler (dans l'air)
+food=nourriture
+football=football
+footballer=footballeur
+for=pour ; depuis (+ durée : for two years)
+forbid=interdire
+forbidden=interdit
+foreground=premier plan (devant sur l'image)
+forest=forêt
+form three=classe de 3e
+form=classe (form three = 3e) ; forme
+four=quatre
+fourteen=quatorze
+france=France
+franc=franc (monnaie)
+free=libre ; gratuit
+fresh=frais
+friend=ami(e)
+friendly=aimable, accueillant
+from=de, depuis
+front=devant (in front of = devant)
+fruit=fruit(s)
+full=plein
+future=futur, avenir
+game=jeu, match
+garage=garage
+gave=donna (passé de give)
+germany=Allemagne
+get up=se lever
+get=obtenir, recevoir ; devenir
+girl=fille
+give=donner
+gived=✗ forme fausse : le passé de give est gave
+given=donné (participe passé de give)
+go=aller
+goal=but
+goalkeeper=gardien de but
+goes=va (he / she / it goes)
+going to=aller (futur proche : I'm going to = je vais)
+gone=allé (participe passé de go)
+good=bon, bien
+goodest=✗ forme fausse : le superlatif de good est the best
+got=obtint (passé de get)
+government=gouvernement
+grandfather=grand-père
+grandparents=grands-parents
+great=grand, génial
+green=vert
+greeting=salutation
+ground=sol, terre
+group=groupe
+grow=cultiver ; grandir
+grower=producteur, planteur
+grown=cultivé (participe passé de grow)
+gutter=caniveau
+had=avait, a eu (passé de have)
+half past five=cinq heures et demie
+half=moitié, demi
+hand=main
+happen=arriver, se passer
+happier=plus heureux
+happiest=le plus heureux
+happy=heureux, content
+happyer=✗ forme fausse : on écrit happier (y devient i)
+hard=dur, difficile ; dur (work hard = travailler dur)
+harmful=nuisible, dangereux
+harvest=récolte ; récolter
+has=a (he / she / it has)
+hate=haïr, détester ; haine
+have=avoir ; auxiliaire du present perfect
+haven't=n'ai pas, n'avons pas (have not)
+he=il
+head=tête
+headache=mal de tête
+health centre=centre de santé
+health=santé
+hear=entendre
+heavily=fortement, abondamment
+heavy=lourd, fort (heavy rain = forte pluie)
+hectare=hectare
+helmet=casque
+help=aider ; aide
+her=elle, la, lui ; son, sa, ses (à elle)
+here=ici
+high=haut, élevé
+higher=plus haut
+highest=le plus haut
+highway=route, autoroute
+him=le, lui
+his=son, sa, ses (à lui)
+history=histoire
+hold=tenir
+holidays=vacances
+home=maison, chez soi
+homework=devoirs
+hope=espérer ; espoir
+hospital=hôpital
+hot=chaud
+hour=heure
+house=maison
+how=comment
+how old=quel âge
+however=cependant
+hundred=cent
+hungry=affamé (be hungry = avoir faim)
+i=je
+i'm=je suis (I am)
+ice cream=glace (dessert)
+ice=glace
+if=si
+important=important
+in=dans, en, à
+independence=indépendance
+information=information(s)
+instead=à la place
+intelligence=intelligence
+intelligent=intelligent
+intelligenter=✗ forme fausse : on dit more intelligent
+intelligentest=✗ forme fausse : on dit the most intelligent
+interesting=intéressant
+introduce=présenter
+introduce yourself=présente-toi
+irregular=irrégulier
+is=est (verbe be)
+isn't=n'est pas (is not)
+it=il, elle, cela, le, la
+it's=c'est, il est (it is)
+ivorian=ivoirien
+january=janvier
+join=rejoindre, s'inscrire à
+jug=carafe, cruche
+july=juillet
+june=juin
+just=juste ; venir de (I have just eaten = je viens de manger)
+keep=garder
+kick=frapper du pied
+kill=tuer
+kilo=kilo
+kind=gentil ; sorte
+knock=frapper (à la porte)
+knockout stage=phase à élimination directe
+known=connu (participe passé de know)
+labour=travail (pénible) : child labour = travail des enfants
+lamp=lampe
+landslide=glissement de terrain
+language=langue
+last=dernier ; last year = l'année dernière
+late=tard, en retard
+launch=lancer
+lay=pondre (des œufs) ; poser
+learn=apprendre
+least=le moins
+leave=quitter, partir, laisser
+left=gauche (on the left = à gauche) ; quitta
+less=moins
+lesson=leçon, cours
+let's=allons, faisons (let us)
+letter=lettre
+library=bibliothèque
+life=vie
+light=lumière
+like=aimer ; comme
+lines=lignes
+linking word=mot de liaison
+listen=écouter
+live=vivre, habiter
+lively=animé, vivant
+long=long
+longer=plus long
+longest=le plus long
+look=regarder ; sembler (they look happy = ils ont l'air heureux)
+lose=perdre
+lost=perdit, perdu (passé de lose)
+lot=beaucoup (a lot of = beaucoup de)
+love=aimer, adorer ; amour
+machete=machette
+made=fit, fait (passé de make)
+main=principal
+make=faire, fabriquer
+malaria=paludisme
+man=homme
+mango=mangue
+mangoes=mangues
+many=beaucoup de, nombreux
+market=marché
+match=match
+mathematics=mathématiques
+maths=maths
+may=pouvoir (permission polie ou possibilité)
+may i=puis-je
+maybe=peut-être
+me=me, moi
+meal=repas
+meaning=sens, signification
+media=médias
+medical=médical
+medicine=médecine ; médicament
+meet=rencontrer, se retrouver
+men=hommes
+middle=milieu (in the middle = au milieu)
+might=pourrait (possibilité)
+million=million
+mindedness=état d'esprit (civic-mindedness = civisme)
+mobile phone=téléphone portable
+mobile=portable, mobile
+modal=modal (verbe comme can, must, should)
+moment=moment
+monday=lundi
+money=argent
+month=mois
+more=plus
+morning=matin
+mosquito net=moustiquaire
+mosquito=moustique
+most=le plus ; la plupart
+mother=mère
+motto=devise
+mount=mont
+mountain=montagne
+move=bouger, déménager
+much=beaucoup
+music=musique
+must=devoir (obligation)
+mustn't=ne pas devoir, interdit (must not)
+my=mon, ma, mes
+name=nom, prénom
+national=national
+nature=nature
+need=avoir besoin de
+neighbourhood=quartier
+net=filet
+never=jamais
+new=nouveau
+news=nouvelles, informations
+next=prochain ; à côté (next to = à côté de)
+night=nuit
+nil=zéro (score)
+nine=neuf
+no=non ; aucun
+noise=bruit
+north=nord
+not=ne… pas
+now=maintenant
+nurse=infirmier, infirmière
+o'clock=heure(s) (eight o'clock = huit heures)
+obligation=obligation
+of=de
+off=éteint ; loin
+old=vieux, âgé
+on=sur ; le (on Sundays = le dimanche)
+one=un
+only=seulement
+opinion=avis, opinion
+or=ou
+orange=orange
+organise=organiser
+other=autre
+our=notre, nos
+ourselves=nous-mêmes
+out=dehors
+over=au-dessus ; terminé
+oxygen=oxygène
+paid=payé (passé de pay)
+parasite=parasite
+parents=parents
+part=partie
+participle=participe
+pass=réussir (un examen) ; passer
+passive=passif (la voix passive)
+password=mot de passe
+past=passé
+peace=paix
+peer pressure=pression des camarades
+peer=camarade du même âge
+pen=stylo
+pen friend=correspondant
+people=gens, personnes
+per=par
+percent=pour cent
+perfect=parfait
+period=période
+person=personne
+phone=téléphone
+pick up=ramasser
+picture=image, photo
+piece=morceau
+pizza=pizza
+plant=plante ; planter
+plantain=banane plantain
+plantation=plantation
+plastic=plastique
+plate=assiette
+play=jouer
+player=joueur
+please=s'il te plaît, s'il vous plaît
+pod=cabosse, gousse
+point=montrer du doigt ; point
+polite=poli
+pollute=polluer
+pollution=pollution
+poster=affiche
+pregnancy=grossesse
+pregnant=enceinte
+prepare=préparer
+present=présent
+president=président
+pressure=pression
+prevent=prévenir, empêcher
+price=prix
+problem=problème
+produce=produire
+producer=producteur
+professional=professionnel
+programme=programme
+progress=progrès
+prohibition=interdiction
+pronoun=pronom
+protect=protéger
+proud=fier
+punish=punir
+pupil=élève
+put=mettre, poser
+qualify=se qualifier
+question=question
+quick=rapide
+quickly=rapidement
+rain=pluie ; pleuvoir
+rainy season=saison des pluies
+rainy=pluvieux
+raise=lever
+reach=atteindre
+read=lire ; lu
+ready=prêt
+recycle=recycler
+red=rouge
+reduce=réduire
+referee=arbitre
+reforest=reboiser
+refuse=refuser
+regular=régulier
+relative=relatif
+religion=religion
+remove=enlever, supprimer
+repeat=répéter
+reported speech=discours rapporté
+reported=rapporté
+represent=représenter
+request=demande
+respect=respecter ; respect
+responsibly=de façon responsable
+rest=se reposer ; repos
+review=réviser
+rice=riz
+right=droite (on the right = à droite) ; juste
+river=fleuve, rivière
+road=route
+rubbish=déchets, ordures
+rule=règle
+run=courir
+sachet=sachet
+sad=triste
+said=dit, a dit (passé de say)
+saturday=samedi
+sauce=sauce
+saw=vit, a vu (passé de see)
+say=dire
+scam=arnaque
+school=école
+sea=mer
+season=saison
+second=deuxième ; seconde
+secretary=secrétaire
+see=voir
+seen=vu (participe passé de see)
+sell=vendre
+seller=vendeur, vendeuse
+serious=grave, sérieux
+serve=servir
+service=service
+seven=sept
+several=plusieurs
+shake=secouer ; shake hands = serrer la main
+shall=futur ou proposition (shall we…? = et si on… ?)
+share=partager
+she=elle
+shirt=chemise
+shoot=tirer (au but)
+short=court
+should=devrait (conseil)
+shoulder=épaule
+show=montrer
+sick=malade
+simple=simple
+since=depuis (+ point de départ : since 2020)
+singer=chanteur, chanteuse
+sing=chanter
+sir=monsieur
+sister=sœur
+sit=être assis, s'asseoir
+situation=situation
+six=six
+sixteen=seize
+sixty=soixante
+sixty-six=soixante-six
+skin=peau
+sky=ciel
+sleep=dormir ; sommeil
+smoke=fumer ; fumée
+snow=neiger ; neige
+so=donc ; si, tellement
+social media=réseaux sociaux
+social=social
+soda=soda, boisson sucrée
+soil=sol, terre
+solve=résoudre
+some=quelques, du, de la
+someone=quelqu'un
+sometimes=parfois
+sorry=désolé
+speak=parler
+speech=discours, parole (hate speech = discours de haine)
+spend=passer (du temps) ; dépenser
+spent=passa, passé (passé de spend)
+spoken=parlé (participe passé de speak)
+sport=sport
+stage=phase, étape
+stagnant=stagnant (eau qui ne coule pas)
+stall=étal (de marché)
+stand=être debout
+start=commencer
+statement=affirmation, phrase
+stay=rester
+stop=arrêter
+story=histoire, récit
+stories=histoires
+street=rue
+student=élève, étudiant
+studied=étudia, étudié (passé de study)
+study=étudier ; étude
+study group=groupe d'étude
+subject=matière (à l'école) ; sujet
+summary=résumé
+sun=soleil
+sunday=dimanche
+sunny=ensoleillé
+superlative=superlatif
+supporter=supporter
+sweep=balayer
+swim=nager
+symptom=symptôme
+table=table
+tag=étiquette ; question tag = petite question en fin de phrase
+take=prendre
+take part=participer
+talk=parler, discuter
+tall=grand (de taille)
+taller=plus grand
+tallest=le plus grand
+teach=enseigner
+teacher=professeur, enseignant
+team=équipe
+teenager=adolescent
+tell=dire, raconter
+ten=dix
+test=contrôle, test
+text=texte
+than=que (dans une comparaison)
+thank you=merci
+thank=remercier
+that=que ; ce, cette ; cela
+the=le, la, les
+their=leur, leurs
+them=les, leur
+then=ensuite, puis ; alors
+there are=il y a (pluriel)
+there is=il y a (singulier)
+there=là ; there is / there are = il y a
+these=ces, ceux-ci
+they=ils, elles
+thing=chose
+think=penser, croire
+third=troisième ; troisièmement
+thirty=trente
+this=ce, cette ; ceci
+thousand=mille
+three=trois
+throw=jeter
+time=temps ; fois ; heure
+timetable=emploi du temps
+tired=fatigué
+tiredness=fatigue
+to=à, vers ; pour (devant un verbe)
+tobacco=tabac
+today=aujourd'hui
+together=ensemble
+told=dit, raconta (passé de tell)
+tomato=tomate
+tomatoes=tomates
+tomorrow=demain
+too=aussi ; trop
+top=haut, sommet (at the top = en haut)
+towards=vers
+town=ville
+trader=commerçant
+transmit=transmettre
+tree=arbre
+true=vrai
+trunk=tronc
+trust=faire confiance à
+try=essayer
+turn=tour (wait for their turn = attendre son tour)
+tv=télévision
+two=deux
+type=taper (au clavier) ; type
+typical=typique
+umbrella=parasol, parapluie
+under=sous
+understand=comprendre
+unfortunately=malheureusement
+uniform=uniforme
+union=union
+up=en haut ; get up = se lever
+us=nous
+use=utiliser
+useful=utile
+usually=d'habitude
+vaccinate=vacciner
+vaccine=vaccin
+vegetable=légume
+verb=verbe
+very=très
+violence=violence
+visit=visiter, rendre visite
+voice=voix
+volunteer=bénévole, volontaire
+wait=attendre
+walk=marcher, aller à pied
+wall=mur
+want=vouloir
+was=était, a été (passé de be : I / he / she / it)
+waste=déchets ; gaspiller
+watch=regarder ; montre
+watchs=✗ forme fausse : on écrit watches
+water=eau
+water bottle=gourde
+way=manière, façon ; chemin
+we=nous
+wear=porter (un vêtement)
+weather=temps (météo)
+week=semaine
+weekend=week-end
+well=bien
+went=alla, est allé (passé de go)
+were=étaient, étions (passé de be)
+weren't=n'étaient pas (were not)
+what=que, quoi, quel
+whatever=quel que soit, n'importe quel
+when=quand
+where=où
+which=qui, que (pour une chose) ; quel
+white=blanc
+who=qui
+whole=entier
+whose=dont, à qui
+why=pourquoi
+will=futur (I will go = j'irai)
+win=gagner
+window=fenêtre
+windy=venteux
+wish=souhait ; best wishes = amitiés
+with=avec
+without=sans
+woman=femme
+women=femmes
+won=gagna, gagné (passé de win)
+won't=ne… pas (futur : will not)
+word=mot
+work=travailler ; travail
+world=monde
+world cup=Coupe du monde
+worried=inquiet
+worse=pire, plus mauvais
+worst=le pire
+would=conditionnel (I would say = je dirais)
+wouldn't=ne… pas (conditionnel : would not)
+write=écrire
+writed=✗ forme fausse : le passé de write est wrote
+writer=auteur
+written=écrit (participe passé de write)
+wrote=écrivit, a écrit (passé de write)
+yard=cour
+year=année, an
+yellow=jaune
+yesterday=hier
+yet=encore, déjà (dans une question ou une négation)
+you=tu, vous
+young=jeune
+your=ton, ta, tes, votre, vos
+yourself=toi-même
+according=selon (according to)
+artificial=artificiel
+be=être
+broom=balai
+candidate=candidat
+justify=justifier
+knockout=élimination directe
+linking=de liaison (linking word = mot de liaison)
+pick=cueillir ; pick up = ramasser
+village=village
+brazil=Brésil
+canada=Canada
+norway=Norvège
+senegal=Sénégal
+london=Londres
+paris=Paris
+accra=Accra (capitale du Ghana)
+abidjan=Abidjan
+nile=le Nil (fleuve)`;
+
+  // Dictionnaire espagnol → français (formes conjuguées incluses)
+  const DICO_ES_BRUT = `a=à
+abiyán=Abidjan (en espagnol)
+abuela=grand-mère
+africano=africain
+ahora=maintenant
+al=au (a + el)
+alto=grand (de taille), haut
+alumno=élève
+arroz=riz
+asignatura=matière (à l'école)
+ayer=hier
+ayudo=j'aide (ayudar)
+año=année, an
+años=ans, années (tengo 14 años = j'ai 14 ans)
+bailar=danser
+bicicleta=vélo
+buenas noches=bonsoir, bonne nuit
+buenas=bonnes (buenas tardes = bonjour l'après-midi)
+buenos días=bonjour (le matin)
+buenos=bons
+cansado=fatigué
+carta=lettre
+casa=maison
+catorce=quatorze
+centro=centre
+cinco=cinq
+cincuenta=cinquante
+ciudad=ville
+clase=classe, cours
+colegio=collège
+comemos=nous mangeons (comer)
+comen=ils / elles mangent (comer)
+comer=manger
+comida=repas, nourriture
+comieron=ils / elles mangèrent, ont mangé (comer, passé)
+comimos=nous mangeâmes, avons mangé (comer, passé)
+comió=il / elle mangea, a mangé (comer, passé)
+como=comme ; je mange (comer)
+con=avec
+conjuga=conjugue
+contesta=réponds
+costeño=✗ faux ami : costeño veut dire « de la côte », pas « ivoirien » (on dit marfileño)
+cuántos=combien (cuántos años tienes = quel âge as-tu)
+de=de
+deberes=devoirs
+del=du (de + el)
+después=après, ensuite
+día=jour
+días=jours
+dónde=où
+edad=âge
+el=le
+él=il, lui
+ella=elle
+ellos=ils, eux
+en=en, dans, à
+encanta=j'adore (me encanta = j'adore, avec un nom singulier)
+encantan=j'adore (me encantan, avec un nom pluriel)
+enferma=malade (fille)
+enfermo=malade (garçon)
+eres=tu es (ser)
+es=il / elle est ; c'est (ser)
+escribe=écris ; il / elle écrit (escribir)
+escribir=écrire
+escribió=il / elle écrivit, a écrit (escribir, passé)
+escribí=j'écrivis, j'ai écrit (escribir, passé)
+escribía=j'écrivais, il écrivait (escribir, imparfait)
+español=espagnol
+estaba=j'étais, il / elle était (estar, imparfait)
+estamos=nous sommes (estar : état, lieu)
+estar=être (état passager, lieu)
+estoy=je suis (estar : état, lieu)
+estudiando=en train d'étudier (estar + gérondif)
+estudiar=étudier
+estuve=je fus, j'ai été (estar, passé)
+estuvo=il / elle fut, a été (estar, passé)
+está=il / elle est (estar)
+están=ils / elles sont (estar)
+estás=tu es (estar)
+frases=phrases
+frutas=fruits
+fueron=ils allèrent / furent (ir ou ser, passé)
+fui=j'allai, je suis allé (ir) ; je fus (ser)
+fuimos=nous allâmes, sommes allés (ir, passé)
+fútbol=football
+gusta=plaît (me gusta = j'aime, avec un nom singulier ou un verbe)
+gustamos=✗ forme fausse ici : pour « j'aime » on dit me gusta / me gustan
+gustan=plaisent (me gustan = j'aime, avec un nom pluriel)
+gustas=tu plais
+gusto=goût ; mucho gusto = enchanté
+gustos=goûts
+habla=il / elle parle (hablar)
+hablaba=je parlais, il / elle parlait (hablar, imparfait)
+hablamos=nous parlons (hablar)
+hablar=parler
+hablas=tu parles (hablar)
+hablo=je parle (hablar)
+hablé=je parlai, j'ai parlé (hablar, passé)
+habló=il / elle parla, a parlé (hablar, passé)
+hace=il / elle fait (hacer) ; hace calor = il fait chaud
+hacer=faire
+hacerá=✗ forme fausse : le futur de hacer est haré, hará
+haco=✗ forme fausse : « je fais » se dit hago
+hací=✗ forme fausse : « je fis » se dit hice
+hago=je fais (hacer)
+hará=il / elle fera (hacer, futur)
+hasta=jusqu'à (hasta luego = à plus tard)
+hay=il y a
+hermano=frère
+hice=je fis, j'ai fait (hacer, passé)
+historia=histoire
+hizo=il / elle fit, a fait (hacer, passé)
+hoy=aujourd'hui
+iba=j'allais, il / elle allait (ir, imparfait)
+ingeniera=ingénieure
+ir=aller
+iré=j'irai (ir, futur)
+ivoriano=✗ mot inventé : « ivoirien » se dit marfileño
+la=la
+las=les (féminin)
+leer=lire
+liceo=lycée
+llamo=je m'appelle (me llamo, llamarse)
+los=les (masculin)
+madre=mère
+mangos=mangues
+marfileño=ivoirien
+marfileños=ivoiriens
+matemáticas=mathématiques
+mañana=demain ; matin (por la mañana = le matin)
+me=me, moi
+mercado=marché
+mi=mon, ma
+mí=moi (a mí = à moi)
+mis=mes
+mucho=beaucoup
+música=musique
+muy=très
+médica=médecin (femme)
+médico=médecin
+nada=rien
+no=non ; ne… pas
+noches=nuits (buenas noches = bonsoir)
+nombre=nom, prénom
+nos=nous
+nosotros=nous
+os=vous (complément)
+padre=père
+padres=parents
+pasaba=passait (pasar, imparfait)
+pasada=dernière, passée (la semana pasada = la semaine dernière)
+pasado=passé, dernier (el año pasado = l'année dernière)
+pasar=passer
+pasaré=je passerai (pasar, futur)
+paso=je passe (pasar)
+pasé=je passai, j'ai passé (pasar, passé)
+país=pays
+pequeño=petit
+pero=mais
+pescado=poisson (à manger)
+pie=pied (a pie = à pied)
+poder=pouvoir
+podo=✗ forme fausse : « je peux » se dit puedo
+pon=mets
+por=par, pour (por la mañana = le matin)
+porque=parce que
+prefiero=je préfère (preferir)
+presente=présent
+preséntate=présente-toi
+profesor=professeur
+proyecto=projet
+próximo=prochain
+pudo=il / elle put, a pu (poder, passé)
+puede=il / elle peut (poder)
+puedo=je peux (poder)
+puerto=port
+quere=✗ forme fausse : « il veut » se dit quiere
+querer=vouloir, aimer
+qué=que, quoi, quel
+quiere=il / elle veut (querer)
+quiero=je veux (querer)
+quince=quinze
+se=se
+semana=semaine
+ser=être (identité, caractère)
+somos=nous sommes (ser)
+son=ils / elles sont (ser) ; son las ocho = il est huit heures
+soy=je suis (ser)
+tal=tel ; ¿qué tal? = comment ça va ?
+tarde=après-midi ; tard
+te=te, toi
+tendré=j'aurai (tener, futur)
+tener=avoir
+teneré=✗ forme fausse : le futur de tener est tendré
+tenes=✗ forme fausse : « tu as » se dit tienes
+tengo=j'ai (tener)
+tercero=troisième (tercero de secundaria = la 3e)
+texto=texte
+tiene=il / elle a (tener)
+tienes=tu as (tener)
+todo=tout
+todos=tous (todos los días = tous les jours)
+trabajo=travail ; je travaille
+tuve=j'eus, j'ai eu (tener, passé)
+tío=oncle
+tú=tu, toi
+tu=ton, ta
+un=un
+una=une
+va=il / elle va (ir)
+vacaciones=vacances
+vais=vous allez (ir)
+vamos=nous allons (ir)
+vas=tu vas (ir)
+vendemos=nous vendons (vender)
+verduras=légumes
+viajamos=nous voyageons ; nous avons voyagé (viajar)
+viajar=voyager
+viajaremos=nous voyagerons (viajar, futur)
+viajaron=ils / elles voyagèrent, ont voyagé (viajar, passé)
+viajábamos=nous voyagions (viajar, imparfait)
+visité=je visitai, j'ai visité (visitar, passé)
+vive=il / elle vit, habite (vivir)
+vivemos=✗ forme fausse : « nous vivons » se dit vivimos
+viven=ils / elles vivent (vivir)
+vivimos=nous vivons (vivir)
+vivir=vivre, habiter
+vivo=je vis, j'habite (vivir)
+voy=je vais (ir) ; voy a + verbe = je vais (futur proche)
+y=et
+yo=je, moi
+íbamos=nous allions (ir, imparfait)
+aya=Aya (prénom)
+bouaké=Bouaké (ville)
+yamoussoukro=Yamoussoukro (capitale)
+salir=sortir, partir`;
+
+  // Recherche d'un mot : forme exacte, puis formes dérivées (-s, -ed, -ing…)
+  const lireDico = brut => { const d = {}; brut.split("\n").forEach(l => { const i = l.indexOf("="); if (i > 0) d[l.slice(0, i).trim()] = l.slice(i + 1).trim(); }); return d; };
+  const DICO = { en: lireDico(DICO_EN_BRUT), es: lireDico(DICO_ES_BRUT) };
+  const PRONOMS_EN = { "i'm": "i am", "you're": "you are", "he's": "he is", "she's": "she is", "we're": "we are", "they're": "they are", "i've": "i have", "we've": "we have", "they've": "they have", "i'll": "i will", "you'll": "you will", "we'll": "we will", "i'd": "i would", "let's": "let us" };
+  function chercherMot(mot, langue) {
+    const d = DICO[langue]; if (!d) return null;
+    let m = mot.toLowerCase().replace(/[’‘]/g, "'").replace(/^[^a-záéíóúñüç']+|[^a-záéíóúñüç']+$/g, "");
+    if (!m) return null;
+    const res = (base, sens, note) => ({ mot: m, base, sens, note: note || "" });
+    if (d[m]) return res(m, d[m]);
+    if (langue !== "en") return null;
+    if (PRONOMS_EN[m]) return res(m, PRONOMS_EN[m].split(" ").map(x => d[x] ? d[x].split(/[;,(]/)[0].trim() : x).join(" "), "forme contractée de « " + PRONOMS_EN[m] + " »");
+    if (/'s$/.test(m)) { const b = m.slice(0, -2); if (d[b]) return res(b, d[b], "'s = de (possession) ou « is »"); }
+    if (/n't$/.test(m)) { const b = m.slice(0, -3); if (d[b]) return res(b, "ne… pas + " + d[b], "n't = not (négation)"); }
+    const essais = [];
+    if (/ies$/.test(m)) essais.push([m.slice(0, -3) + "y", "pluriel ou 3e personne (-ies)"]);
+    if (/es$/.test(m)) essais.push([m.slice(0, -2), "pluriel ou 3e personne (-es)"]);
+    if (/s$/.test(m)) essais.push([m.slice(0, -1), "pluriel ou 3e personne (-s)"]);
+    if (/ied$/.test(m)) essais.push([m.slice(0, -3) + "y", "passé (-ed)"]);
+    if (/ed$/.test(m)) essais.push([m.slice(0, -2), "passé (-ed)"], [m.slice(0, -1), "passé (-ed)"], [m.slice(0, -3), "passé (-ed)"]);
+    if (/ing$/.test(m)) essais.push([m.slice(0, -3), "forme en -ing (en train de)"], [m.slice(0, -3) + "e", "forme en -ing (en train de)"], [m.slice(0, -4), "forme en -ing (en train de)"]);
+    if (/ly$/.test(m)) essais.push([m.slice(0, -2), "adverbe (-ly = -ment)"], [m.slice(0, -3) + "y", "adverbe (-ly = -ment)"]);
+    if (/er$/.test(m)) essais.push([m.slice(0, -2), "comparatif (-er = plus)"], [m.slice(0, -1), "comparatif (-er = plus)"], [m.slice(0, -3), "comparatif (-er = plus)"]);
+    if (/est$/.test(m)) essais.push([m.slice(0, -3), "superlatif (-est = le plus)"], [m.slice(0, -2), "superlatif (-est = le plus)"], [m.slice(0, -4), "superlatif (-est = le plus)"]);
+    for (const [b, note] of essais) if (b.length > 1 && d[b] && !d[b].startsWith("✗")) return res(b, d[b], note);
+    return null;
+  }
+
+  // Traductions complètes en français (bouton « Voir la traduction »)
+  const TRAD = {
+    "img:marche": "Sur cette image, je vois un marché. Au milieu, il y a une vendeuse derrière son étal. Elle vend des fruits et des légumes : des mangues, des bananes et des tomates. Au-dessus de l'étal, il y a un grand parasol rouge et jaune pour la protéger du soleil. À droite, une cliente tient un panier. Je pense qu'elle achète des mangues. À gauche, un garçon porte un sac rouge. C'est une journée ensoleillée. En Côte d'Ivoire, beaucoup de gens achètent des produits frais au marché tous les jours.",
+    "img:classe": "Cette image montre une salle de classe. À gauche, il y a un tableau noir. Sur le tableau, le professeur a écrit « English » et la date : lundi 12 mai. Le professeur est debout à côté du tableau et il le montre du doigt. Devant lui, il y a trois élèves assis à leur table. Ils portent des chemises bleues : c'est leur uniforme scolaire. L'élève du milieu lève la main parce qu'il veut répondre à une question. À droite, il y a une fenêtre. Je pense que c'est un cours d'anglais.",
+    "img:repas": "Sur cette image, je vois une famille qui prend un repas ensemble. Il y a quatre personnes : le père, la mère et leurs deux enfants. Ils sont assis autour d'une table. Au milieu de la table, il y a un grand plat de riz avec de la sauce. Il y a aussi une carafe d'eau et des assiettes. La mère sert la nourriture et les enfants mangent. Derrière eux, au mur, il y a un tableau. Ils ont l'air heureux. En Afrique, manger ensemble est important parce que la famille partage le repas et discute.",
+    "img:foot": "Cette image montre un match de football. Les joueurs en orange et blanc sont des joueurs ivoiriens, peut-être les Éléphants. Au milieu, un joueur en orange court avec le ballon vers le but. Il va tirer. Devant lui, un joueur en blanc essaie de l'arrêter. À gauche, un autre joueur ivoirien lève les bras. À droite, le gardien de but en vert est prêt à attraper le ballon. À gauche, l'arbitre en noir lève le bras. En haut, beaucoup de supporters regardent le match. J'aime le football parce que c'est un sport d'équipe. En 2026, les Éléphants ont très bien joué à la Coupe du monde.",
+    "img:sante": "Sur cette image, je vois un centre de santé. Sur le bâtiment, on peut lire « Centre de santé » et il y a une croix rouge. À droite, une infirmière en uniforme blanc parle à une mère. La mère tient son bébé dans ses bras. Je pense que l'infirmière va vacciner le bébé, peut-être contre le paludisme. À gauche, trois personnes sont assises sur un banc : elles attendent leur tour. Au mur, il y a une affiche : « Dors sous une moustiquaire ! ». Cette image montre que la santé est importante et que nous devons aller au centre de santé quand nous sommes malades.",
+    "img:proprete": "Cette image montre une journée de nettoyage dans un quartier. En haut, il y a une banderole : « Journée de nettoyage ». Je vois trois jeunes qui portent des T-shirts jaunes : ce sont des bénévoles. Le garçon à gauche ramasse des déchets et les met dans un sac noir. La fille du milieu balaie la rue avec un balai. À gauche, il y a une poubelle verte. Dans le caniveau, il y a des bouteilles et des sacs en plastique. Ces jeunes nettoient leur quartier pour éviter les inondations et les maladies comme le paludisme. Je pense que c'est un très bon exemple de citoyenneté.",
+    "img:cacao": "Sur cette image, je vois une plantation de cacao. Il y a deux cacaoyers avec des cabosses jaunes et orange sur leur tronc. À gauche, un planteur récolte les cabosses avec une machette. Au milieu, une femme porte sur la tête un panier plein de cabosses. Il y a aussi des cabosses par terre. La Côte d'Ivoire est le premier producteur de cacao du monde, donc cette image est très typique de notre pays. Mais en 2026, le prix payé aux planteurs est descendu à 1 200 francs le kilo, alors les planteurs sont inquiets.",
+    "img:inondation": "Cette image montre une inondation dans une ville. Il pleut très fort et il y a des nuages sombres dans le ciel. La rue est couverte d'eau. Au milieu, une voiture rouge est à moitié sous l'eau. À droite, un homme marche dans l'eau ; il porte un enfant sur ses épaules pour le protéger. À l'arrière-plan, il y a des maisons et un immeuble. Cette situation est très dangereuse. En juin 2026, de fortes pluies ont provoqué des inondations à Abidjan et beaucoup de personnes sont mortes. Pour éviter les inondations, nous ne devons pas jeter de déchets dans les caniveaux et nous ne devons pas construire dans les zones dangereuses.",
+    "txt:awa": "Awa a quatorze ans. Elle habite à Daloa avec ses parents et ses deux frères. Elle est en 3e au Lycée Moderne. Chaque matin, elle se lève à cinq heures et demie, balaie la cour et prend un petit-déjeuner rapide. Ensuite, elle va à l'école à pied avec ses amies. Sa matière préférée est l'anglais parce que son professeur est très gentil. Après l'école, elle aide sa mère au marché. Le soir, elle fait ses devoirs sous la lampe. Awa veut devenir médecin pour aider les gens de sa ville.",
+    "res:awa": "Ce texte parle d'Awa, une fille de quatorze ans qui vient de Daloa. Elle est en 3e. Elle se lève très tôt, balaie la cour et va à l'école à pied. Elle aime l'anglais parce que son professeur est gentil. Après l'école, elle aide sa mère au marché et le soir elle fait ses devoirs. Elle veut devenir médecin pour aider les gens.",
+    "txt:pluie": "En Côte d'Ivoire, la grande saison des pluies commence en mai et se termine en juillet. Pendant cette période, il pleut presque tous les jours. La pluie est bonne pour les agriculteurs parce que leurs plantes ont besoin d'eau. Mais dans les grandes villes comme Abidjan, les fortes pluies peuvent provoquer des inondations. En juin 2026, des inondations et des glissements de terrain ont tué beaucoup de personnes. Certaines maisons avaient été construites dans des zones dangereuses, et les caniveaux étaient pleins d'ordures. Le gouvernement demande aux gens de ne pas jeter de déchets dans les caniveaux et de quitter les zones dangereuses pendant la saison des pluies.",
+    "res:pluie": "Le texte parle de la saison des pluies en Côte d'Ivoire, de mai à juillet. La pluie est utile aux agriculteurs, mais dans les villes comme Abidjan elle peut provoquer des inondations. En juin 2026, des inondations ont tué beaucoup de personnes parce que certaines maisons étaient dans des zones dangereuses et que les caniveaux étaient bouchés par les ordures. Le gouvernement demande aux gens de garder les caniveaux propres et de quitter les zones dangereuses.",
+    "txt:lettre": "Cher Kofi, merci pour ta dernière lettre. Je suis content(e) d'apprendre que tu as réussi tes examens. Ici à Accra, les vacances ont commencé. Le week-end dernier, j'ai rendu visite à mes grands-parents dans leur village. Mon grand-père a une grande plantation de cacao et de bananes plantain. Je l'ai aidé dans la plantation et le soir il nous a raconté de vieilles histoires. Le mois prochain, ma famille va visiter Abidjan et j'espère que nous pourrons nous voir. Parle-moi de ta ville et de ton plat préféré. Amitiés, Ama.",
+    "res:lettre": "C'est une lettre d'Ama, qui habite à Accra, à son ami Kofi. Elle le félicite pour ses examens. Elle lui raconte qu'elle a rendu visite à la plantation de ses grands-parents pendant les vacances et qu'elle a écouté de vieilles histoires. Sa famille va visiter Abidjan le mois prochain, donc elle espère voir Kofi. Elle lui pose des questions sur sa ville et son plat préféré.",
+    "txt:telephone": "Aujourd'hui, beaucoup d'élèves ont un téléphone portable. Certaines personnes pensent que les téléphones sont utiles à l'école : les élèves peuvent chercher des informations, utiliser des dictionnaires et apprendre avec des applications éducatives. Mais d'autres pensent que les téléphones sont un problème. Certains élèves jouent à des jeux ou vont sur les réseaux sociaux pendant les cours, et ils n'écoutent pas le professeur. Certains utilisent même leur téléphone pour tricher pendant les contrôles. Dans beaucoup d'écoles, les téléphones sont interdits en classe. À mon avis, les téléphones peuvent nous aider à apprendre, mais nous devons les utiliser de façon responsable et seulement quand le professeur le permet.",
+    "res:telephone": "Le texte parle des téléphones portables à l'école. Les téléphones peuvent être utiles pour trouver des informations et pour apprendre, mais ils peuvent aussi être un problème : certains élèves jouent, vont sur les réseaux sociaux ou trichent. C'est pourquoi beaucoup d'écoles interdisent les téléphones en classe. L'auteur pense que les téléphones peuvent aider les élèves s'ils les utilisent de façon responsable.",
+    "txt:paludisme": "Le paludisme est une maladie grave en Afrique. Il est causé par un parasite et il est transmis par la piqûre d'un moustique femelle. Les symptômes sont la fièvre, le mal de tête et la fatigue. Les jeunes enfants et les femmes enceintes sont les plus exposés. En Côte d'Ivoire, le paludisme représente environ trente pour cent des consultations médicales. Pour nous protéger, nous devrions dormir sous une moustiquaire, supprimer l'eau stagnante autour de la maison et aller vite au centre de santé quand nous avons de la fièvre. Aujourd'hui, il existe aussi un vaccin contre le paludisme pour les jeunes enfants.",
+    "res:paludisme": "Le texte parle du paludisme, une maladie grave transmise par la piqûre d'un moustique femelle. Les principaux symptômes sont la fièvre, le mal de tête et la fatigue, et les enfants et les femmes enceintes sont les plus exposés. En Côte d'Ivoire, il représente environ trente pour cent des consultations. Pour nous protéger, nous devrions dormir sous une moustiquaire, supprimer l'eau stagnante, aller vite au centre de santé et vacciner les jeunes enfants.",
+    "txt:elephants": "En juin 2026, l'équipe nationale de football de Côte d'Ivoire, les Éléphants, a joué la Coupe du monde en Amérique du Nord. Ils ont perdu leur premier match contre l'Allemagne, mais ensuite ils ont battu Curaçao deux buts à zéro. Pour la première fois de leur histoire, ils se sont qualifiés pour la phase à élimination directe. Malheureusement, ils ont perdu contre la Norvège deux buts à un, à Dallas. Tout le pays était fier de l'équipe. Beaucoup de jeunes Ivoiriens rêvent de devenir footballeurs professionnels, mais ils doivent aussi aller à l'école.",
+    "res:elephants": "Le texte parle des Éléphants à la Coupe du monde 2026. Après avoir perdu contre l'Allemagne, ils ont battu Curaçao et se sont qualifiés pour la première fois pour la phase à élimination directe. Ensuite, ils ont perdu contre la Norvège, deux buts à un. Le pays était fier d'eux. Le texte dit aussi que les jeunes qui rêvent de football doivent continuer à aller à l'école.",
+    "conv:0": ["Peux-tu te présenter ?", "Bonjour. Je m'appelle Adriel. J'ai quinze ans et je suis en 3e. J'habite en Côte d'Ivoire avec ma famille. J'aime les mathématiques et le football."],
+    "conv:1": ["Quelle est ta matière préférée ? Pourquoi ?", "Ma matière préférée est les mathématiques parce que j'aime résoudre des problèmes. J'aime aussi l'anglais parce que je peux parler avec des gens d'autres pays."],
+    "conv:2": ["Que fais-tu pendant ton temps libre ?", "Pendant mon temps libre, je joue au football avec mes amis, j'écoute de la musique et j'aide mes parents à la maison. Le dimanche, je vais à l'église."],
+    "conv:3": ["Que veux-tu faire plus tard ?", "Plus tard, je veux devenir ingénieur. Je veux construire des routes et des ponts dans mon pays. Pour cela, je dois travailler dur à l'école."],
+    "conv:4": ["Peux-tu décrire ta ville ?", "Ma ville est grande et animée. Il y a un marché, un hôpital, des écoles et des églises. Les gens sont accueillants, mais parfois les rues sont sales pendant la saison des pluies."],
+    "conv:5": ["Peux-tu parler de ta famille ?", "Nous sommes cinq dans ma famille : mon père, ma mère, mon grand frère, ma sœur et moi. Mon père est commerçant et ma mère est enseignante. J'aime ma famille."],
+    "conv:6": ["Que penses-tu des réseaux sociaux ?", "À mon avis, les réseaux sociaux sont utiles pour apprendre et communiquer, mais ils peuvent être dangereux : il y a des arnaques et de fausses informations. Nous devons les utiliser de façon responsable."],
+    "conv:7": ["Comment te prépares-tu au BEPC ?", "Je me prépare au BEPC tous les jours. Je révise mes leçons le soir, je fais des exercices et j'étudie avec mes amis le week-end. J'essaie aussi de bien dormir."],
+    "theme:plastique": ["Que peuvent faire les élèves pour réduire la pollution plastique ?", "Les élèves peuvent faire beaucoup pour réduire la pollution plastique. D'abord, nous pouvons utiliser une gourde au lieu d'acheter des sachets d'eau en plastique. Ensuite, nous pouvons mettre nos déchets à la poubelle et jamais dans les caniveaux. Enfin, nous pouvons organiser des journées de nettoyage à l'école. En Côte d'Ivoire, environ la moitié des déchets plastiques finit dans la nature, donc tout le monde doit agir."],
+    "theme:climat": ["Pourquoi les forêts sont-elles importantes ?", "Les forêts sont très importantes. Les arbres produisent de l'oxygène et absorbent le dioxyde de carbone, donc ils luttent contre le changement climatique. Ils protègent le sol et retiennent l'eau. Ils abritent aussi beaucoup d'animaux. En Côte d'Ivoire, beaucoup de forêt a disparu à cause de l'agriculture, alors en 2026 le gouvernement a lancé un programme pour planter des arbres sur un million et demi d'hectares."],
+    "theme:paludisme": ["Comment pouvons-nous prévenir le paludisme ?", "Nous pouvons prévenir le paludisme de plusieurs façons. Nous devrions dormir sous une moustiquaire chaque nuit. Nous devons supprimer l'eau stagnante autour de la maison, parce que les moustiques y pondent leurs œufs. Les jeunes enfants peuvent recevoir le vaccin contre le paludisme, qui est gratuit en Côte d'Ivoire. Et si nous avons de la fièvre, nous devrions aller vite au centre de santé."],
+    "theme:drogue": ["Que dirais-tu à un ami qui veut essayer la drogue ?", "Je dirais à mon ami que la drogue est très dangereuse. Elle abîme le cerveau et le corps, et les gens deviennent dépendants. La drogue peut aussi détruire tes études et ton avenir. Je dirais : c'est cool de dire non ! Allons plutôt jouer au foot ou étudier ensemble. Et si tu as des problèmes, parlons-en à un adulte en qui nous avons confiance."],
+    "theme:numerique": ["Penses-tu que les réseaux sociaux sont bons ou mauvais pour les adolescents ?", "À mon avis, les réseaux sociaux sont à la fois bons et mauvais. Ils sont bons parce que nous pouvons apprendre des choses nouvelles, regarder des cours et parler avec notre famille. Mais ils peuvent être mauvais : il y a des arnaques, du harcèlement en ligne et de fausses informations, et certains élèves passent toute la nuit sur leur téléphone. Donc je pense que nous devons utiliser les réseaux sociaux de façon responsable : ne jamais partager notre mot de passe, vérifier une information avant de la partager et bien dormir avant l'école."],
+    "theme:ecole": ["Comment te prépares-tu au BEPC ?", "Je me prépare au BEPC tous les jours, pas seulement à la fin de l'année. Je révise mes leçons le soir et je fais des exercices. Le week-end, j'étudie avec mes amis et nous nous posons des questions les uns aux autres. J'essaie aussi de bien dormir et de ne pas passer trop de temps sur mon téléphone. En 2026, seulement environ la moitié des candidats a réussi, donc je dois travailler dur."],
+    "theme:civisme": ["Que peuvent faire les jeunes pour la paix dans leur pays ?", "Les jeunes peuvent faire beaucoup de choses pour la paix. Nous pouvons respecter tout le monde, quelle que soit son ethnie ou sa religion. Nous pouvons refuser la violence et les discours de haine sur les réseaux sociaux. Nous pouvons participer à des activités comme les journées de nettoyage ou le service civique. En 2026, la Côte d'Ivoire a fêté soixante-six ans d'indépendance, et sa devise est Union, Discipline, Travail."],
+    "theme:cacao": ["Pourquoi le cacao est-il important pour la Côte d'Ivoire ?", "Le cacao est très important pour la Côte d'Ivoire parce que notre pays est le premier producteur de cacao du monde. Des millions de personnes vivent de la culture du cacao. Le pays exporte le cacao et gagne de l'argent pour construire des routes et des écoles. Mais en 2026, le prix payé aux planteurs est passé de deux mille huit cents à mille deux cents francs le kilo, donc les planteurs sont inquiets. Nous devrions aussi arrêter le travail des enfants dans les plantations de cacao."],
+    "theme:sport": ["Quel est ton sport préféré et pourquoi ?", "Mon sport préféré est le football. Je l'aime parce que c'est un sport d'équipe : nous devons jouer ensemble et nous entraider. J'ai été très fier des Éléphants à la Coupe du monde 2026, parce que pour la première fois ils ont atteint la phase à élimination directe. Ils ont perdu contre la Norvège, mais ils ont bien joué. Le sport nous apprend la discipline et le respect des règles."],
+    "sujet:en-a": "Kouadio a seize ans et habite à Yamoussoukro. L'année dernière, il a raté son BEPC parce qu'il passait trop de temps sur son téléphone. Ses parents étaient tristes, mais ils ne l'ont pas puni. À la place, son père l'a aidé à faire un emploi du temps. Maintenant, Kouadio étudie tous les soirs de sept heures à neuf heures, et il n'utilise son téléphone que le samedi. Il a aussi rejoint un groupe d'étude avec trois camarades de classe. Ils se retrouvent à la bibliothèque le dimanche et s'expliquent les leçons les uns aux autres. Son professeur d'anglais dit qu'il a fait de grands progrès. Kouadio est confiant : il pense qu'il réussira son examen cette année, et il veut devenir infirmier.",
+    "sujet:es-a": "Je m'appelle Aya et j'ai quatorze ans. J'habite à Bouaké avec mes parents et mon petit frère. Le matin, je vais au collège à vélo. J'aime beaucoup les mathématiques, mais je n'aime pas l'histoire. L'après-midi, j'aide ma mère au marché : nous vendons des fruits et des légumes. L'année dernière, je suis allée à Abidjan avec mon oncle et j'ai visité le port. L'année prochaine, je vais étudier dans un lycée d'Abidjan parce que je veux être ingénieure."
+  };
+  // Bloc repliable « Voir la traduction »
+  function blocTraduction(cle) {
+    const t = TRAD[cle]; if (!t) return "";
+    const corps = Array.isArray(t) ? `<p><b>Question :</b> ${t[0]}</p><p><b>Réponse :</b> ${t[1]}</p>` : `<p>${t}</p>`;
+    return `<details class="traduction"><summary>Voir la traduction en français</summary>${corps}<small>Essaie d'abord de comprendre seul, puis vérifie ici. Touche un mot du texte pour avoir sa traduction.</small></details>`;
+  }
+
+  // ---------- Toucher un mot pour le traduire · Mon carnet de mots ----------
+  const VOIX_LANGUE = { en: "en-GB", es: "es-ES" };
+  const NOM_LANGUE = { en: "Anglais", es: "Espagnol" };
+  const ICONE_CARNET = ic('<path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H19v17H7.5A2.5 2.5 0 0 0 5 21.5z"/><path d="M5 21.5V4.5M9 7h6M9 11h4"/>');
+  const langueDeComp = comp => /^(m|def)-en-/.test(comp || "") ? "en" : /^(m|def)-es-/.test(comp || "") ? "es" : null;
+  const sensCourt = s => s.split(" ; ")[0].replace(/\s*\([^)]*\)\s*$/, "");
+  let bulleMot = null;
+  function fermerBulle() {
+    if (bulleMot) { bulleMot.remove(); bulleMot = null; }
+    try { if (window.CSS && CSS.highlights) CSS.highlights.delete("mot-touche"); } catch (e) {}
+  }
+  // Le mot exact sous le doigt
+  function motAuPoint(x, y) {
+    let noeud, pos;
+    if (document.caretPositionFromPoint) { const p = document.caretPositionFromPoint(x, y); if (!p) return null; noeud = p.offsetNode; pos = p.offset; }
+    else if (document.caretRangeFromPoint) { const r = document.caretRangeFromPoint(x, y); if (!r) return null; noeud = r.startContainer; pos = r.startOffset; }
+    else return null;
+    if (!noeud || noeud.nodeType !== 3) return null;
+    const t = noeud.textContent, lettre = /[A-Za-zÀ-ÖØ-öø-ÿ'’]/;
+    let a = pos, b = pos;
+    while (a > 0 && lettre.test(t[a - 1])) a--;
+    while (b < t.length && lettre.test(t[b])) b++;
+    while (a < b && /['’]/.test(t[a])) a++;
+    while (b > a && /['’]/.test(t[b - 1])) b--;
+    if (b <= a) return null;
+    const range = document.createRange(); range.setStart(noeud, a); range.setEnd(noeud, b);
+    const rc = range.getBoundingClientRect();
+    if (x < rc.left - 6 || x > rc.right + 6 || y < rc.top - 6 || y > rc.bottom + 6) return null;
+    return { mot: t.slice(a, b), range };
+  }
+  function traduireMot(mot, langue, mixte) {
+    let r = chercherMot(mot, langue);
+    if (!r && /['’]/.test(mot)) r = chercherMot(mot.split(/['’]/).pop(), langue);
+    if (r || mixte) return r;
+    if (/^[A-ZÀ-Ö]/.test(mot)) return { mot, base: mot, sens: "Nom propre (personne, ville ou pays) : il ne se traduit pas.", note: "", inconnu: true };
+    return { mot, base: mot, sens: "Ce mot n'est pas encore dans le dictionnaire. Aide-toi de la phrase et de la traduction complète.", note: "", inconnu: true };
+  }
+  function noterDansCarnet(r, langue) {
+    if (r.inconnu || r.sens.startsWith("✗")) return false;
+    etat.carnet = etat.carnet || [];
+    const i = etat.carnet.findIndex(x => x.l === langue && x.m === r.base);
+    if (i >= 0) { const x = etat.carnet.splice(i, 1)[0]; x.n = (x.n || 1) + 1; x.f = r.mot.toLowerCase(); etat.carnet.unshift(x); }
+    else etat.carnet.unshift({ l: langue, m: r.base, s: r.sens, f: r.mot.toLowerCase(), d: aujourdhui(), n: 1, ok: 0 });
+    etat.carnet = etat.carnet.slice(0, 500); sauver();
+    return true;
+  }
+  function montrerBulle(r, langue, range) {
+    fermerBulle();
+    try { if (window.Highlight && CSS.highlights) CSS.highlights.set("mot-touche", new Highlight(range)); } catch (e) {}
+    const garde = noterDansCarnet(r, langue), faux = r.sens.startsWith("✗");
+    const b = document.createElement("div"); b.className = "bulle-mot"; b.setAttribute("role", "dialog"); b.setAttribute("aria-label", "Traduction de " + r.mot);
+    b.innerHTML = `<div class="bulle-tete"><span>${NOM_LANGUE[langue]} → français</span><button type="button" class="bulle-x" aria-label="Fermer">✕</button></div>
+      <div class="bulle-ligne"><b class="bulle-t" lang="${langue}">${r.mot}</b>${r.inconnu ? "" : btnEcoute(r.mot, VOIX_LANGUE[langue], "Écouter", true)}</div>
+      ${r.base !== r.mot.toLowerCase() && !r.inconnu ? `<small class="bulle-note">vient de <b lang="${langue}">${r.base}</b>${r.note ? " · " + r.note : ""}</small>` : r.note ? `<small class="bulle-note">${r.note}</small>` : ""}
+      <p class="bulle-sens${faux ? " faux" : ""}">${r.sens}</p>
+      ${r.inconnu ? "" : `<div class="bulle-pied">${garde ? '<span class="pastille vert">✓ Rangé dans ton carnet</span>' : '<span class="pastille">Piège d\'examen : à ne pas écrire</span>'}<button type="button" class="bulle-carnet" data-carnet="${langue}">Mon carnet (${(etat.carnet || []).length}) ›</button></div>`}`;
+    document.body.appendChild(b); bulleMot = b;
+    b.querySelector(".bulle-x").addEventListener("click", fermerBulle);
+    const e = b.querySelector("[data-parle]"); if (e) e.addEventListener("click", () => parler(decodeURIComponent(e.dataset.parle), e.dataset.langue, e));
+    const c = b.querySelector("[data-carnet]"); if (c) c.addEventListener("click", () => { fermerBulle(); aller("carnet", c.dataset.carnet); });
+  }
+  document.addEventListener("click", e => {
+    if (bulleMot && bulleMot.contains(e.target)) return;
+    const zone = e.target.closest && e.target.closest("[lang=en],[lang=es],[data-trad]");
+    if (!zone || e.target.closest("button,a,input,textarea,summary,select,label,svg")) { fermerBulle(); return; }
+    const langue = zone.dataset.trad || zone.getAttribute("lang");
+    if (!DICO[langue]) { fermerBulle(); return; }
+    const m = motAuPoint(e.clientX, e.clientY); if (!m) { fermerBulle(); return; }
+    const r = traduireMot(m.mot, langue, zone.hasAttribute("data-trad"));
+    if (r) montrerBulle(r, langue, m.range); else fermerBulle();
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") fermerBulle(); });
+
+  // ---------- L'écran « Mon carnet de mots » ----------
+  const filtreCarnet = { l: "tous" };
+  function afficherCarnet(p) {
+    if (p === "en" || p === "es") filtreCarnet.l = p;
+    const tous = etat.carnet || [], liste = tous.filter(x => filtreCarnet.l === "tous" || x.l === filtreCarnet.l);
+    const sus = tous.filter(x => x.ok >= 2).length;
+    const ligne = x => `<div class="mot-carnet${x.ok >= 2 ? " su" : ""}"><div class="mc-mot"><b lang="${x.l}">${x.m}</b>${x.f && x.f !== x.m ? `<small>vu : <span lang="${x.l}">${x.f}</span></small>` : ""}</div>
+      <div class="mc-sens">${x.s}</div>
+      <div class="mc-actions">${x.ok >= 2 ? '<span class="pastille vert">su</span>' : ""}${btnEcoute(x.m, VOIX_LANGUE[x.l], "Écouter", true)}<button type="button" class="mc-suppr" data-suppr="${x.l}:${encodeURIComponent(x.m)}" aria-label="Retirer ${x.m} du carnet">✕</button></div></div>`;
+    vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ Mes matières</button>
+      ${bandeau("#C23B6B", ICONE_CARNET, "Mon carnet de mots", tous.length ? `${tous.length} mot${tous.length > 1 ? "s" : ""} · ${sus} bien su${sus > 1 ? "s" : ""}` : "Anglais et espagnol", tous.length ? Math.round(sus / tous.length * 100) : 0)}
+      <div class="carte essai-mot"><span class="etiquette">Comment ça marche</span>
+        <p>Dans tes textes d'anglais et d'espagnol, <b>touche un mot</b> : sa traduction s'affiche en bas de l'écran, avec la prononciation. Le mot est rangé ici tout seul, pour le réviser.</p>
+        <p class="essai">Essaie ici : <span lang="en">Yesterday, I went to the market with my brother.</span></p>
+        <p class="essai">Y aquí : <span lang="es">Me gustan las frutas y quiero ser ingeniera.</span></p></div>
+      ${tous.length >= 3 ? `<button type="button" class="bouton" id="quiz-carnet">Réviser mes mots (${Math.min(10, liste.length >= 3 ? liste.length : tous.length)} questions)</button>` : ""}
+      ${tous.length ? `<div class="onglets" role="tablist" style="--c:#C23B6B">${[["tous", "Tous"], ["en", "Anglais"], ["es", "Espagnol"]].map(([k, n]) => `<button type="button" role="tab" data-filtre="${k}" aria-selected="${filtreCarnet.l === k}">${n} <small>${k === "tous" ? tous.length : tous.filter(x => x.l === k).length}</small></button>`).join("")}</div>
+        <div class="liste-carnet">${liste.map(ligne).join("") || '<p style="color:var(--encre-2)">Aucun mot dans cette langue pour l\'instant.</p>'}</div>`
+      : `<div class="carte" style="display:grid;gap:8px"><b>Ton carnet est vide pour l'instant.</b><p style="color:var(--encre-2)">Ouvre un texte de l'oral d'anglais, un grand thème ou un sujet type BEPC et touche les mots que tu ne connais pas. Tu peux commencer par les deux phrases ci-dessus.</p>
+        <button type="button" class="bouton second" id="vers-textes">Ouvrir les textes d'anglais</button></div>`}
+    </section>`;
+    vue.querySelector("#retour").addEventListener("click", () => aller("matieres"));
+    vue.querySelectorAll("[data-filtre]").forEach(b => b.addEventListener("click", () => { filtreCarnet.l = b.dataset.filtre; afficherCarnet(); }));
+    vue.querySelectorAll("[data-suppr]").forEach(b => b.addEventListener("click", () => {
+      const [l, m] = b.dataset.suppr.split(":"); etat.carnet = tous.filter(x => !(x.l === l && x.m === decodeURIComponent(m))); sauver(); afficherCarnet();
+    }));
+    const q = vue.querySelector("#quiz-carnet"); if (q) q.addEventListener("click", () => quizCarnet(liste.length >= 3 ? liste : tous));
+    const t = vue.querySelector("#vers-textes"); if (t) t.addEventListener("click", () => { ongletChapitre["en-oral-bepc"] = "exos"; aller("chapitre", "en-oral-bepc"); });
+    brancherEcoute();
+  }
+  // Petit quiz : d'abord les mots les moins sus
+  function quizCarnet(mots) {
+    const choisis = melanger(mots.slice()).sort((a, b) => a.ok - b.ok).slice(0, 10);
+    let i = 0, bonnes = 0;
+    const pioche = (l, sauf, sens) => {
+      const autres = (etat.carnet || []).filter(x => x.l === l && x.m !== sauf.m).map(x => sens ? sensCourt(x.s) : x.m);
+      const dico = Object.entries(DICO[l]).filter(([m, s]) => !s.startsWith("✗") && !m.includes(" ") && m !== sauf.m).map(([m, s]) => sens ? sensCourt(s) : m);
+      const bonne = sens ? sensCourt(sauf.s) : sauf.m, res = [];
+      for (const c of melanger(autres).concat(melanger(dico))) { if (res.length === 3) break; if (c !== bonne && !res.includes(c)) res.push(c); }
+      return res;
+    };
+    const question = () => {
+      const x = choisis[i], envers = i % 2 === 1, bonne = envers ? x.m : sensCourt(x.s);
+      const choix = melanger([bonne, ...pioche(x.l, x, !envers)]);
+      vue.innerHTML = `<section class="ecran">
+        <div class="exo-haut"><button type="button" class="quitter" id="quitter" aria-label="Quitter">✕</button>
+          <div class="progress"><i style="width:${i / choisis.length * 100}%"></i></div><span class="exo-titre">${i + 1}/${choisis.length}</span></div>
+        <span class="exo-titre">Mon carnet de mots · ${NOM_LANGUE[x.l]}</span>
+        <div class="question">${envers ? `<p>Comment dit-on en ${NOM_LANGUE[x.l].toLowerCase()} :</p><p class="mot-quiz">« ${sensCourt(x.s)} »</p>`
+          : `<p>Que veut dire ce mot ?</p><div class="bulle-ligne"><p class="mot-quiz" lang="${x.l}">${x.m}</p>${btnEcoute(x.m, VOIX_LANGUE[x.l], "Écouter", true)}</div>`}</div>
+        <div class="choix">${choix.map(c => `<button type="button" data-rep="${encodeURIComponent(c)}"${envers ? ` lang="${x.l}"` : ""}>${c}</button>`).join("")}</div>
+        <p class="message" id="message" aria-live="polite"></p>
+        <button type="button" class="bouton cache" id="suite">${i + 1 < choisis.length ? "Question suivante" : "Voir mon score"}</button>
+      </section>`;
+      brancherEcoute();
+      if (!envers && voixOk && etat.reglages && etat.reglages.sons !== false) { const bt = vue.querySelector("[data-parle]"); if (bt) setTimeout(() => parler(x.m, VOIX_LANGUE[x.l], bt), 250); }
+      vue.querySelector("#quitter").addEventListener("click", () => aller("carnet"));
+      vue.querySelectorAll("[data-rep]").forEach(b => b.addEventListener("click", () => {
+        if (vue.querySelector(".choix").dataset.fait) return; vue.querySelector(".choix").dataset.fait = "1";
+        const juste = decodeURIComponent(b.dataset.rep) === bonne;
+        vue.querySelectorAll("[data-rep]").forEach(y => { if (decodeURIComponent(y.dataset.rep) === bonne) y.classList.add("juste"); else if (y === b) y.classList.add("faux"); });
+        x.ok = juste ? (x.ok || 0) + 1 : 0; if (juste) bonnes++; sauver();
+        juste ? sonJuste() : sonFaux();
+        vue.querySelector("#message").innerHTML = (juste ? `<b style="color:var(--vert)">${parmi(ENCOURAGE)}</b> ` : `<b style="color:var(--rouge)">Pas tout à fait.</b> `) + `<span lang="${x.l}"><b>${x.m}</b></span> = ${x.s}`;
+        vue.querySelector("#suite").classList.remove("cache"); vue.querySelector("#suite").focus();
+      }));
+      vue.querySelector("#suite").addEventListener("click", () => { i++; i < choisis.length ? question() : fin(); });
+    };
+    const fin = () => {
+      const gain = bonnes * 2; etat.xp += gain; sauver();
+      const parfait = bonnes === choisis.length;
+      vue.innerHTML = `<section class="ecran fin"><div class="carte" style="display:grid;gap:10px;text-align:center;justify-items:center">
+        ${anneau(Math.round(bonnes / choisis.length * 100), "var(--vert)", 96)}
+        <h2>${parfait ? "Sans faute !" : bonnes >= choisis.length / 2 ? "Bien joué !" : "Continue, ça rentre !"}</h2>
+        <p>${bonnes}/${choisis.length} bonnes réponses · +${gain} points</p>
+        <p style="color:var(--encre-2)">Un mot est « su » quand tu le trouves deux fois de suite. Les mots ratés reviendront en premier au prochain quiz.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button type="button" class="bouton" id="encore">Refaire un quiz</button><button type="button" class="bouton second" id="vers-carnet">Mon carnet</button></div></div></section>`;
+      if (parfait) { sonReussite(); confettis(90); }
+      vue.querySelector("#encore").addEventListener("click", () => quizCarnet(mots));
+      vue.querySelector("#vers-carnet").addEventListener("click", () => aller("carnet"));
+    };
+    document.querySelector(".nav").classList.add("cache");
+    question();
   }
 
   // ---------- Grands thèmes 2026 ----------
@@ -6028,7 +7433,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         <p style="color:var(--encre-2);font-size:14px">Entraîne-toi : lis la réponse, cache-la, puis réécris-la avec tes propres mots. C'est la méthode pour les questions d'avis en EDHC et pour la rédaction.</p></div></details>
       <details class="bloc"><summary>Oral d'anglais</summary><div class="corps"><p class="sujet" lang="en">${th.anglais.question}</p>
         <div>${btnEcoute(th.anglais.reponse, "en-GB", "Listen")}</div>
-        <div class="modele" lang="en">${th.anglais.reponse}</div>
+        <div class="modele" lang="en">${th.anglais.reponse}</div>${blocTraduction("theme:" + th.id)}
         <p style="color:var(--encre-2);font-size:14px">Écoute, répète phrase par phrase, puis réponds sans regarder.</p></div></details>
       <details class="bloc"><summary>Vocabulaire français → anglais</summary><div class="corps"><table class="vocab">${th.vocab.map(([f, e]) => `<tr><td>${f}</td><td lang="en">${e}</td><td>${btnEcoute(e.split(" / ")[0].replace(/\(.*\)/, ""), "en-GB", "Écouter " + e, true)}</td></tr>`).join("")}</table></div></details>
       <button type="button" class="bouton${reussi(c, niv) ? " vert" : ""}" id="quiz">${m ? `Refaire le quiz (meilleur : ${m}/6)` : "Faire le quiz : 6 questions"}</button>
@@ -6092,11 +7497,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         <span class="exo-titre">${s.i + 1}/${s.questions.length}</span></div>
       <span class="exo-titre">${titre}${q.defi ? ' · <span class="pastille">Défi</span>' : ""}</span>
       ${q.figure || ""}
-      <div class="question">${q.enonce}</div>
+      <div class="question"${langueDeComp(q.comp) ? ` data-trad="${langueDeComp(q.comp)}"` : ""}>${q.enonce}</div>
       ${zone}
       <div id="indice" class="indice cache" aria-live="polite"></div>
       <p class="message" id="message" aria-live="polite"></p>
-      <div id="retour-exo"></div>
+      <div id="retour-exo"${langueDeComp(q.comp) ? ` data-trad="${langueDeComp(q.comp)}"` : ""}></div>
       <div class="actions-q"><button type="button" class="bouton second" id="btn-indice">Indice</button><button type="button" class="bouton" id="verifier">Vérifier</button></div>
     </section>`;
     s.valide = false;

@@ -47,7 +47,7 @@
       <h2>${s.titre}</h2>
       <div class="carte" style="display:grid;gap:8px"><span class="etiquette">Consignes · durée ${s.duree}</span><p>${s.consignes}</p>
         <button type="button" class="bouton second" id="chrono-sujet">Démarrer le chrono</button></div>
-      ${s.document || ""}
+      ${s.document || ""}${blocTraduction("sujet:" + s.id)}
       ${s.questions.map((q, i) => `<div class="carte question-sujet" data-i="${i}" style="display:grid;gap:10px">
         <div style="display:flex;gap:8px;align-items:baseline;justify-content:space-between"><b style="font-family:var(--titre);font-size:17px">${q.num}</b><span class="pastille">${fmt(q.points)} pt${q.points > 1 ? "s" : ""}</span></div>
         <div>${q.enonce}</div>
