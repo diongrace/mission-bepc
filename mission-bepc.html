@@ -162,6 +162,45 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.az{display:grid;gap:10px}
+.az-etape{border:1px solid var(--trait);border-radius:14px;padding:12px;display:grid;gap:8px;background:var(--carte)}
+.az-tete{display:flex;align-items:center;gap:10px}
+.az-tete b{font-family:var(--titre);font-size:17px}
+.az-lettre{width:34px;height:34px;border-radius:10px;background:#B8452B;color:#fff;display:grid;place-items:center;font-family:var(--titre);font-size:18px;flex:none}
+.az-corps{display:grid;gap:8px;line-height:1.6}
+.az-corps ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.tableau-defil{overflow-x:auto}
+.table-az th{text-align:left;font-size:12.5px;color:var(--encre-2);padding:6px 4px;border-bottom:2px solid var(--trait)}
+.table-az td{font-size:14px;vertical-align:top;width:auto!important;text-align:left!important;font-weight:400!important;color:var(--encre)!important}
+.table-az td:first-child{width:22px!important;color:var(--encre-2)!important}
+.table-az td:nth-child(2) b{color:#B8452B}
+.decoupe{display:grid;gap:8px}
+.decoupe-para{border:1px solid var(--trait);border-radius:12px;padding:10px 12px;display:grid;gap:6px}
+.decoupe-tete{display:flex;align-items:center;gap:4px}
+.decoupe-tete b{color:#B8452B}
+.decoupe-para p{margin:0;font-size:14.5px;display:grid;gap:1px}
+.decoupe-para p span{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.decoupe-para .garder span{color:var(--vert)}
+.decoupe-para .enlever{color:var(--rouge)}
+.decoupe-para .enlever span{color:var(--rouge)}
+.decoupe-para s{text-decoration-color:color-mix(in srgb,var(--rouge) 45%,transparent)}
+.table-az td.enleve{color:var(--rouge)!important;text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--rouge) 50%,transparent)}
+.reformule{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start}
+.reformule .avant{display:block;color:var(--encre-2);font-size:14px}
+.reformule .apres{display:block;font-weight:700;color:var(--vert)}
+.reformule small{color:var(--encre-2);font-weight:700}
+.para-annote{margin:0;line-height:1.75;text-indent:1.2em}
+.seg{background:color-mix(in srgb,var(--r) 12%,transparent);border-bottom:2px solid var(--r);border-radius:3px;padding:1px 2px}
+.seg sup{font-size:10px;font-weight:800;color:var(--r);text-transform:uppercase;letter-spacing:.04em;margin-right:3px}
+.connecteur{color:var(--r,#B8452B);text-decoration:underline;text-underline-offset:2px}
+.copie{display:grid;gap:10px;background:var(--papier);border-radius:12px;padding:12px}
+.copie.sans-couleurs .seg{background:none;border:0}.copie.sans-couleurs sup{display:none}.copie.sans-couleurs .connecteur{color:inherit;text-decoration:none}
+.legende-roles{display:flex;flex-wrap:wrap;gap:6px}
+.legende-roles span{border-bottom:3px solid var(--r);background:color-mix(in srgb,var(--r) 12%,transparent);border-radius:6px;padding:2px 8px;font-size:12.5px;font-weight:800;color:var(--r)}
+.legende-roles .leg-co{border:0;background:none}
+.colonnes-idees{display:grid;gap:10px}
+@media (min-width:600px){.colonnes-idees{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}}
+.colonnes-idees > div{background:var(--papier);border-radius:10px;padding:10px}
 .confettis{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
 .grande-fete{position:fixed;inset:0;z-index:55;background:rgba(15,23,34,.55);display:grid;place-items:center;padding:20px;animation:fondu .2s ease-out}
 .grande-fete.sortie{opacity:0;transition:opacity .2s}
@@ -3489,7 +3528,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   const PARA_TEL = "« Le téléphone portable est devenu indispensable aux élèves. En effet, il leur permet de faire des recherches pour leurs exposés. Par exemple, un élève de Daloa peut consulter en quelques secondes une encyclopédie en ligne. »";
   const ARTICLE = "<i>Korhogo, 12 mars 2026.</i> Hier matin, les élèves du lycée moderne de Korhogo ont planté 500 arbres autour de leur établissement. Organisée par le club environnement, cette opération vise à lutter contre la chaleur et l'avancée de la désertification. « Chaque élève est responsable d'un arbre et devra l'arroser », explique le proviseur. Une deuxième opération est prévue en juin.";
   MAT_FR.chapitres.push(
-    { id: "fr-argu-atelier", titre: "Atelier · Le texte argumentatif (étayer, réfuter)",
+    { id: "fr-argu-atelier", titre: "Atelier · Le texte argumentatif (étayer, réfuter)", special: "argu",
       cours: rg("La thèse", "C'est l'<b>opinion</b> défendue. Exemple : « L'uniforme scolaire devrait être obligatoire. » Un simple fait (« Le lycée compte 800 élèves ») n'est pas une thèse.") +
         rg("Le paragraphe argumentatif", "<b>1. L'argument</b> (l'idée qui prouve) → <b>2. L'explication</b> (pourquoi c'est vrai) → <b>3. L'exemple</b> (un cas précis et réel).") +
         rg("Étayer ou réfuter", "<b>Étayer</b> : soutenir une thèse avec des arguments. <b>Réfuter</b> : montrer qu'une thèse est fausse ou exagérée ; on présente d'abord la thèse adverse, puis on la combat.") +
@@ -3561,6 +3600,63 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     ["<b>Chercher l'accroche</b> : ce qui est surprenant ou utile (le nombre d'élèves, le résultat).", "<b>Répondre à qui, quoi, quand, où</b> dans la première phrase.",
      "<b>Attaque</b> : « Samedi, balais en main, cinquante élèves du collège ont débarrassé les caniveaux de Yopougon de plus de cent sacs de déchets. »"],
     "L'attaque doit donner envie de lire la suite, sans donner son avis.");
+
+  // =========================================================
+  // Corrigés de A à Z : résumé et texte argumentatif
+  // =========================================================
+  // Résumé : pour chaque paragraphe [rôle, idée essentielle, ce qu'on enlève, reformulation]
+  const GUIDES_RESUME = {
+    sport: { theme: "le sport à l'école", these: "Le sport scolaire, souvent jugé secondaire, est en réalité essentiel.", enonciation: "L'auteur parle de façon générale (« on », « l'élève ») : le résumé reste impersonnel.",
+      paras: [["Thèse", "Le sport est jugé secondaire, mais il est essentiel.", "« On considère souvent… », « dans la formation des élèves »", "Jugé secondaire, le sport scolaire est pourtant essentiel."],
+        ["Argument 1", "Il entretient la santé et combat l'obésité.", "les exemples (courir, sauter, football, handball), les détails (cœur, muscles, os), « dans nos villes »", "Il préserve la santé et combat l'obésité."],
+        ["Argument 2", "Il aide à apprendre : attention et mémoire.", "« après une séance », « plus détendu », « les médecins affirment »", "Il améliore aussi l'attention et la mémoire."],
+        ["Argument 3", "Il forme le caractère : règles, solidarité, effort.", "« dans une équipe », l'arbitre et l'adversaire, « persévérance », « à l'école comme au travail »", "De plus, il forge le respect des règles, la solidarité et l'effort."],
+        ["Concession et réfutation", "Le manque de moyens n'est pas un obstacle : peu suffit.", "l'énumération « un espace dégagé, un ballon et un enseignant motivé »", "Même sans grands moyens, on peut le pratiquer."],
+        ["Conclusion", "Il faut valoriser le sport, garant de réussite.", "le proverbe « un esprit sain dans un corps sain »", "Valorisons-le donc : il garantit la réussite."]],
+      connecteurs: "pourtant (opposition à l'idée reçue), aussi et de plus (ajout d'arguments), même sans (concession), donc (conclusion)" },
+    forets: { theme: "la protection des forêts", these: "La disparition des forêts n'est pas une fatalité : chacun peut agir.", enonciation: "L'auteur dit « nous » et « notre avenir » : on peut garder ce « nous » (« Protégeons »).",
+      paras: [["Thèse", "Les forêts disparaissent, mais on peut agir.", "« en quelques dizaines d'années », « ce qui reste »", "Notre pays a perdu beaucoup de forêts, mais chacun peut agir."],
+        ["Argument 1 : leur utilité", "Elles protègent la biodiversité, les sols, l'eau et favorisent les pluies.", "« dont certains n'existent nulle part ailleurs », « sans elles, les terres s'appauvrissent »", "Elles préservent la biodiversité, les sols, l'eau et les pluies utiles aux cultures."],
+        ["Argument 2 : les menaces", "Plantations illégales, feux et exploitation du bois les menacent.", "« chaque année des milliers d'hectares », « dans les forêts classées »", "Pourtant, plantations illégales, feux et exploitation incontrôlée les menacent."],
+        ["Argument 3 : les solutions", "Reboisement, agroforesterie et actions des élèves.", "« en 2026 », « ambitieux », le détail du cacao à l'ombre, « sensibiliser leur famille »", "Reboisement, agroforesterie et actions des élèves offrent des solutions."],
+        ["Réfutation d'une objection", "Détruire la forêt ruine aussi l'agriculture.", "« Certains diront que… nourrir le pays. C'est vrai »", "Détruire la forêt ruinerait l'agriculture elle-même."],
+        ["Conclusion", "Protéger les forêts, c'est protéger l'avenir.", "« Il est temps que chacun prenne ses responsabilités »", "Protégeons-la donc pour notre avenir."]],
+      connecteurs: "mais (opposition), pourtant (contraste entre utilité et menaces), donc (conclusion)" }
+  };
+
+  // Texte argumentatif : rédaction complète annotée. Rôles : amorce, sujet, probleme, annonce, arg, expl, ex, trans, bilan, avis, ouverture, conc
+  const GUIDES_ARGU = [
+    { id: "reseaux", titre: "Discuter une opinion : les réseaux sociaux", sujet: "« Certains pensent que les réseaux sociaux sont un danger pour les élèves. » Partages-tu ce point de vue ? Tu répondras dans un développement argumenté d'une trentaine de lignes.",
+      analyse: ["<b>Le thème</b> : les réseaux sociaux et les élèves (attention : on parle des <b>élèves</b>, pas de tout le monde).", "<b>La thèse proposée</b> : les réseaux sociaux sont un danger.", "<b>La consigne</b> : « Partages-tu ce point de vue ? » On peut répondre oui, non, ou <b>nuancer</b>. Le plus riche est de nuancer : montrer les dangers, puis les avantages, puis donner sa position.", "<b>Les mots-clés à garder en tête</b> : danger, élèves, réussite, sécurité."],
+      idees: [["Dangers (pour la thèse)", ["perte de temps, fatigue, baisse des notes", "arnaques, usurpation d'identité, harcèlement", "fausses informations", "addiction"]], ["Avantages (contre la thèse)", ["apprendre : cours en vidéo, groupes de révision", "garder le lien avec la famille éloignée", "s'informer, créer, entreprendre"]], ["Ce qui compte (position)", ["tout dépend de l'usage", "rôle des parents et de l'école", "campagne « En ligne, tous responsables »"]]],
+      plan: ["<b>Introduction</b> : amorce, rappel du sujet, question, annonce du plan.", "<b>I. Des dangers réels</b> : 1) perte de temps ; 2) arnaques et harcèlement.", "<b>II. Mais aussi des avantages</b> : 1) apprendre ; 2) rapprocher les familles.", "<b>III. Tout dépend de l'usage</b> : 1) se fixer des règles ; 2) le rôle des adultes.", "<b>Conclusion</b> : bilan, prise de position, ouverture."],
+      texte: [
+        [["amorce", "Aujourd'hui, presque tous les élèves possèdent un téléphone et passent chaque jour de longues heures sur WhatsApp, TikTok ou Facebook."], ["sujet", "Certains y voient un véritable danger pour leur réussite et leur sécurité."], ["probleme", "Les réseaux sociaux sont-ils vraiment une menace pour les élèves, ou peuvent-ils aussi les aider ?"], ["annonce", "Nous verrons d'abord leurs dangers réels, puis leurs avantages, avant de montrer que tout dépend de l'usage qu'on en fait."]],
+        [["arg", "D'abord, les réseaux sociaux font perdre beaucoup de temps."], ["expl", "En effet, les vidéos et les messages s'enchaînent sans fin, et l'élève oublie ses leçons."], ["ex", "Par exemple, un camarade qui reste connecté jusqu'à minuit arrive fatigué en classe, et ses notes baissent."]],
+        [["arg", "De plus, ils exposent les jeunes à de graves dangers."], ["expl", "En effet, des escrocs y volent des identités et des harceleurs y humilient leurs victimes."], ["ex", "Ainsi, en 2026 encore, la police ivoirienne a appelé les jeunes à un usage responsable des réseaux sociaux."]],
+        [["trans", "Pourtant, il serait injuste de ne voir que ces dangers."], ["arg", "En effet, les réseaux sociaux peuvent aider à apprendre."], ["expl", "Ils donnent accès à des cours en vidéo, à des exercices et à des groupes de révision."], ["ex", "Par exemple, beaucoup d'élèves de 3e partagent leurs fiches sur WhatsApp à l'approche du BEPC."]],
+        [["arg", "Par ailleurs, ils rapprochent les familles."], ["expl", "Grâce à eux, un élève peut parler chaque jour avec un parent parti travailler loin."], ["ex", "C'est le cas de nombreuses familles ivoiriennes dont un membre vit à l'étranger."]],
+        [["trans", "Les réseaux sociaux ne sont donc ni bons ni mauvais en eux-mêmes."], ["arg", "En réalité, tout dépend de l'usage qu'on en fait."], ["expl", "Un élève qui limite son temps d'écran et coupe son téléphone la nuit profite des avantages sans subir les dangers."], ["ex", "Par exemple, il peut s'accorder une heure par jour, une fois ses devoirs terminés."]],
+        [["arg", "Enfin, les parents et l'école ont un rôle à jouer."], ["expl", "Ils doivent apprendre aux jeunes à protéger leurs données et à vérifier les informations."], ["ex", "C'est le but de la campagne nationale « En ligne, tous responsables »."]],
+        [["bilan", "En somme, les réseaux sociaux présentent de vrais dangers pour les élèves, mais ils offrent aussi de belles possibilités pour apprendre et communiquer."], ["avis", "Je pense donc qu'ils ne sont pas un danger en eux-mêmes : c'est leur mauvais usage qui l'est."], ["ouverture", "Ne faudrait-il pas enseigner le bon usage d'internet dès l'école primaire ?"]]],
+      relecture: ["Chaque paragraphe commence par un alinéa et un connecteur.", "Chaque argument a son explication et son exemple.", "Les transitions relient les parties (« Pourtant… », « Les réseaux sociaux ne sont donc ni bons ni mauvais… »).", "Accords vérifiés : « les vidéos s'enchaînent », « ses notes baissent ».", "Longueur : environ 30 lignes. Pas de langage SMS, pas de registre familier."] },
+    { id: "ecole", titre: "Réfuter une opinion : « L'école ne sert à rien »", sujet: "Un camarade affirme : « L'école ne sert à rien pour réussir dans la vie, beaucoup de gens riches n'ont pas fait d'études. » Réfute cette opinion dans un développement argumenté.",
+      analyse: ["<b>La thèse à combattre</b> : l'école ne sert à rien pour réussir.", "<b>La consigne</b> : « Réfute » : il faut montrer que cette opinion est <b>fausse ou exagérée</b>. On ne la défend pas.", "<b>La méthode</b> : on présente d'abord la thèse adverse honnêtement (concession), puis on la combat avec des arguments solides.", "<b>L'argument du camarade</b> : « des gens riches n'ont pas fait d'études ». Il faut aussi y répondre."],
+      idees: [["Ce que dit l'adversaire", ["quelques personnes ont réussi sans diplôme", "certains diplômés sont au chômage"]], ["Mes arguments de réfutation", ["l'école donne les savoirs de base (lire, compter, raisonner)", "elle ouvre l'accès aux métiers (médecin, ingénieur, enseignant…)", "elle forme le citoyen (droits, devoirs, esprit critique)", "les réussites sans école sont des exceptions"]]],
+      plan: ["<b>Introduction</b> : amorce, thèse adverse, annonce de la réfutation.", "<b>I. Ce qui peut sembler vrai (concession)</b> : quelques personnes réussissent sans diplôme.", "<b>II. Mais l'école est indispensable</b> : 1) les savoirs de base ; 2) l'accès aux métiers ; 3) la formation du citoyen.", "<b>Conclusion</b> : bilan de la réfutation, ouverture."],
+      texte: [
+        [["amorce", "On entend parfois des jeunes dire que les études sont une perte de temps."], ["sujet", "Selon eux, l'école ne sert à rien pour réussir, puisque certaines personnes riches n'ont jamais fait d'études."], ["annonce", "Cette opinion est pourtant très exagérée, comme nous allons le montrer."]],
+        [["trans", "Certes, quelques commerçants ou artistes ont réussi sans diplôme."], ["expl", "Leur courage et leur talent méritent le respect."], ["arg", "Mais ces cas restent des exceptions, et la plupart d'entre eux regrettent de ne pas avoir pu étudier davantage."]],
+        [["arg", "D'abord, l'école donne les savoirs indispensables à toute réussite."], ["expl", "Savoir lire un contrat, calculer un bénéfice ou rédiger une lettre protège contre les erreurs et les escroqueries."], ["ex", "Par exemple, une commerçante qui sait tenir ses comptes voit tout de suite si elle gagne ou perd de l'argent."]],
+        [["arg", "Ensuite, l'école ouvre les portes de nombreux métiers."], ["expl", "On ne devient pas médecin, ingénieur ou enseignant sans diplôme."], ["ex", "Ainsi, les infirmiers et les sages-femmes qui soignent dans nos villages ont tous étudié de longues années."]],
+        [["arg", "Enfin, l'école forme le citoyen."], ["expl", "Elle apprend à connaître ses droits et ses devoirs, à vivre avec les autres et à réfléchir par soi-même."], ["ex", "C'est grâce à elle qu'un jeune peut repérer une fausse information ou comprendre l'importance du vote."]],
+        [["bilan", "En définitive, si quelques personnes réussissent sans études, l'école reste le chemin le plus sûr vers la réussite professionnelle et personnelle."], ["avis", "Affirmer qu'elle ne sert à rien est donc une erreur."], ["ouverture", "La vraie question n'est-elle pas plutôt de rendre l'école accessible à tous les enfants ?"]]],
+      relecture: ["La thèse adverse est présentée honnêtement avant d'être combattue (« Certes… Mais… »).", "Trois arguments de réfutation, chacun avec explication et exemple.", "La conclusion rappelle clairement que la thèse adverse est fausse.", "Connecteurs variés : certes, mais, d'abord, ensuite, enfin, en définitive."] }
+  ];
+  const ROLES = { amorce: ["Amorce", "#2B63B8"], sujet: ["Rappel du sujet", "#2B63B8"], probleme: ["Question posée", "#2B63B8"], annonce: ["Annonce du plan", "#2B63B8"],
+    arg: ["Argument", "#E0701F"], expl: ["Explication", "#7A4FB5"], ex: ["Exemple", "#1A8F5F"], trans: ["Transition / concession", "#9A6A12"],
+    bilan: ["Bilan", "#CF3F35"], avis: ["Prise de position", "#CF3F35"], ouverture: ["Ouverture", "#CF3F35"] };
+  const CONNECTEURS = ["D'abord", "Ensuite", "Enfin", "De plus", "En effet", "Par exemple", "Ainsi", "Pourtant", "Par ailleurs", "Grâce à eux", "En réalité", "En somme", "En définitive", "Certes", "Mais", "donc", "pourtant", "C'est le cas", "C'est le but", "C'est grâce à elle"];
 
   // =========================================================
   // Grands thèmes d'actualité 2026 (faits vérifiés, septembre 2026)
@@ -4041,11 +4137,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     arreterEnregistrement();
     nettoyerAnims();
     if (chronoSujet) { clearInterval(chronoSujet); chronoSujet = null; }
-    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier"].includes(e) ? "matieres" : e;
+    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier", "guide"].includes(e) ? "matieres" : e;
     document.querySelectorAll(".nav button").forEach(b => b.setAttribute("aria-current", b.dataset.aller === onglet ? "page" : "false"));
     if (["chapitre", "theme", "sujet", "oral"].includes(e) && params) { etat.dernier = { e, p: params }; sauver(); }
     document.querySelector(".nav").classList.toggle("cache", e === "exercice" || e === "fin");
-    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
+    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, guide: afficherGuide, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
     window.scrollTo(0, 0);
   }
   document.querySelectorAll(".nav button").forEach(b => b.addEventListener("click", () => aller(b.dataset.aller)));
@@ -4153,7 +4249,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const c = chapitreDe(id);
     const M = matiereDe(c.matiere);
     const dejaFait = !!meilleur(c.id, c.niveaux[0].id);
-    const actif = ongletChapitre[id] || (dejaFait || c.special === "oral" || c.special === "resume" ? "exos" : "cours");
+    const actif = ongletChapitre[id] || (dejaFait || c.special === "oral" || c.special === "resume" || c.special === "argu" ? "exos" : "cours");
     vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ ${M.nom}</button>
       <header class="titre-chap" style="--c:${M.couleur}"><span class="pastille-mat">${M.nom}${c.matiere === "maths" && c.num !== "0" ? " · leçon " + c.num : ""}</span><h2>${c.titre.replace(/^[^·]+· /, "")}</h2></header>
       <div class="onglets" role="tablist" style="--c:${M.couleur}">
@@ -4166,7 +4262,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       <div class="panneau" data-panneau="exemple" ${actif === "exemple" ? "" : "hidden"}>${blocExemple(c.exemple)}
         <button type="button" class="bouton" data-aller-onglet="exos">Passer aux exercices ›</button></div>
       <div class="panneau" data-panneau="exos" ${actif === "exos" ? "" : "hidden"}>
-      ${c.special === "oral" ? blocOral() : c.special === "resume" ? blocResume() : `<span class="etiquette">Niveaux</span>`}
+      ${c.special === "oral" ? blocOral() : c.special === "resume" ? blocResume() : c.special === "argu" ? blocArgu() : `<span class="etiquette">Niveaux</span>`}
       <div class="liste">${c.niveaux.map((n, i) => {
         const ok = reussi(c, n), ouv = ouvert(c, i), m = meilleur(c.id, n.id);
         return `<button type="button" class="niveau ${ok ? "reussi" : ouv ? "ouvert" : "ferme"}" data-niv="${n.id}" ${ouv ? "" : "disabled"}>
@@ -4188,6 +4284,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const r = vue.querySelector("#rapide"); if (r) r.addEventListener("click", () => lancerSession(c, c.niveaux.find(n => n.id === "maitrise"), true));
     if (c.special === "oral") brancherBlocOral();
     if (c.special === "resume") brancherBlocResume();
+    if (c.special === "argu") brancherBlocArgu();
     brancherExemple();
     monterAnims();
   }
@@ -4402,9 +4499,10 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       <details class="bloc" id="modele"><summary>Étape 4 · Compare avec le résumé modèle</summary><div class="corps">
         <div class="modele">${tx.modele} <b>(${compterMots(tx.modele)} mots)</b></div>
         <p style="font-size:14px;color:var(--encre-2)">Vérifie : as-tu gardé toutes les idées cochées, dans le même ordre ? As-tu reformulé ? Es-tu dans la bonne longueur ?</p></div></details>
+      <div class="carte" style="display:grid;gap:10px"><span class="etiquette">Étape 5 · Le corrigé de A à Z</span><p style="font-size:14px;color:var(--encre-2)">Tout le chemin, du texte au résumé final, étape par étape.</p>${guideResumeHTML(id)}</div>
     </section>`;
     vue.querySelector("#retour").addEventListener("click", () => aller("chapitre", "fr-resume-atelier"));
-    brancherEcoute();
+    brancherEcoute(); brancherAZ(vue.querySelector(".az").parentElement);
     vue.querySelector("#verifier-idees").addEventListener("click", () => {
       let bonnes = 0;
       vue.querySelectorAll("[data-idee]").forEach(c => { const d = tx.idees[+c.dataset.idee], juste = !!c.checked === !!d[1], em = c.parentElement.querySelector("em");
@@ -4446,6 +4544,61 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       box.innerHTML = `<div class="retour-exo bien"><h3>Bravo, ${PRENOM} !</h3><p>Ton résumé fait ${r.c} mots, sans copie ni formule interdite${nouveau ? " : <b>+20 points</b>" : ""}. Ouvre l'étape 4 et vérifie que tu as gardé toutes les idées, dans l'ordre.</p></div>`;
       sonReussite(); confettis(90); vue.querySelector("#modele").open = true;
     });
+  }
+
+
+  // ---------- Corrigés de A à Z ----------
+  const echapRe = t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const RE_CONNECT = new RegExp("(^|[\\s«(])(" + CONNECTEURS.map(echapRe).join("|") + ")(?=[\\s,:])", "g");
+  const annoter = segs => `<p class="para-annote">${segs.map(([r, t]) => `<span class="seg" style="--r:${ROLES[r][1]}"><sup>${ROLES[r][0]}</sup>${t.replace(RE_CONNECT, '$1<b class="connecteur">$2</b>')}</span>`).join(" ")}</p>`;
+  const etapesAZ = liste => `<div class="az">${liste.map(([lettre, titre, html], k) => `<div class="az-etape${k ? " cache" : ""}" data-az="${k}"><div class="az-tete"><span class="az-lettre">${lettre}</span><b>${titre}</b></div><div class="az-corps">${html}</div></div>`).join("")}
+    <div class="boutons-ligne"><button type="button" class="bouton" data-az-suivant>Étape suivante ›</button><button type="button" class="bouton second" data-az-tout>Tout afficher</button></div></div>`;
+  function brancherAZ(racine) {
+    const etapes = [...racine.querySelectorAll(".az-etape")], suiv = racine.querySelector("[data-az-suivant]"), tout = racine.querySelector("[data-az-tout]");
+    let i = 0; const fin = () => { suiv.classList.add("cache"); tout.classList.add("cache"); };
+    suiv.addEventListener("click", () => { i++; if (etapes[i]) { etapes[i].classList.remove("cache"); etapes[i].scrollIntoView({ block: "start", behavior: "smooth" }); } if (i >= etapes.length - 1) fin(); });
+    tout.addEventListener("click", () => { etapes.forEach(e => e.classList.remove("cache")); fin(); });
+  }
+  function guideResumeHTML(id) {
+    const tx = TEXTES_RESUME.find(x => x.id === id), g = GUIDES_RESUME[id], n = compterMots(tx.texte.join(" ")), cible = Math.round(n / 4);
+    const total = g.paras.reduce((s, p) => s + compterMots(p[3]), 0);
+    return etapesAZ([
+      ["A", "Lire et comprendre", `<p>Lis le texte <b>deux fois</b>, puis réponds à trois questions :</p><ul><li><b>Le thème</b> (de quoi on parle) : ${g.theme}.</li><li><b>La thèse</b> (ce que pense l'auteur) : ${g.these}</li><li><b>Qui parle ?</b> ${g.enonciation}</li></ul>`],
+      ["B", "Découper le texte en idées", `<p>Chaque paragraphe contient <b>une idée essentielle</b>. Tout le reste (exemples, détails, répétitions) s'enlève.</p><div class="decoupe">${g.paras.map((p, k) => `<div class="decoupe-para"><div class="decoupe-tete"><span class="num-para">${k + 1}</span><b>${p[0]}</b></div><p class="garder"><span>À garder</span>${p[1]}</p><p class="enlever"><span>À enlever</span><s>${p[2]}</s></p></div>`).join("")}</div>`],
+      ["C", "Reformuler chaque idée avec tes mots", `<p>On dit la même chose, <b>plus court</b> et <b>sans recopier</b>.</p>${g.paras.map((p, k) => `<div class="reformule"><span class="num-para">${k + 1}</span><span><span class="avant">${p[1]}</span><span class="apres">→ ${p[3]} <small>(${compterMots(p[3])} mots)</small></span></span></div>`).join("")}`],
+      ["D", "Relier les idées", `<p>On enchaîne les phrases avec des <b>connecteurs</b> pour garder la logique du texte : ${g.connecteurs}.</p>`],
+      ["E", "Compter les mots", `<p>Le texte compte <b>${n} mots</b> : le résumé doit en faire environ <b>${cible}</b> (entre ${Math.round(cible * 0.9)} et ${Math.round(cible * 1.1)}).</p><p>Nos phrases : ${g.paras.map(p => compterMots(p[3])).join(" + ")} = <b>${total} mots</b> ✓. Rappel : « l'obésité » = 2 mots ; un mot avec trait d'union (« Valorisons-le ») = 1 mot.</p>`],
+      ["F", "Le résumé final, puis la relecture", `<div class="modele">${g.paras.map(p => p[3]).join(" ")} <b>(${total} mots)</b></div><ul><li>Toutes les idées sont là, <b>dans l'ordre</b> du texte.</li><li>Aucune phrase recopiée, pas de « l'auteur dit ».</li><li>Le nombre de mots est <b>indiqué à la fin</b>.</li><li>Orthographe et accords relus.</li></ul>`]
+    ]);
+  }
+  function blocArgu() {
+    return `<span class="etiquette">Corrigés complets de A à Z</span>
+      <div class="liste">${GUIDES_ARGU.map(g => `<button type="button" class="chap" data-guide="${g.id}" style="--c:#B8452B"><span class="num" style="font-size:13px">A→Z</span><span class="txt"><b>${g.titre}</b><small>De l'analyse du sujet à la copie finale, annotée en couleurs</small></span></button>`).join("")}</div>
+      <span class="etiquette">Exercices</span>`;
+  }
+  function brancherBlocArgu() { vue.querySelectorAll("[data-guide]").forEach(b => b.addEventListener("click", () => aller("guide", b.dataset.guide))); }
+  function afficherGuide(id) {
+    const g = GUIDES_ARGU.find(x => x.id === id), intro = g.texte[0], dev = g.texte.slice(1, -1), conclu = g.texte[g.texte.length - 1];
+    const toutTexte = g.texte.map(p => p.map(s => s[1]).join(" ")).join(" ");
+    const legende = `<div class="legende-roles">${["arg", "expl", "ex", "trans"].map(r => `<span style="--r:${ROLES[r][1]}">${ROLES[r][0]}</span>`).join("")}<span class="leg-co"><b class="connecteur">connecteur</b></span></div>`;
+    vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ Le texte argumentatif</button>
+      <h2>Corrigé de A à Z</h2>
+      <p style="color:var(--encre-2);font-weight:700">${g.titre}</p>
+      <div class="document"><span class="etiquette">Le sujet</span><p><b>${g.sujet}</b></p></div>
+      ${etapesAZ([
+        ["A", "Analyser le sujet", `<ul>${g.analyse.map(x => `<li>${x}</li>`).join("")}</ul>`],
+        ["B", "Chercher des idées au brouillon", `<div class="colonnes-idees">${g.idees.map(([t, l]) => `<div><b>${t}</b><ul>${l.map(x => `<li>${x}</li>`).join("")}</ul></div>`).join("")}</div><p style="font-size:14px;color:var(--encre-2)">Au brouillon, écris vite, sans faire de phrases. Tu choisiras ensuite les meilleures idées.</p>`],
+        ["C", "Faire le plan", `<ol class="plan">${g.plan.map(x => `<li>${x}</li>`).join("")}</ol>`],
+        ["D", "Rédiger l'introduction", `${annoter(intro)}<p style="font-size:14px;color:var(--encre-2)">Une introduction complète : on <b>amène</b> le sujet, on le <b>rappelle</b>, on pose la <b>question</b>, on <b>annonce</b> le plan.</p>`],
+        ["E", "Rédiger le développement", `${legende}${dev.map(annoter).join("")}<p style="font-size:14px;color:var(--encre-2)">Chaque paragraphe = <b>argument</b> + <b>explication</b> + <b>exemple</b>, introduit par un connecteur. Les transitions relient les parties.</p>`],
+        ["F", "Conclure", `${annoter(conclu)}<p style="font-size:14px;color:var(--encre-2)">La conclusion fait le <b>bilan</b>, donne ta <b>position</b>, puis <b>ouvre</b> sur une question plus large.</p>`],
+        ["G", "Se relire", `<ul>${g.relecture.map(x => `<li>${x}</li>`).join("")}</ul>`],
+        ["✓", "La copie complète", `<div class="boutons-ligne">${btnEcoute(toutTexte, "fr-FR", "Écouter la copie")}<button type="button" class="bouton second" id="couleurs">Masquer les couleurs</button></div><div class="copie" id="copie">${g.texte.map(annoter).join("")}</div>`]
+      ])}
+    </section>`;
+    vue.querySelector("#retour").addEventListener("click", () => aller("chapitre", "fr-argu-atelier"));
+    brancherAZ(vue); brancherEcoute();
+    const bc = vue.querySelector("#couleurs"); bc.addEventListener("click", () => { const c = vue.querySelector("#copie"); c.classList.toggle("sans-couleurs"); bc.textContent = c.classList.contains("sans-couleurs") ? "Afficher les couleurs" : "Masquer les couleurs"; });
   }
 
   // =========================================================
@@ -5040,6 +5193,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       tic(); chronoSujet = setInterval(tic, 15000);
     });
     vue.querySelector("#retour").addEventListener("click", () => aller("sujets"));
+    if (id === "fr-redaction") { const b = document.createElement("button"); b.type = "button"; b.className = "lien-actu"; b.style.borderColor = "#B8452B"; b.innerHTML = '<span style="font-size:18px;font-weight:800;color:#B8452B">A→Z</span><span style="flex:1;display:grid"><b>Voir le corrigé complet de A à Z</b><small>Analyse, brouillon, plan et copie entière annotée</small></span><span style="color:var(--bleu);font-weight:800">›</span>'; b.addEventListener("click", () => aller("guide", "reseaux")); vue.querySelector(".ecran h2").after(b); }
   }
 
   // ---------- Oral d'anglais : écrans ----------

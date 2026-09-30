@@ -27,9 +27,10 @@
       <details class="bloc" id="modele"><summary>Étape 4 · Compare avec le résumé modèle</summary><div class="corps">
         <div class="modele">${tx.modele} <b>(${compterMots(tx.modele)} mots)</b></div>
         <p style="font-size:14px;color:var(--encre-2)">Vérifie : as-tu gardé toutes les idées cochées, dans le même ordre ? As-tu reformulé ? Es-tu dans la bonne longueur ?</p></div></details>
+      <div class="carte" style="display:grid;gap:10px"><span class="etiquette">Étape 5 · Le corrigé de A à Z</span><p style="font-size:14px;color:var(--encre-2)">Tout le chemin, du texte au résumé final, étape par étape.</p>${guideResumeHTML(id)}</div>
     </section>`;
     vue.querySelector("#retour").addEventListener("click", () => aller("chapitre", "fr-resume-atelier"));
-    brancherEcoute();
+    brancherEcoute(); brancherAZ(vue.querySelector(".az").parentElement);
     vue.querySelector("#verifier-idees").addEventListener("click", () => {
       let bonnes = 0;
       vue.querySelectorAll("[data-idee]").forEach(c => { const d = tx.idees[+c.dataset.idee], juste = !!c.checked === !!d[1], em = c.parentElement.querySelector("em");

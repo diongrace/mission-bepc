@@ -30,7 +30,7 @@
   const PARA_TEL = "« Le téléphone portable est devenu indispensable aux élèves. En effet, il leur permet de faire des recherches pour leurs exposés. Par exemple, un élève de Daloa peut consulter en quelques secondes une encyclopédie en ligne. »";
   const ARTICLE = "<i>Korhogo, 12 mars 2026.</i> Hier matin, les élèves du lycée moderne de Korhogo ont planté 500 arbres autour de leur établissement. Organisée par le club environnement, cette opération vise à lutter contre la chaleur et l'avancée de la désertification. « Chaque élève est responsable d'un arbre et devra l'arroser », explique le proviseur. Une deuxième opération est prévue en juin.";
   MAT_FR.chapitres.push(
-    { id: "fr-argu-atelier", titre: "Atelier · Le texte argumentatif (étayer, réfuter)",
+    { id: "fr-argu-atelier", titre: "Atelier · Le texte argumentatif (étayer, réfuter)", special: "argu",
       cours: rg("La thèse", "C'est l'<b>opinion</b> défendue. Exemple : « L'uniforme scolaire devrait être obligatoire. » Un simple fait (« Le lycée compte 800 élèves ») n'est pas une thèse.") +
         rg("Le paragraphe argumentatif", "<b>1. L'argument</b> (l'idée qui prouve) → <b>2. L'explication</b> (pourquoi c'est vrai) → <b>3. L'exemple</b> (un cas précis et réel).") +
         rg("Étayer ou réfuter", "<b>Étayer</b> : soutenir une thèse avec des arguments. <b>Réfuter</b> : montrer qu'une thèse est fausse ou exagérée ; on présente d'abord la thèse adverse, puis on la combat.") +

@@ -99,4 +99,5 @@
       tic(); chronoSujet = setInterval(tic, 15000);
     });
     vue.querySelector("#retour").addEventListener("click", () => aller("sujets"));
+    if (id === "fr-redaction") { const b = document.createElement("button"); b.type = "button"; b.className = "lien-actu"; b.style.borderColor = "#B8452B"; b.innerHTML = '<span style="font-size:18px;font-weight:800;color:#B8452B">A→Z</span><span style="flex:1;display:grid"><b>Voir le corrigé complet de A à Z</b><small>Analyse, brouillon, plan et copie entière annotée</small></span><span style="color:var(--bleu);font-weight:800">›</span>'; b.addEventListener("click", () => aller("guide", "reseaux")); vue.querySelector(".ecran h2").after(b); }
   }

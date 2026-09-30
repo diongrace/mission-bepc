@@ -162,6 +162,45 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.az{display:grid;gap:10px}
+.az-etape{border:1px solid var(--trait);border-radius:14px;padding:12px;display:grid;gap:8px;background:var(--carte)}
+.az-tete{display:flex;align-items:center;gap:10px}
+.az-tete b{font-family:var(--titre);font-size:17px}
+.az-lettre{width:34px;height:34px;border-radius:10px;background:#B8452B;color:#fff;display:grid;place-items:center;font-family:var(--titre);font-size:18px;flex:none}
+.az-corps{display:grid;gap:8px;line-height:1.6}
+.az-corps ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.tableau-defil{overflow-x:auto}
+.table-az th{text-align:left;font-size:12.5px;color:var(--encre-2);padding:6px 4px;border-bottom:2px solid var(--trait)}
+.table-az td{font-size:14px;vertical-align:top;width:auto!important;text-align:left!important;font-weight:400!important;color:var(--encre)!important}
+.table-az td:first-child{width:22px!important;color:var(--encre-2)!important}
+.table-az td:nth-child(2) b{color:#B8452B}
+.decoupe{display:grid;gap:8px}
+.decoupe-para{border:1px solid var(--trait);border-radius:12px;padding:10px 12px;display:grid;gap:6px}
+.decoupe-tete{display:flex;align-items:center;gap:4px}
+.decoupe-tete b{color:#B8452B}
+.decoupe-para p{margin:0;font-size:14.5px;display:grid;gap:1px}
+.decoupe-para p span{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.decoupe-para .garder span{color:var(--vert)}
+.decoupe-para .enlever{color:var(--rouge)}
+.decoupe-para .enlever span{color:var(--rouge)}
+.decoupe-para s{text-decoration-color:color-mix(in srgb,var(--rouge) 45%,transparent)}
+.table-az td.enleve{color:var(--rouge)!important;text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--rouge) 50%,transparent)}
+.reformule{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start}
+.reformule .avant{display:block;color:var(--encre-2);font-size:14px}
+.reformule .apres{display:block;font-weight:700;color:var(--vert)}
+.reformule small{color:var(--encre-2);font-weight:700}
+.para-annote{margin:0;line-height:1.75;text-indent:1.2em}
+.seg{background:color-mix(in srgb,var(--r) 12%,transparent);border-bottom:2px solid var(--r);border-radius:3px;padding:1px 2px}
+.seg sup{font-size:10px;font-weight:800;color:var(--r);text-transform:uppercase;letter-spacing:.04em;margin-right:3px}
+.connecteur{color:var(--r,#B8452B);text-decoration:underline;text-underline-offset:2px}
+.copie{display:grid;gap:10px;background:var(--papier);border-radius:12px;padding:12px}
+.copie.sans-couleurs .seg{background:none;border:0}.copie.sans-couleurs sup{display:none}.copie.sans-couleurs .connecteur{color:inherit;text-decoration:none}
+.legende-roles{display:flex;flex-wrap:wrap;gap:6px}
+.legende-roles span{border-bottom:3px solid var(--r);background:color-mix(in srgb,var(--r) 12%,transparent);border-radius:6px;padding:2px 8px;font-size:12.5px;font-weight:800;color:var(--r)}
+.legende-roles .leg-co{border:0;background:none}
+.colonnes-idees{display:grid;gap:10px}
+@media (min-width:600px){.colonnes-idees{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}}
+.colonnes-idees > div{background:var(--papier);border-radius:10px;padding:10px}
 .confettis{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
 .grande-fete{position:fixed;inset:0;z-index:55;background:rgba(15,23,34,.55);display:grid;place-items:center;padding:20px;animation:fondu .2s ease-out}
 .grande-fete.sortie{opacity:0;transition:opacity .2s}
@@ -395,6 +434,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
 /*EXEMPLES*/
 /*SUJETSDATA*/
 /*FRANCAIS2*/
+/*GUIDES*/
 /*ACTU*/
 
   // =========================================================
@@ -576,11 +616,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     arreterEnregistrement();
     nettoyerAnims();
     if (chronoSujet) { clearInterval(chronoSujet); chronoSujet = null; }
-    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier"].includes(e) ? "matieres" : e;
+    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier", "guide"].includes(e) ? "matieres" : e;
     document.querySelectorAll(".nav button").forEach(b => b.setAttribute("aria-current", b.dataset.aller === onglet ? "page" : "false"));
     if (["chapitre", "theme", "sujet", "oral"].includes(e) && params) { etat.dernier = { e, p: params }; sauver(); }
     document.querySelector(".nav").classList.toggle("cache", e === "exercice" || e === "fin");
-    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
+    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, guide: afficherGuide, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
     window.scrollTo(0, 0);
   }
   document.querySelectorAll(".nav button").forEach(b => b.addEventListener("click", () => aller(b.dataset.aller)));
@@ -688,7 +728,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const c = chapitreDe(id);
     const M = matiereDe(c.matiere);
     const dejaFait = !!meilleur(c.id, c.niveaux[0].id);
-    const actif = ongletChapitre[id] || (dejaFait || c.special === "oral" || c.special === "resume" ? "exos" : "cours");
+    const actif = ongletChapitre[id] || (dejaFait || c.special === "oral" || c.special === "resume" || c.special === "argu" ? "exos" : "cours");
     vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ ${M.nom}</button>
       <header class="titre-chap" style="--c:${M.couleur}"><span class="pastille-mat">${M.nom}${c.matiere === "maths" && c.num !== "0" ? " · leçon " + c.num : ""}</span><h2>${c.titre.replace(/^[^·]+· /, "")}</h2></header>
       <div class="onglets" role="tablist" style="--c:${M.couleur}">
@@ -701,7 +741,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       <div class="panneau" data-panneau="exemple" ${actif === "exemple" ? "" : "hidden"}>${blocExemple(c.exemple)}
         <button type="button" class="bouton" data-aller-onglet="exos">Passer aux exercices ›</button></div>
       <div class="panneau" data-panneau="exos" ${actif === "exos" ? "" : "hidden"}>
-      ${c.special === "oral" ? blocOral() : c.special === "resume" ? blocResume() : `<span class="etiquette">Niveaux</span>`}
+      ${c.special === "oral" ? blocOral() : c.special === "resume" ? blocResume() : c.special === "argu" ? blocArgu() : `<span class="etiquette">Niveaux</span>`}
       <div class="liste">${c.niveaux.map((n, i) => {
         const ok = reussi(c, n), ouv = ouvert(c, i), m = meilleur(c.id, n.id);
         return `<button type="button" class="niveau ${ok ? "reussi" : ouv ? "ouvert" : "ferme"}" data-niv="${n.id}" ${ouv ? "" : "disabled"}>
@@ -723,6 +763,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const r = vue.querySelector("#rapide"); if (r) r.addEventListener("click", () => lancerSession(c, c.niveaux.find(n => n.id === "maitrise"), true));
     if (c.special === "oral") brancherBlocOral();
     if (c.special === "resume") brancherBlocResume();
+    if (c.special === "argu") brancherBlocArgu();
     brancherExemple();
     monterAnims();
   }
@@ -848,6 +889,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
 
 /*FETE*/
 /*ATELIER*/
+/*GUIDESECRAN*/
 /*ANIMS*/
 /*SUJETSECRAN*/
 /*ORALECRAN*/
