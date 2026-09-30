@@ -19,7 +19,7 @@ for(let i=0;i<6;i++){ await p.waitForSelector('[data-choix]'); await p.click('[d
 await p.waitForSelector('.fin'); console.log('quiz:',await p.$eval('.score',e=>e.textContent), await p.$eval('.fin h2',e=>e.textContent));
 await p.click('#retour-fin'); await p.waitForSelector('#quiz'); console.log('retour thème OK:', await p.$eval('#quiz',e=>e.textContent));
 await p.click('#nav-accueil'); await p.click('#mission');
-for(let i=0;i<10;i++){ await p.waitForSelector('#verifier'); const qcm=await p.$('[data-choix]'); if(qcm) await p.click('[data-choix]'); else { const n=(await p.$$('.case')).length; for(let j=0;j<n;j++){await p.click('[data-touche="2"]');await p.click('[data-touche="→"]');} } await p.click('#verifier'); await p.click('#verifier'); }
+while(!(await p.$('.fin'))){ await p.waitForSelector('#verifier'); if(await p.$('#texte-rep')) await p.type('#texte-rep','x'); const qcm=await p.$('[data-choix]'); if(qcm) await p.click('[data-choix]'); else { const n=(await p.$$('.case')).length; for(let j=0;j<n;j++){await p.click('[data-touche="2"]');await p.click('[data-touche="→"]');} } await p.click('#verifier'); await p.click('#verifier'); }
 await p.waitForSelector('.fin'); console.log('mission OK');
 const st=JSON.parse(await p.evaluate(()=>localStorage.getItem('mission-bepc:v1'))); console.log('compétences:',Object.keys(st.comp).join(', '));
 console.log('erreurs',errs); await nav.close();
