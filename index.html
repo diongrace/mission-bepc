@@ -181,6 +181,24 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.jour-vocab{display:grid;gap:8px;border:2px solid #2F8A5B}
+.jour-vocab b{font-family:var(--titre);font-size:21px}
+.jour-vocab p{color:var(--encre-2)}
+.jour-vocab.fait{border-color:var(--vert);background:var(--vert-doux)}
+.apercu-jour{display:flex;flex-wrap:wrap;gap:6px}
+.apercu-jour span{background:var(--papier);border:1px solid var(--trait);border-radius:99px;padding:3px 11px;font-weight:800;font-size:14px}
+.grille-themes-vocab{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:10px}
+.theme-vocab{display:flex;gap:12px;align-items:center;background:var(--carte);border:1px solid var(--trait);border-radius:14px;padding:12px;cursor:pointer;text-align:left;min-width:0}
+.tv-emoji{font-size:26px;width:44px;height:44px;border-radius:12px;background:var(--papier);display:grid;place-items:center;flex:none}
+.tv-txt{display:grid;gap:3px;flex:1;min-width:0}
+.tv-txt b{font-family:var(--titre);font-size:16.5px;line-height:1.2}
+.tv-txt small{color:var(--encre-2);font-weight:700;font-size:12.5px}
+.tv-txt .mini{height:6px;background:var(--trait);border-radius:99px;overflow:hidden;display:block}
+.tv-txt .mini i{display:block;height:100%;border-radius:99px}
+.pastille.bleu{background:var(--bleu-doux);color:var(--bleu)}
+.carte-mot{display:grid;gap:10px;text-align:center;justify-items:center;padding-block:26px}
+.carte-mot-sens{font-size:20px;font-weight:800}
+.carte-mot small{color:var(--encre-2)}
 .tab-l{display:grid;gap:6px}
 .tab-defil{overflow-x:auto;border:1px solid var(--trait);border-radius:12px}
 .tab-l table{border-collapse:collapse;width:100%;font-size:14.5px}
@@ -5298,11 +5316,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     arreterEnregistrement();
     nettoyerAnims();
     if (chronoSujet) { clearInterval(chronoSujet); chronoSujet = null; }
-    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier", "guide", "carnet"].includes(e) ? "matieres" : e;
+    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier", "guide", "carnet", "vocab"].includes(e) ? "matieres" : e;
     document.querySelectorAll(".nav button").forEach(b => b.setAttribute("aria-current", b.dataset.aller === onglet ? "page" : "false"));
     if (["chapitre", "theme", "sujet", "oral"].includes(e) && params) { etat.dernier = { e, p: params }; sauver(); }
     document.querySelector(".nav").classList.toggle("cache", e === "exercice" || e === "fin");
-    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, guide: afficherGuide, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, carnet: afficherCarnet, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
+    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, guide: afficherGuide, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, carnet: afficherCarnet, vocab: afficherVocab, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
     window.scrollTo(0, 0);
   }
   document.querySelectorAll(".nav button").forEach(b => b.addEventListener("click", () => aller(b.dataset.aller)));
@@ -5354,7 +5372,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const autre = aTravailler.length ? aTravailler[jour % aTravailler.length] : chapitreDe("fr-dictee");
     const d = decrireDernier(etat.dernier), debut = !meilleur("bases", "test");
     const jours = Math.max(0, Math.ceil((DATE_BEPC - new Date()) / 86400000));
-    const pastilles = [["animations", "Animations", "#7A4FB5", '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'], ["sujets", "Sujets BEPC", "#4F6A8F", ICONES.sujets], ["dictee", "Dictée", "#B8452B", ICONES.francais], ["oral", "Oral d'anglais", "#C23B6B", ICONES.anglais], ["themes", "Grands thèmes", "#D1495B", ICONES.actu], ["carnet", "Carnet de mots", "#0E8A7E", ICONE_CARNET]];
+    const pastilles = [["animations", "Animations", "#7A4FB5", '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'], ["sujets", "Sujets BEPC", "#4F6A8F", ICONES.sujets], ["dictee", "Dictée", "#B8452B", ICONES.francais], ["oral", "Oral d'anglais", "#C23B6B", ICONES.anglais], ["themes", "Grands thèmes", "#D1495B", ICONES.actu], ["vocab", vocabFaitAujourdhui("en") ? "Mots du jour ✓" : "Mots du jour", "#2F8A5B", ICONE_VOCAB], ["carnet", "Carnet de mots", "#0E8A7E", ICONE_CARNET]];
     vue.innerHTML = `<section class="ecran large accueil">
       <header class="hero">
         <div class="hero-haut"><div class="avatar" aria-hidden="true">AZ</div><div class="hero-qui"><small>${salutation()}</small><b>${salutTitre()}</b></div>
@@ -5398,7 +5416,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     vue.querySelectorAll("[data-mat]").forEach(b => b.addEventListener("click", () => ouvrirMat(b.dataset.mat)));
     vue.querySelectorAll("[data-raccourci]").forEach(b => b.addEventListener("click", () => {
       const k = b.dataset.raccourci;
-      if (k === "animations") aller("animations"); else if (k === "sujets") aller("sujets"); else if (k === "themes") aller("themes"); else if (k === "carnet") aller("carnet");
+      if (k === "animations") aller("animations"); else if (k === "sujets") aller("sujets"); else if (k === "themes") aller("themes"); else if (k === "carnet") aller("carnet"); else if (k === "vocab") aller("vocab");
       else if (k === "dictee") aller("chapitre", "fr-dictee"); else { ongletChapitre["en-oral-bepc"] = "exos"; aller("chapitre", "en-oral-bepc"); }
     }));
   }
@@ -5427,12 +5445,14 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
           <span class="txt"><b>${c.titre.replace(/^[^·]+· /, "")}</b><small>${animsDe(c.id).length ? '<span class="pastille vert">▶ animation</span> ' : ""}${c.titre.includes(" · ") ? c.titre.split(" · ")[0] + " · " : ""}${c.periode || c.niveaux.length + " niveaux"}${c.id === moment ? ' · <span class="pastille">En classe</span>' : ""}</small><span class="mini"><i style="width:${p}%;background:${M.couleur}"></i></span></span>
           <span class="etoiles" aria-label="${et} niveau(x) réussi(s) sur ${c.niveaux.length}">${"★".repeat(et)}${"☆".repeat(c.niveaux.length - et)}</span></button>`;
       }).join("")}</div>
+      ${id === "anglais" || id === "espagnol" ? `<button type="button" class="lien-actu" id="vers-vocab" style="border-color:${COUL_VOCAB}"><span class="ic-mini" style="background:${COUL_VOCAB};width:36px;height:36px;border-radius:10px">${ICONE_VOCAB}</span><span style="flex:1;display:grid"><b>Vocabulaire par thème · 5 mots du jour</b><small style="color:var(--encre-2)">${(l => tousMots(l).filter(x => suMot(l, x.m)).length + " mots sus sur " + tousMots(l).length)(id === "anglais" ? "en" : "es")}${vocabFaitAujourdhui(id === "anglais" ? "en" : "es") ? " · fait aujourd'hui ✓" : ""}</small></span>›</button>` : ""}
       ${id === "anglais" || id === "espagnol" ? `<button type="button" class="lien-actu" id="vers-carnet" style="border-color:#0E8A7E"><span class="ic-mini" style="background:#0E8A7E;width:36px;height:36px;border-radius:10px">${ICONE_CARNET}</span><span style="flex:1;display:grid"><b>Mon carnet de mots</b><small style="color:var(--encre-2)">Touche un mot ${id === "anglais" ? "anglais" : "espagnol"} dans un texte pour le traduire · ${(etat.carnet || []).filter(x => x.l === (id === "anglais" ? "en" : "es")).length} mot(s) gardé(s)</small></span>›</button>` : ""}
       ${sm.length ? `<span class="etiquette">S'entraîner comme au BEPC</span>` + sm.map(x => `<button type="button" class="lien-actu" data-sujet="${x.id}" style="border-color:${M.couleur}"><span style="font-size:22px">✍</span><span style="flex:1;display:grid"><b>${x.titre}</b><small>Sujet complet · corrigé détaillé · barème</small></span><span style="color:var(--bleu);font-weight:800">›</span></button>`).join("") : ""}
     </section>`;
     vue.querySelector("#retour").addEventListener("click", () => aller("matieres"));
     vue.querySelectorAll("[data-chap]").forEach(b => b.addEventListener("click", () => aller("chapitre", b.dataset.chap)));
     vue.querySelectorAll("[data-sujet]").forEach(b => b.addEventListener("click", () => aller("sujet", b.dataset.sujet)));
+    const vv = vue.querySelector("#vers-vocab"); if (vv) vv.addEventListener("click", () => aller("vocab", id === "anglais" ? "en" : "es"));
     const vc = vue.querySelector("#vers-carnet"); if (vc) vc.addEventListener("click", () => aller("carnet", id === "anglais" ? "en" : "es"));
   }
   const ongletChapitre = {};
@@ -8109,6 +8129,200 @@ playa=plage`;
     };
     document.querySelector(".nav").classList.add("cache");
     question();
+  }
+
+  // =========================================================
+  // Vocabulaire du BEPC par thème (mot=traduction ; séparés par « | »)
+  // =========================================================
+  const V = (id, titre, lettre, brut) => ({ id, titre, lettre, mots: brut.split("|").map(x => x.trim().split("=")) });
+  const VOCAB = {
+    en: [
+      V("famille", "La famille et les gens", "👪", "father=le père|mother=la mère|parents=les parents|brother=le frère|sister=la sœur|son=le fils|daughter=la fille (de…)|uncle=l'oncle|aunt=la tante|cousin=le cousin, la cousine|grandfather=le grand-père|grandmother=la grand-mère|husband=le mari|wife=l'épouse|child=l'enfant|children=les enfants|baby=le bébé|friend=l'ami(e)|neighbour=le voisin|twin=le jumeau, la jumelle|nephew=le neveu|niece=la nièce|boy=le garçon|girl=la fille|people=les gens"),
+      V("ecole", "L'école", "🎒", "school=l'école|classroom=la salle de classe|teacher=le professeur|pupil=l'élève|headmaster=le directeur, le proviseur|subject=la matière|homework=les devoirs|exam=l'examen|test=le contrôle|mark=la note|lesson=la leçon|timetable=l'emploi du temps|break=la récréation|desk=la table (d'élève)|blackboard=le tableau|pen=le stylo|pencil=le crayon|ruler=la règle|rubber=la gomme|schoolbag=le cartable|uniform=l'uniforme|library=la bibliothèque|to learn=apprendre|to pass=réussir (un examen)|to fail=échouer, rater"),
+      V("sante", "Le corps et la santé", "🩺", "head=la tête|eye=l'œil|ear=l'oreille|nose=le nez|mouth=la bouche|tooth=la dent|hand=la main|arm=le bras|leg=la jambe|foot=le pied|stomach=le ventre, l'estomac|heart=le cœur|blood=le sang|fever=la fièvre|headache=le mal de tête|cough=la toux|disease=la maladie|malaria=le paludisme|medicine=le médicament|doctor=le médecin|nurse=l'infirmier, l'infirmière|hospital=l'hôpital|vaccine=le vaccin|mosquito net=la moustiquaire|to be sick=être malade"),
+      V("ville", "La maison et la ville", "🏘️", "house=la maison|room=la pièce|bedroom=la chambre|kitchen=la cuisine|bathroom=la salle de bain|living room=le salon|door=la porte|window=la fenêtre|roof=le toit|yard=la cour|town=la ville|village=le village|street=la rue|market=le marché|shop=le magasin, la boutique|church=l'église|mosque=la mosquée|bank=la banque|post office=la poste|police station=le commissariat|bridge=le pont|road=la route|neighbourhood=le quartier|building=l'immeuble|gutter=le caniveau"),
+      V("nourriture", "La nourriture et le marché", "🥭", "food=la nourriture|rice=le riz|bread=le pain|meat=la viande|fish=le poisson|chicken=le poulet|egg=l'œuf|vegetables=les légumes|fruit=les fruits|mango=la mangue|banana=la banane|pineapple=l'ananas|tomato=la tomate|onion=l'oignon|pepper=le piment|oil=l'huile|salt=le sel|sugar=le sucre|milk=le lait|breakfast=le petit-déjeuner|lunch=le déjeuner|dinner=le dîner|to buy=acheter|to sell=vendre|price=le prix"),
+      V("environnement", "L'environnement et le climat", "🌳", "environment=l'environnement|nature=la nature|forest=la forêt|tree=l'arbre|river=le fleuve, la rivière|sea=la mer|sky=le ciel|sun=le soleil|rain=la pluie|flood=l'inondation|drought=la sécheresse|heat=la chaleur|pollution=la pollution|rubbish=les ordures|plastic=le plastique|waste=les déchets|dustbin=la poubelle|climate change=le changement climatique|to recycle=recycler|to protect=protéger|to plant=planter|to cut down=abattre (un arbre)|animal=l'animal|air=l'air|soil=le sol, la terre"),
+      V("metiers", "Les métiers", "👷", "job=le métier, l'emploi|farmer=l'agriculteur, le planteur|engineer=l'ingénieur|lawyer=l'avocat|journalist=le journaliste|driver=le chauffeur|mechanic=le mécanicien|tailor=le tailleur, le couturier|hairdresser=le coiffeur|carpenter=le menuisier|mason=le maçon|soldier=le soldat|policeman=le policier|pilot=le pilote|cook=le cuisinier|singer=le chanteur|trader=le commerçant|fisherman=le pêcheur|businessman=l'homme d'affaires|secretary=le, la secrétaire|accountant=le comptable|pharmacist=le pharmacien|midwife=la sage-femme|salary=le salaire|unemployed=au chômage"),
+      V("loisirs", "Le sport et les loisirs", "⚽", "sport=le sport|football=le football|match=le match|team=l'équipe|player=le joueur|goal=le but|referee=l'arbitre|stadium=le stade|to win=gagner|to lose=perdre|to play=jouer|music=la musique|song=la chanson|to sing=chanter|to dance=danser|film=le film|book=le livre|to read=lire|holidays=les vacances|beach=la plage|game=le jeu|hobby=le passe-temps|drawing=le dessin|swimming=la natation|free time=le temps libre"),
+      V("numerique", "Le numérique et les médias", "📱", "mobile phone=le téléphone portable|computer=l'ordinateur|internet=internet|website=le site internet|social media=les réseaux sociaux|app=l'application|message=le message|password=le mot de passe|screen=l'écran|keyboard=le clavier|to download=télécharger|to share=partager|to send=envoyer|video=la vidéo|camera=l'appareil photo|news=les informations|newspaper=le journal|radio=la radio|television=la télévision|fake news=les fausses informations|scam=l'arnaque|cyberbullying=le harcèlement en ligne|artificial intelligence=l'intelligence artificielle|battery=la batterie|to charge=charger"),
+      V("citoyennete", "La citoyenneté et la paix", "🕊️", "citizen=le citoyen|citizenship=la citoyenneté|peace=la paix|war=la guerre|law=la loi|right=le droit|duty=le devoir|to vote=voter|election=l'élection|government=le gouvernement|president=le président|country=le pays|flag=le drapeau|national anthem=l'hymne national|independence=l'indépendance|freedom=la liberté|justice=la justice|respect=le respect|tolerance=la tolérance|violence=la violence|union=l'union|discipline=la discipline|work=le travail|community=la communauté|volunteer=le bénévole"),
+      V("temps", "Le temps et le calendrier", "📅", "day=le jour|week=la semaine|month=le mois|year=l'année|today=aujourd'hui|yesterday=hier|tomorrow=demain|morning=le matin|afternoon=l'après-midi|evening=le soir|night=la nuit|Monday=lundi|Tuesday=mardi|Wednesday=mercredi|Thursday=jeudi|Friday=vendredi|Saturday=samedi|Sunday=dimanche|season=la saison|rainy season=la saison des pluies|dry season=la saison sèche|hour=l'heure|minute=la minute|early=tôt|late=tard, en retard"),
+      V("voyages", "Les voyages et les transports", "🚌", "to travel=voyager|trip=le voyage, l'excursion|car=la voiture|bus=le bus, le car|taxi=le taxi|train=le train|plane=l'avion|boat=le bateau|bicycle=le vélo|motorbike=la moto|ticket=le billet, le ticket|station=la gare|airport=l'aéroport|port=le port|passport=le passeport|luggage=les bagages|map=la carte|on the left=à gauche|on the right=à droite|straight on=tout droit|far=loin|near=près|to arrive=arriver|to leave=partir|traffic jam=l'embouteillage")
+    ],
+    es: [
+      V("familia", "La familia", "👪", "el padre=le père|la madre=la mère|los padres=les parents|el hermano=le frère|la hermana=la sœur|el hijo=le fils|la hija=la fille (de…)|el abuelo=le grand-père|la abuela=la grand-mère|el tío=l'oncle|la tía=la tante|el primo=le cousin|el bebé=le bébé|el amigo=l'ami|el vecino=le voisin"),
+      V("colegio", "El colegio", "🎒", "el colegio=le collège|la clase=la classe, le cours|el profesor=le professeur|el alumno=l'élève|la asignatura=la matière|los deberes=les devoirs|el examen=l'examen|la nota=la note|la lección=la leçon|el libro=le livre|el cuaderno=le cahier|el bolígrafo=le stylo|el lápiz=le crayon|la pizarra=le tableau|el recreo=la récréation"),
+      V("cuerpo", "El cuerpo y la salud", "🩺", "la cabeza=la tête|el ojo=l'œil|la boca=la bouche|la mano=la main|el brazo=le bras|la pierna=la jambe|el pie=le pied|el corazón=le cœur|la barriga=le ventre|la fiebre=la fièvre|el dolor de cabeza=le mal de tête|enfermo=malade|el médico=le médecin|el hospital=l'hôpital|la medicina=le médicament"),
+      V("casa", "La casa y la ciudad", "🏘️", "la casa=la maison|la habitación=la chambre, la pièce|la cocina=la cuisine|la puerta=la porte|la ventana=la fenêtre|el patio=la cour|la ciudad=la ville|el pueblo=le village|la calle=la rue|el mercado=le marché|la tienda=le magasin|la iglesia=l'église|el puente=le pont|el barrio=le quartier|la escuela=l'école"),
+      V("comida", "La comida", "🥭", "la comida=la nourriture, le repas|el arroz=le riz|el pan=le pain|la carne=la viande|el pescado=le poisson (à manger)|el pollo=le poulet|el huevo=l'œuf|la fruta=le fruit|la verdura=le légume|el mango=la mangue|el plátano=la banane|la piña=l'ananas|el agua=l'eau|la leche=le lait|el desayuno=le petit-déjeuner"),
+      V("calendario", "El tiempo y el calendario", "📅", "el día=le jour|la semana=la semaine|el mes=le mois|el año=l'année|hoy=aujourd'hui|ayer=hier|mañana=demain|el lunes=lundi|el martes=mardi|el miércoles=mercredi|el jueves=jeudi|el viernes=vendredi|el sábado=samedi|el domingo=dimanche|la noche=la nuit, le soir"),
+      V("oficios", "Los oficios", "👷", "el ingeniero=l'ingénieur|el abogado=l'avocat|el enfermero=l'infirmier|el periodista=le journaliste|el policía=le policier|el conductor=le chauffeur|el cocinero=le cuisinier|el agricultor=l'agriculteur|el comerciante=le commerçant|el futbolista=le footballeur|el cantante=le chanteur|el mecánico=le mécanicien|el piloto=le pilote|el trabajo=le travail|trabajar=travailler"),
+      V("ocio", "El ocio y el deporte", "⚽", "el deporte=le sport|el fútbol=le football|el equipo=l'équipe|el partido=le match|ganar=gagner|perder=perdre|jugar=jouer|la música=la musique|la canción=la chanson|bailar=danser|cantar=chanter|la película=le film|las vacaciones=les vacances|la playa=la plage|leer=lire"),
+      V("naturaleza", "La naturaleza", "🌳", "la naturaleza=la nature|el árbol=l'arbre|el bosque=la forêt|el río=le fleuve, la rivière|el mar=la mer|el cielo=le ciel|el sol=le soleil|la lluvia=la pluie|el calor=la chaleur|la basura=les ordures|el plástico=le plastique|la contaminación=la pollution|proteger=protéger|plantar=planter|la inundación=l'inondation")
+    ]
+  };
+
+  // ---------- Vocabulaire par thème · 5 mots du jour (répétition espacée) ----------
+  const COUL_VOCAB = "#2F8A5B";
+  const ICONE_VOCAB = ic('<rect x="3" y="6" width="13" height="15" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v12"/><path d="M7 11h5M7 15h3"/>');
+  const ATTENTES = [0, 1, 2, 4, 8, 16];           // jours avant de revoir un mot, selon sa « boîte »
+  const plusJours = k => { const d = new Date(); d.setDate(d.getDate() + k); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  const cleMot = (l, m) => l + ":" + m;
+  const etatMot = (l, m) => (etat.vocab || {})[cleMot(l, m)];
+  const suMot = (l, m) => { const e = etatMot(l, m); return !!e && e.b >= 3; };
+  const tousMots = l => VOCAB[l].flatMap(t => t.mots.map(([m, f]) => ({ l, m, f, t: t.id })));
+  const sansArticle = m => m.replace(/^(el|la|los|las|to) /i, "");
+  // Les mots du vocabulaire rejoignent le dictionnaire « toucher un mot »
+  ["en", "es"].forEach(l => VOCAB[l].forEach(t => t.mots.forEach(([m, f]) => { const k = sansArticle(m).toLowerCase(); if (!DICO[l][k]) DICO[l][k] = f; })));
+
+  function motsDuJour(l, n = 5) {
+    const auj = aujourdhui(), vus = etat.vocab || {};
+    const dus = tousMots(l).filter(x => vus[cleMot(l, x.m)] && vus[cleMot(l, x.m)].n <= auj).sort((a, b) => vus[cleMot(l, a.m)].b - vus[cleMot(l, b.m)].b);
+    const neufs = tousMots(l).filter(x => !vus[cleMot(l, x.m)]);
+    return dus.slice(0, n).concat(neufs.slice(0, Math.max(0, n - Math.min(n, dus.length))));
+  }
+  const vocabFaitAujourdhui = l => (etat.vocabJour || {})[l] === aujourdhui();
+  const langueVocab = { l: "en" };
+
+  function afficherVocab(p) {
+    const [lp, theme] = String(p || "").split(":");
+    if (lp === "en" || lp === "es") langueVocab.l = lp;
+    const l = langueVocab.l;
+    if (theme) return afficherThemeVocab(l, theme);
+    const tous = tousMots(l), sus = tous.filter(x => suMot(l, x.m)).length, fait = vocabFaitAujourdhui(l), jour = motsDuJour(l);
+    vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ Mes matières</button>
+      ${bandeau(COUL_VOCAB, ICONE_VOCAB, "Vocabulaire du BEPC", `${sus} mot${sus > 1 ? "s" : ""} sus sur ${tous.length} · ${l === "en" ? "anglais" : "espagnol"}`, Math.round(sus / tous.length * 100))}
+      <div class="onglets" role="tablist" style="--c:${COUL_VOCAB}">${[["en", "Anglais"], ["es", "Espagnol"]].map(([k, n]) => `<button type="button" role="tab" data-langue-vocab="${k}" aria-selected="${k === l}">${n}</button>`).join("")}</div>
+      <div class="carte jour-vocab${fait ? " fait" : ""}">
+        <span class="etiquette">${fait ? "Mots du jour · fait ✓" : "Mots du jour"}</span>
+        <b>${fait ? "Bravo, c'est fait pour aujourd'hui !" : `${jour.length} mots, 3 minutes`}</b>
+        <p>${fait ? "Reviens demain : les mots reviennent juste avant que tu les oublies." : jour.some(x => etatMot(l, x.m)) ? "Des mots à revoir, et des mots nouveaux pour avancer." : "Tu découvres tes premiers mots. Écoute-les bien."}</p>
+        ${jour.length ? `<div class="apercu-jour">${jour.map(x => `<span lang="${l}">${x.m}</span>`).join("")}</div>` : ""}
+        <button type="button" class="bouton" id="lancer-jour">${fait ? "Réviser encore 5 mots" : "Commencer"}</button>
+      </div>
+      <p style="color:var(--encre-2);font-size:14px">Un mot bien trouvé revient dans 1, puis 2, 4, 8 et 16 jours. Un mot raté revient demain. D'abord tu le reconnais, ensuite tu dois l'écrire.</p>
+      <span class="etiquette">Les thèmes</span>
+      <div class="grille-themes-vocab">${VOCAB[l].map(t => { const n = t.mots.filter(([m]) => suMot(l, m)).length, pct = Math.round(n / t.mots.length * 100);
+        return `<button type="button" class="theme-vocab" data-theme-vocab="${t.id}"><span class="tv-emoji" aria-hidden="true">${t.lettre}</span><span class="tv-txt"><b>${t.titre}</b><small>${n}/${t.mots.length} sus</small><span class="mini"><i style="width:${Math.max(pct, 2)}%;background:${COUL_VOCAB}"></i></span></span></button>`; }).join("")}</div>
+    </section>`;
+    vue.querySelector("#retour").addEventListener("click", () => aller("matieres"));
+    vue.querySelectorAll("[data-langue-vocab]").forEach(b => b.addEventListener("click", () => afficherVocab(b.dataset.langueVocab)));
+    vue.querySelectorAll("[data-theme-vocab]").forEach(b => b.addEventListener("click", () => afficherThemeVocab(l, b.dataset.themeVocab)));
+    vue.querySelector("#lancer-jour").addEventListener("click", () => sessionVocab(l, jour.length ? jour : melanger(tousMots(l)).slice(0, 5), "jour"));
+  }
+
+  function afficherThemeVocab(l, id) {
+    const t = VOCAB[l].find(x => x.id === id); if (!t) return afficherVocab(l);
+    const etatTxt = m => { const e = etatMot(l, m); return !e ? '<span class="pastille">nouveau</span>' : e.b >= 3 ? '<span class="pastille vert">su ✓</span>' : '<span class="pastille bleu">en cours</span>'; };
+    vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ Vocabulaire</button>
+      ${bandeau(COUL_VOCAB, `<span style="font-size:26px">${t.lettre}</span>`, t.titre, `${t.mots.filter(([m]) => suMot(l, m)).length}/${t.mots.length} mots sus`, Math.round(t.mots.filter(([m]) => suMot(l, m)).length / t.mots.length * 100))}
+      <button type="button" class="bouton" id="reviser-theme">Réviser ce thème (10 mots)</button>
+      <div class="liste-carnet">${t.mots.map(([m, f]) => `<div class="mot-carnet"><div class="mc-mot"><b lang="${l}">${m}</b></div><div class="mc-sens">${f}</div><div class="mc-actions">${etatTxt(m)}${btnEcoute(m, l === "es" ? "es-ES" : "en-GB", "Écouter", true)}</div></div>`).join("")}</div>
+    </section>`;
+    vue.querySelector("#retour").addEventListener("click", () => afficherVocab(l));
+    vue.querySelector("#reviser-theme").addEventListener("click", () => {
+      const vus = etat.vocab || {}, liste = t.mots.map(([m, f]) => ({ l, m, f, t: id })).sort((a, b) => ((vus[cleMot(l, a.m)] || { b: -1 }).b - (vus[cleMot(l, b.m)] || { b: -1 }).b) || Math.random() - 0.5);
+      sessionVocab(l, liste.slice(0, 10), "theme:" + id);
+    });
+    brancherEcoute();
+  }
+
+  // ---------- La séance ----------
+  function sessionVocab(l, mots, origine) {
+    const voixL = l === "es" ? "es-ES" : "en-GB";
+    const etapes = [];
+    mots.forEach(x => { const e = etatMot(l, x.m); if (!e) etapes.push({ x, type: "carte" }); });
+    melanger(mots.slice()).forEach(x => { const e = etatMot(l, x.m); etapes.push({ x, type: e && e.b >= 2 ? "ecrire" : "qcm" }); });
+    let i = 0, bonnes = 0, questions = etapes.filter(e => e.type !== "carte").length;
+    const norme = t => t.toLowerCase().replace(/[’‘`]/g, "'").replace(/\s+/g, " ").trim().replace(/[.!?,;:]+$/, "");
+    const sansAcc = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "");
+    const noter = (x, juste) => {
+      etat.vocab = etat.vocab || {};
+      const k = cleMot(l, x.m), e = etat.vocab[k] || { b: 0 };
+      e.b = juste ? Math.min(5, e.b + 1) : 1; e.n = plusJours(juste ? ATTENTES[e.b] : 1);
+      etat.vocab[k] = e; sauver();
+    };
+    const haut = () => `<div class="exo-haut"><button type="button" class="quitter" id="quitter" aria-label="Quitter">✕</button>
+      <div class="progress"><i style="width:${i / etapes.length * 100}%"></i></div><span class="exo-titre">${i + 1}/${etapes.length}</span></div>
+      <span class="exo-titre">Vocabulaire · ${l === "en" ? "Anglais" : "Espagnol"}${origine === "jour" ? " · mots du jour" : ""}</span>`;
+    const brancherHaut = () => vue.querySelector("#quitter").addEventListener("click", () => aller("vocab", l));
+    const etape = () => {
+      if (i >= etapes.length) return fin();
+      const { x, type } = etapes[i];
+      if (type === "carte") {
+        vue.innerHTML = `<section class="ecran">${haut()}
+          <div class="carte carte-mot"><span class="etiquette">Nouveau mot</span><div class="bulle-ligne"><b class="mot-quiz" lang="${l}">${x.m}</b>${btnEcoute(x.m, voixL, "Écouter", true)}</div>
+          <p class="carte-mot-sens">${x.f}</p><small>Répète-le deux fois à voix haute, puis continue.</small></div>
+          <button type="button" class="bouton" id="suite">Je l'ai retenu ›</button></section>`;
+        brancherHaut(); brancherEcoute();
+        const bt = vue.querySelector("[data-parle]"); if (bt && voixOk) setTimeout(() => parler(x.m, voixL, bt), 250);
+        vue.querySelector("#suite").addEventListener("click", () => { i++; etape(); });
+        return;
+      }
+      if (type === "qcm") {
+        const t = VOCAB[l].find(y => y.id === x.t), autres = melanger(t.mots.filter(([m]) => m !== x.m)).slice(0, 3).map(([, f]) => f), choix = melanger([x.f, ...autres]);
+        vue.innerHTML = `<section class="ecran">${haut()}
+          <div class="question"><p>Que veut dire ce mot ?</p><div class="bulle-ligne"><p class="mot-quiz" lang="${l}">${x.m}</p>${btnEcoute(x.m, voixL, "Écouter", true)}</div></div>
+          <div class="choix">${choix.map(c => `<button type="button" data-rep="${encodeURIComponent(c)}">${c}</button>`).join("")}</div>
+          <p class="message" id="message" aria-live="polite"></p><button type="button" class="bouton cache" id="suite">Continuer</button></section>`;
+        brancherHaut(); brancherEcoute();
+        vue.querySelectorAll("[data-rep]").forEach(b => b.addEventListener("click", () => {
+          if (vue.querySelector(".choix").dataset.fait) return; vue.querySelector(".choix").dataset.fait = "1";
+          const juste = decodeURIComponent(b.dataset.rep) === x.f;
+          vue.querySelectorAll("[data-rep]").forEach(y => { if (decodeURIComponent(y.dataset.rep) === x.f) y.classList.add("juste"); else if (y === b) y.classList.add("faux"); });
+          resultat(x, juste, "");
+        }));
+      } else {
+        vue.innerHTML = `<section class="ecran">${haut()}
+          <div class="question"><p>Écris en ${l === "en" ? "anglais" : "espagnol"}${l === "es" && /^(el|la|los|las) /.test(x.m) ? " (avec l'article el, la, los ou las)" : ""} :</p><p class="mot-quiz">« ${x.f} »</p></div>
+          <input id="ecrit-rep" class="ecrit-rep" type="text" lang="${l}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Ta réponse" placeholder="Écris le mot ici">
+          ${l === "es" ? `<div class="accents" role="group" aria-label="Lettres espagnoles">${["á", "é", "í", "ó", "ú", "ñ"].map(a => `<button type="button" data-accent="${a}">${a}</button>`).join("")}</div>` : ""}
+          <p class="message" id="message" aria-live="polite"></p>
+          <button type="button" class="bouton" id="verifier-mot">Vérifier</button><button type="button" class="bouton cache" id="suite">Continuer</button></section>`;
+        brancherHaut();
+        const champ = vue.querySelector("#ecrit-rep");
+        vue.querySelectorAll("[data-accent]").forEach(b => b.addEventListener("click", () => { const a = champ.selectionStart ?? champ.value.length; champ.value = champ.value.slice(0, a) + b.dataset.accent + champ.value.slice(a); champ.focus(); champ.setSelectionRange(a + 1, a + 1); }));
+        const verifier = () => {
+          const s = champ.value.trim(); if (!s) { vue.querySelector("#message").textContent = "Écris le mot avant de vérifier."; return; }
+          if (champ.readOnly) return; champ.readOnly = true;
+          const attendu = norme(x.m), tape = norme(s);
+          let juste = tape === attendu || (l === "en" && sansArticle(tape) === sansArticle(attendu)), note = "";
+          if (!juste && sansAcc(tape) === sansAcc(attendu)) note = "Presque : attention à l'accent !";
+          else if (!juste && l === "es" && sansArticle(tape) === sansArticle(attendu)) note = "Presque : n'oublie pas l'article.";
+          vue.querySelector("#verifier-mot").classList.add("cache");
+          resultat(x, juste, note);
+        };
+        vue.querySelector("#verifier-mot").addEventListener("click", verifier);
+        champ.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); champ.readOnly ? vue.querySelector("#suite").click() : verifier(); } });
+        if (window.matchMedia("(hover:hover)").matches) champ.focus();
+      }
+    };
+    const resultat = (x, juste, note) => {
+      if (juste) bonnes++; noter(x, juste); juste ? sonJuste() : sonFaux();
+      const m = vue.querySelector("#message");
+      m.innerHTML = (juste ? `<b style="color:var(--vert)">${parmi(ENCOURAGE)}</b> ` : `<b style="color:var(--rouge)">${note || "Pas tout à fait."}</b> `) + `<span lang="${l}"><b>${x.m}</b></span> = ${x.f}` +
+        (juste ? ` <small style="color:var(--encre-2)">· tu le reverras dans ${ATTENTES[etatMot(l, x.m).b]} jour${ATTENTES[etatMot(l, x.m).b] > 1 ? "s" : ""}</small>` : ` <small style="color:var(--encre-2)">· il reviendra demain</small>`);
+      const s = vue.querySelector("#suite"); s.classList.remove("cache"); s.focus();
+      s.addEventListener("click", () => { i++; etape(); });
+    };
+    const fin = () => {
+      const gain = bonnes * 2, j = aujourdhui(); etat.xp += gain;
+      if (etat.dernierJour !== j) { etat.serie = etat.dernierJour === hier() ? etat.serie + 1 : 1; etat.dernierJour = j; }
+      if (origine === "jour") etat.vocabJour = Object.assign({}, etat.vocabJour, { [l]: j });
+      sauver();
+      const parfait = bonnes === questions;
+      vue.innerHTML = `<section class="ecran fin"><div class="carte" style="display:grid;gap:10px;text-align:center;justify-items:center">
+        ${anneau(Math.round(bonnes / Math.max(1, questions) * 100), "var(--vert)", 96)}
+        <h2>${parfait ? "Sans faute !" : bonnes >= questions / 2 ? "Bien joué !" : "Continue, ça rentre !"}</h2>
+        <p>${bonnes}/${questions} bonnes réponses · +${gain} points${origine === "jour" ? " · mots du jour faits ✓" : ""}</p>
+        <p style="color:var(--encre-2)">${tousMots(l).filter(x => suMot(l, x.m)).length} mots sus sur ${tousMots(l).length} en ${l === "en" ? "anglais" : "espagnol"}.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button type="button" class="bouton" id="vers-vocab">Retour au vocabulaire</button></div></div></section>`;
+      if (parfait) { sonReussite(); confettis(90); }
+      vue.querySelector("#vers-vocab").addEventListener("click", () => aller("vocab", l));
+    };
+    document.querySelector(".nav").classList.add("cache");
+    etape();
   }
 
   // ---------- Grands thèmes 2026 ----------

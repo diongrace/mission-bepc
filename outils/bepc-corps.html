@@ -162,6 +162,24 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.jour-vocab{display:grid;gap:8px;border:2px solid #2F8A5B}
+.jour-vocab b{font-family:var(--titre);font-size:21px}
+.jour-vocab p{color:var(--encre-2)}
+.jour-vocab.fait{border-color:var(--vert);background:var(--vert-doux)}
+.apercu-jour{display:flex;flex-wrap:wrap;gap:6px}
+.apercu-jour span{background:var(--papier);border:1px solid var(--trait);border-radius:99px;padding:3px 11px;font-weight:800;font-size:14px}
+.grille-themes-vocab{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:10px}
+.theme-vocab{display:flex;gap:12px;align-items:center;background:var(--carte);border:1px solid var(--trait);border-radius:14px;padding:12px;cursor:pointer;text-align:left;min-width:0}
+.tv-emoji{font-size:26px;width:44px;height:44px;border-radius:12px;background:var(--papier);display:grid;place-items:center;flex:none}
+.tv-txt{display:grid;gap:3px;flex:1;min-width:0}
+.tv-txt b{font-family:var(--titre);font-size:16.5px;line-height:1.2}
+.tv-txt small{color:var(--encre-2);font-weight:700;font-size:12.5px}
+.tv-txt .mini{height:6px;background:var(--trait);border-radius:99px;overflow:hidden;display:block}
+.tv-txt .mini i{display:block;height:100%;border-radius:99px}
+.pastille.bleu{background:var(--bleu-doux);color:var(--bleu)}
+.carte-mot{display:grid;gap:10px;text-align:center;justify-items:center;padding-block:26px}
+.carte-mot-sens{font-size:20px;font-weight:800}
+.carte-mot small{color:var(--encre-2)}
 .tab-l{display:grid;gap:6px}
 .tab-defil{overflow-x:auto;border:1px solid var(--trait);border-radius:12px}
 .tab-l table{border-collapse:collapse;width:100%;font-size:14.5px}
@@ -848,11 +866,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     arreterEnregistrement();
     nettoyerAnims();
     if (chronoSujet) { clearInterval(chronoSujet); chronoSujet = null; }
-    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier", "guide", "carnet"].includes(e) ? "matieres" : e;
+    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier", "guide", "carnet", "vocab"].includes(e) ? "matieres" : e;
     document.querySelectorAll(".nav button").forEach(b => b.setAttribute("aria-current", b.dataset.aller === onglet ? "page" : "false"));
     if (["chapitre", "theme", "sujet", "oral"].includes(e) && params) { etat.dernier = { e, p: params }; sauver(); }
     document.querySelector(".nav").classList.toggle("cache", e === "exercice" || e === "fin");
-    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, guide: afficherGuide, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, carnet: afficherCarnet, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
+    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, guide: afficherGuide, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, carnet: afficherCarnet, vocab: afficherVocab, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
     window.scrollTo(0, 0);
   }
   document.querySelectorAll(".nav button").forEach(b => b.addEventListener("click", () => aller(b.dataset.aller)));
@@ -904,7 +922,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const autre = aTravailler.length ? aTravailler[jour % aTravailler.length] : chapitreDe("fr-dictee");
     const d = decrireDernier(etat.dernier), debut = !meilleur("bases", "test");
     const jours = Math.max(0, Math.ceil((DATE_BEPC - new Date()) / 86400000));
-    const pastilles = [["animations", "Animations", "#7A4FB5", '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'], ["sujets", "Sujets BEPC", "#4F6A8F", ICONES.sujets], ["dictee", "Dictée", "#B8452B", ICONES.francais], ["oral", "Oral d'anglais", "#C23B6B", ICONES.anglais], ["themes", "Grands thèmes", "#D1495B", ICONES.actu], ["carnet", "Carnet de mots", "#0E8A7E", ICONE_CARNET]];
+    const pastilles = [["animations", "Animations", "#7A4FB5", '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'], ["sujets", "Sujets BEPC", "#4F6A8F", ICONES.sujets], ["dictee", "Dictée", "#B8452B", ICONES.francais], ["oral", "Oral d'anglais", "#C23B6B", ICONES.anglais], ["themes", "Grands thèmes", "#D1495B", ICONES.actu], ["vocab", vocabFaitAujourdhui("en") ? "Mots du jour ✓" : "Mots du jour", "#2F8A5B", ICONE_VOCAB], ["carnet", "Carnet de mots", "#0E8A7E", ICONE_CARNET]];
     vue.innerHTML = `<section class="ecran large accueil">
       <header class="hero">
         <div class="hero-haut"><div class="avatar" aria-hidden="true">AZ</div><div class="hero-qui"><small>${salutation()}</small><b>${salutTitre()}</b></div>
@@ -948,7 +966,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     vue.querySelectorAll("[data-mat]").forEach(b => b.addEventListener("click", () => ouvrirMat(b.dataset.mat)));
     vue.querySelectorAll("[data-raccourci]").forEach(b => b.addEventListener("click", () => {
       const k = b.dataset.raccourci;
-      if (k === "animations") aller("animations"); else if (k === "sujets") aller("sujets"); else if (k === "themes") aller("themes"); else if (k === "carnet") aller("carnet");
+      if (k === "animations") aller("animations"); else if (k === "sujets") aller("sujets"); else if (k === "themes") aller("themes"); else if (k === "carnet") aller("carnet"); else if (k === "vocab") aller("vocab");
       else if (k === "dictee") aller("chapitre", "fr-dictee"); else { ongletChapitre["en-oral-bepc"] = "exos"; aller("chapitre", "en-oral-bepc"); }
     }));
   }
@@ -977,12 +995,14 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
           <span class="txt"><b>${c.titre.replace(/^[^·]+· /, "")}</b><small>${animsDe(c.id).length ? '<span class="pastille vert">▶ animation</span> ' : ""}${c.titre.includes(" · ") ? c.titre.split(" · ")[0] + " · " : ""}${c.periode || c.niveaux.length + " niveaux"}${c.id === moment ? ' · <span class="pastille">En classe</span>' : ""}</small><span class="mini"><i style="width:${p}%;background:${M.couleur}"></i></span></span>
           <span class="etoiles" aria-label="${et} niveau(x) réussi(s) sur ${c.niveaux.length}">${"★".repeat(et)}${"☆".repeat(c.niveaux.length - et)}</span></button>`;
       }).join("")}</div>
+      ${id === "anglais" || id === "espagnol" ? `<button type="button" class="lien-actu" id="vers-vocab" style="border-color:${COUL_VOCAB}"><span class="ic-mini" style="background:${COUL_VOCAB};width:36px;height:36px;border-radius:10px">${ICONE_VOCAB}</span><span style="flex:1;display:grid"><b>Vocabulaire par thème · 5 mots du jour</b><small style="color:var(--encre-2)">${(l => tousMots(l).filter(x => suMot(l, x.m)).length + " mots sus sur " + tousMots(l).length)(id === "anglais" ? "en" : "es")}${vocabFaitAujourdhui(id === "anglais" ? "en" : "es") ? " · fait aujourd'hui ✓" : ""}</small></span>›</button>` : ""}
       ${id === "anglais" || id === "espagnol" ? `<button type="button" class="lien-actu" id="vers-carnet" style="border-color:#0E8A7E"><span class="ic-mini" style="background:#0E8A7E;width:36px;height:36px;border-radius:10px">${ICONE_CARNET}</span><span style="flex:1;display:grid"><b>Mon carnet de mots</b><small style="color:var(--encre-2)">Touche un mot ${id === "anglais" ? "anglais" : "espagnol"} dans un texte pour le traduire · ${(etat.carnet || []).filter(x => x.l === (id === "anglais" ? "en" : "es")).length} mot(s) gardé(s)</small></span>›</button>` : ""}
       ${sm.length ? `<span class="etiquette">S'entraîner comme au BEPC</span>` + sm.map(x => `<button type="button" class="lien-actu" data-sujet="${x.id}" style="border-color:${M.couleur}"><span style="font-size:22px">✍</span><span style="flex:1;display:grid"><b>${x.titre}</b><small>Sujet complet · corrigé détaillé · barème</small></span><span style="color:var(--bleu);font-weight:800">›</span></button>`).join("") : ""}
     </section>`;
     vue.querySelector("#retour").addEventListener("click", () => aller("matieres"));
     vue.querySelectorAll("[data-chap]").forEach(b => b.addEventListener("click", () => aller("chapitre", b.dataset.chap)));
     vue.querySelectorAll("[data-sujet]").forEach(b => b.addEventListener("click", () => aller("sujet", b.dataset.sujet)));
+    const vv = vue.querySelector("#vers-vocab"); if (vv) vv.addEventListener("click", () => aller("vocab", id === "anglais" ? "en" : "es"));
     const vc = vue.querySelector("#vers-carnet"); if (vc) vc.addEventListener("click", () => aller("carnet", id === "anglais" ? "en" : "es"));
   }
   const ongletChapitre = {};
@@ -1168,6 +1188,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
 /*ORALECRAN*/
 /*DICO*/
 /*TRADUCTION*/
+/*VOCAB*/
   // ---------- Grands thèmes 2026 ----------
   const hautParleur = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>`;
   const voixOk = "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
