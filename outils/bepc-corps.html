@@ -162,6 +162,42 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.anim{background:var(--carte);border:2px solid #7A4FB5;border-radius:18px;padding:12px;display:grid;gap:10px}
+.anim-tete{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.anim-tete b{font-family:var(--titre);font-size:18px;line-height:1.15}
+.anim-badge{background:#7A4FB5;color:#fff;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:800}
+.anim-scene{display:grid;gap:10px}
+.anim-svg{width:100%;height:auto;max-height:340px;display:block;background:var(--papier);border-radius:12px}
+.anim-curseur{display:grid;gap:2px;font-weight:700;font-size:14px}
+.anim-curseur input{width:100%;accent-color:#7A4FB5}
+.anim-deux{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.anim-info{background:var(--papier);border-radius:10px;padding:8px 10px;font-size:14.5px;line-height:1.6;text-align:center}
+.anim-note{color:var(--encre-2);font-size:13px}
+.anim-legende{background:#F1EAFB;border-radius:12px;padding:10px 12px;font-size:15.5px;line-height:1.5;min-height:74px}
+:root[data-theme="dark"] .anim-legende{background:#2a2140}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .anim-legende{background:#2a2140}}
+.anim-legende .etiquette{display:block;color:#7A4FB5;margin-bottom:2px}
+.anim-controles{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.anim-btn{border:2px solid #7A4FB5;background:var(--carte);color:#7A4FB5;border-radius:12px;padding:8px 14px;font-weight:800;font-size:16px;cursor:pointer}
+.anim-btn.lire{background:#7A4FB5;color:#fff;flex:1;max-width:180px}
+.anim-points{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.anim-points button{width:12px;height:12px;border-radius:50%;border:0;background:var(--trait);cursor:pointer;padding:0}
+.anim-points button.actif{background:#7A4FB5;transform:scale(1.25)}
+.vec{opacity:0;transition:opacity .5s}
+.vec.montre{opacity:1}
+.vec line{stroke-dasharray:400;stroke-dashoffset:400;transition:stroke-dashoffset 1s ease-out}
+.vec.montre line{stroke-dashoffset:0}
+[data-z]{transition:filter .3s,stroke-width .3s}
+[data-z].allume{stroke:#F7C331;stroke-width:4;filter:brightness(1.15)}
+.organe{fill:#F5C6A5;stroke:#C98A5E;stroke-width:1.5;transition:fill .3s}
+.organe.allume{fill:#F7C331;stroke:#E0701F;stroke-width:2.5}
+.estompe{opacity:.15;transition:opacity .4s}
+[data-p]{transition:opacity .4s}
+.frise-defil{overflow-x:auto;border-radius:12px;background:var(--papier)}
+.frise{width:990px;max-width:none;height:auto;display:block}
+.ev{cursor:pointer}.ev circle{transition:r .3s}
+.ev.allume circle{r:14;stroke:#F7C331;stroke-width:4}
+@media (prefers-reduced-motion:reduce){.vec line,.vec,.organe,[data-p]{transition:none}}
 .boutons-ligne{display:flex;flex-wrap:wrap;gap:8px}
 .boutons-ligne > *{flex:1 1 140px;text-align:center}
 .lien-bouton{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
@@ -501,12 +537,13 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     ecran = e;
     if (window.speechSynthesis) { try { speechSynthesis.cancel(); } catch (x) {} }
     arreterEnregistrement();
+    nettoyerAnims();
     if (chronoSujet) { clearInterval(chronoSujet); chronoSujet = null; }
-    const onglet = e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral"].includes(e) ? "matieres" : e;
+    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral"].includes(e) ? "matieres" : e;
     document.querySelectorAll(".nav button").forEach(b => b.setAttribute("aria-current", b.dataset.aller === onglet ? "page" : "false"));
     if (["chapitre", "theme", "sujet", "oral"].includes(e) && params) { etat.dernier = { e, p: params }; sauver(); }
     document.querySelector(".nav").classList.toggle("cache", e === "exercice" || e === "fin");
-    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
+    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
     window.scrollTo(0, 0);
   }
   document.querySelectorAll(".nav button").forEach(b => b.addEventListener("click", () => aller(b.dataset.aller)));
@@ -560,6 +597,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         <div class="col">
           <span class="etiquette">En classe ce mois-ci</span>
           <div class="deux-mini">${carteMini(lecon, "Maths")}${carteMini(pc, "Physique-Chimie")}</div>
+          <button type="button" class="reprendre" id="vers-anims" style="--c:#7A4FB5"><span class="icone" style="background:#7A4FB5">▶</span><span class="txt"><small>Comme des petites vidéos</small><b>Apprendre en animations</b><small>${ANIMS.length} leçons expliquées à voix haute</small></span><span class="fleche">›</span></button>
           <span class="etiquette">Idée de révision</span>
           ${carteMini(autre, "Aujourd'hui")}
         </div>
@@ -571,6 +609,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     vue.querySelector("#mission").addEventListener("click", lancerMission);
     vue.querySelector("#vers-chercher").addEventListener("click", () => aller("chercher"));
     vue.querySelector("#tout-voir").addEventListener("click", () => aller("matieres"));
+    vue.querySelector("#vers-anims").addEventListener("click", () => aller("animations"));
     const rep = vue.querySelector("#reprendre"); if (rep) rep.addEventListener("click", () => aller(etat.dernier.e, etat.dernier.p));
     vue.querySelectorAll("[data-chap]").forEach(b => b.addEventListener("click", () => aller("chapitre", b.dataset.chap)));
     vue.querySelectorAll("[data-mat]").forEach(b => b.addEventListener("click", () => ouvrirMat(b.dataset.mat)));
@@ -597,7 +636,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       <div class="liste grille2">${M.chapitres.map(c => {
         const et = etoiles(c), p = Math.round(et / c.niveaux.length * 100), titreTheme = c.theme && c.theme !== themeCourant ? (themeCourant = c.theme, `<span class="etiquette pleine">${c.theme}</span>`) : "";
         return `${titreTheme}<button type="button" class="chap${chapitreMaitrise(c) ? " maitrise" : ""}" data-chap="${c.id}" style="--c:${M.couleur}"><span class="num">${chapitreMaitrise(c) ? "✓" : c.num}</span>
-          <span class="txt"><b>${c.titre.replace(/^[^·]+· /, "")}</b><small>${c.titre.includes(" · ") ? c.titre.split(" · ")[0] + " · " : ""}${c.periode || c.niveaux.length + " niveaux"}${c.id === moment ? ' · <span class="pastille">En classe</span>' : ""}</small><span class="mini"><i style="width:${p}%;background:${M.couleur}"></i></span></span>
+          <span class="txt"><b>${c.titre.replace(/^[^·]+· /, "")}</b><small>${animsDe(c.id).length ? '<span class="pastille vert">▶ animation</span> ' : ""}${c.titre.includes(" · ") ? c.titre.split(" · ")[0] + " · " : ""}${c.periode || c.niveaux.length + " niveaux"}${c.id === moment ? ' · <span class="pastille">En classe</span>' : ""}</small><span class="mini"><i style="width:${p}%;background:${M.couleur}"></i></span></span>
           <span class="etoiles" aria-label="${et} niveau(x) réussi(s) sur ${c.niveaux.length}">${"★".repeat(et)}${"☆".repeat(c.niveaux.length - et)}</span></button>`;
       }).join("")}</div>
       ${sm.length ? `<span class="etiquette">S'entraîner comme au BEPC</span>` + sm.map(x => `<button type="button" class="lien-actu" data-sujet="${x.id}" style="border-color:${M.couleur}"><span style="font-size:22px">✍</span><span style="flex:1;display:grid"><b>${x.titre}</b><small>Sujet complet · corrigé détaillé · barème</small></span><span style="color:var(--bleu);font-weight:800">›</span></button>`).join("") : ""}
@@ -619,7 +658,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
         ${c.exemple ? `<button type="button" role="tab" data-onglet="exemple" aria-selected="${actif === "exemple"}">Exemple</button>` : ""}
         <button type="button" role="tab" data-onglet="exos" aria-selected="${actif === "exos"}">Exercices</button>
       </div>
-      <div class="panneau" data-panneau="cours" ${actif === "cours" ? "" : "hidden"}><div class="cours-corps carte">${c.cours}</div>
+      <div class="panneau" data-panneau="cours" ${actif === "cours" ? "" : "hidden"}>${animsDe(c.id).map(blocAnim).join("")}<div class="cours-corps carte">${c.cours}</div>
         <button type="button" class="bouton" data-aller-onglet="${c.exemple ? "exemple" : "exos"}">${c.exemple ? "Voir un exemple corrigé ›" : "Passer aux exercices ›"}</button></div>
       <div class="panneau" data-panneau="exemple" ${actif === "exemple" ? "" : "hidden"}>${blocExemple(c.exemple)}
         <button type="button" class="bouton" data-aller-onglet="exos">Passer aux exercices ›</button></div>
@@ -646,6 +685,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const r = vue.querySelector("#rapide"); if (r) r.addEventListener("click", () => lancerSession(c, c.niveaux.find(n => n.id === "maitrise"), true));
     if (c.special === "oral") brancherBlocOral();
     brancherExemple();
+    monterAnims();
   }
 
   // ---------- Chercher dans tout le programme ----------
@@ -658,6 +698,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     CHAP_THEMES.forEach(c => l.push({ titre: c.titre, sous: "Grands thèmes 2026", couleur: "#D1495B", icone: "★", go: ["theme", c.id], t: sansAccent(c.titre), corps: sansAccent(c.theme.faits.join(" ") + " " + c.theme.arguments.flat(2).join(" ")) }));
     SUJETS.forEach(s => l.push({ titre: s.titre, sous: "Sujet type BEPC · " + s.duree, couleur: "#18283A", icone: "✍", go: ["sujet", s.id], t: sansAccent(s.titre), corps: sansAccent(s.questions.map(x => x.enonce).join(" ") + " " + (s.document || "")) }));
     IMAGES.forEach(im => l.push({ titre: im.titre + " (" + im.fr + ")", sous: "Oral d'anglais · décrire une image", couleur: "#C23B6B", icone: "En", go: ["oral", "image:" + im.id], t: sansAccent(im.titre + " " + im.fr), corps: sansAccent(im.modele) }));
+    ANIMS.forEach(a => { const c = chapitreDe(a.chap), M = matiereDe(c.matiere); l.push({ titre: a.titre, sous: "Animation · " + M.nom, couleur: M.couleur, icone: "▶", go: ["anim", a.id], t: sansAccent(a.titre + " animation video " + c.titre), corps: "" }); });
     TEXTES.forEach(tx => l.push({ titre: tx.titre, sous: "Oral d'anglais · lire un texte", couleur: "#C23B6B", icone: "En", go: ["oral", "texte:" + tx.id], t: sansAccent(tx.titre), corps: sansAccent(tx.texte) }));
     return l;
   }
@@ -766,6 +807,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     });
   }
 
+/*ANIMS*/
 /*SUJETSECRAN*/
 /*ORALECRAN*/
   // ---------- Grands thèmes 2026 ----------
