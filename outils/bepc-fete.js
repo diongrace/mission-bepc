@@ -51,11 +51,14 @@
     sonGrand(); confettis(140);
   }
   const ENCOURAGE = ["Bravo !", "Excellent !", "Juste !", "Parfait !", "Tu gères !", "Super !", "Très bien !"];
+  function salutTitre() {
+    const hh = new Date().getHours();
+    return (hh < 12 ? "Bonjour" : hh < 18 ? "Bon après-midi" : "Bonsoir") + ", " + PRENOM + " !";
+  }
   function salutation() {
-    const h = new Date().getHours(), s = serieActuelle(), deja = etat.dernierJour === aujourdhui();
-    const bonjour = h < 12 ? "Bonjour" : h < 18 ? "Bon après-midi" : "Bonsoir";
-    if (!etat.sessions) return `${bonjour} ${PRENOM} ! Prêt pour ta première mission ?`;
-    if (deja) return s >= 2 ? `Série de ${s} jours : bravo, tu es régulier !` : `Bien travaillé aujourd'hui, ${PRENOM} !`;
-    if (s >= 1) return `${bonjour} ${PRENOM} ! Ta série est de ${s} jour${s > 1 ? "s" : ""} : fais une mission pour la garder.`;
-    return `${bonjour} ${PRENOM} ! Une petite mission pour bien commencer ?`;
+    const s = serieActuelle(), deja = etat.dernierJour === aujourdhui();
+    if (!etat.sessions) return "Prêt pour ta première mission ?";
+    if (deja) return s >= 2 ? `Série de ${s} jours : bravo, tu es régulier !` : "Bien travaillé aujourd'hui !";
+    if (s >= 1) return `Ta série est de ${s} jour${s > 1 ? "s" : ""} : fais une mission pour la garder.`;
+    return "Une petite mission pour bien commencer ?";
   }

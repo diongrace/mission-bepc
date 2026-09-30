@@ -200,7 +200,7 @@ details.cours[open] summary::after{content:"Fermer"}
 .grille-mat.compacte .mini{height:6px}
 .citation{text-align:center;color:var(--encre-2);font-style:italic;font-size:14.5px;padding:4px 12px 8px;margin:0}
 .nav button[aria-current="page"] svg{background:var(--orange-doux);border-radius:12px;padding:3px 14px;box-sizing:content-box}
-@media (min-width:760px){.grille-mat.compacte{grid-template-columns:repeat(6,minmax(0,1fr))}.hero{padding:22px 24px}.hero-stats{grid-template-columns:minmax(0,1fr) auto}}
+@media (min-width:760px){.raccourcis{flex-wrap:wrap;overflow:visible}.grille-mat.compacte{grid-template-columns:repeat(6,minmax(0,1fr))}.hero{padding:22px 24px}.hero-stats{grid-template-columns:minmax(0,1fr) auto}}
 .mots{display:grid;gap:10px;border-left:5px solid var(--vert)}
 .mots-tete{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .mots-tete .etiquette{color:var(--vert)}
@@ -331,7 +331,7 @@ details.cours[open] summary::after{content:"Fermer"}
 .texte-rep.bilan{font-size:14.5px;line-height:1.45;white-space:pre-wrap}
 .texte-rep.code{font-family:ui-monospace,Consolas,monospace;font-size:12px;word-break:break-all}
 :root{--zoom:1}
-.app,.nav{zoom:var(--zoom)}
+body{zoom:var(--zoom)}
 .ecran{width:100%;max-width:720px;margin-inline:auto}
 .ecran.large{max-width:none}
 @media (prefers-reduced-motion:no-preference){.ecran{animation:entree .22s ease-out}@keyframes entree{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}}
@@ -596,7 +596,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     c.exemple = EXEMPLES[c.id]; c.mots = MOTS[c.id];
     if (c.mots && c.mots.length >= 4 && c.special !== "dictee") c.niveaux[0].gens = c.niveaux[0].gens.concat(genDefinitions(c));
   }));
-  MATIERES.splice(1, 0, { id: "actu", nom: "Grands thèmes 2026", icone: "★", couleur: "#D1495B" }, { id: "sujets", nom: "Sujets type BEPC", icone: "✍", couleur: "#18283A", examen: "Entraînement complet" });
+  MATIERES.splice(1, 0, { id: "actu", nom: "Grands thèmes 2026", icone: "★", couleur: "#D1495B" }, { id: "sujets", nom: "Sujets type BEPC", icone: "✍", couleur: "#4F6A8F", examen: "Entraînement complet" });
   MATIERES.forEach(m => { if (ICONES[m.id]) m.icone = ICONES[m.id]; });
   const themesValides = () => CHAP_THEMES.filter(c => reussi(c, c.niveaux[0])).length;
   const COMPETENCES = {
@@ -722,17 +722,18 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   const sousTitreMat = m => m.id === "actu" ? themesValides() + "/" + THEMES.length + " thèmes validés" : m.id === "sujets" ? sujetsFaits() + "/" + SUJETS.length + " sujets faits" : m.chapitres.filter(chapitreMaitrise).length + "/" + m.chapitres.length + " chapitres maîtrisés";
   const ouvrirMat = id => id === "actu" ? aller("themes") : id === "sujets" ? aller("sujets") : aller("matiere", id);
   // Ce que désigne le « dernier endroit » : titre, matière, couleur
+  const majuscule = t => t ? t.charAt(0).toUpperCase() + t.slice(1) : t;
   function decrireDernier(d) {
     if (!d) return null;
-    if (d.e === "chapitre") { const c = chapitreDe(d.p); if (!c) return null; const M = matiereDe(c.matiere) || MATIERES[0]; return { titre: c.titre.replace(/^[^·]+· /, ""), sous: M.nom, couleur: M.couleur, icone: M.icone }; }
+    if (d.e === "chapitre") { const c = chapitreDe(d.p); if (!c) return null; const M = matiereDe(c.matiere) || MATIERES[0]; return { titre: majuscule(c.titre.replace(/^[^·]+· /, "")), sous: M.nom, couleur: M.couleur, icone: M.icone }; }
     if (d.e === "theme") { const c = CHAP_THEMES.find(x => x.id === d.p); return c && { titre: c.titre, sous: "Grands thèmes 2026", couleur: "#D1495B", icone: "★" }; }
-    if (d.e === "sujet") { const s = SUJETS.find(x => x.id === d.p); return s && { titre: s.titre, sous: "Sujet type BEPC", couleur: "#18283A", icone: "✍" }; }
+    if (d.e === "sujet") { const s = SUJETS.find(x => x.id === d.p); return s && { titre: s.titre, sous: "Sujet type BEPC", couleur: "#4F6A8F", icone: "✍" }; }
     if (d.e === "oral") return { titre: "Oral d'anglais", sous: "Anglais", couleur: "#C23B6B", icone: "En" };
     return null;
   }
   function carteMini(c, etiquette) {
     const M = matiereDe(c.matiere);
-    return `<button type="button" class="carte-mini" data-chap="${c.id}" style="--c:${M.couleur}"><span class="etiquette">${etiquette}</span><b>${c.titre.replace(/^[^·]+· /, "")}</b><small>${M.nom}</small></button>`;
+    return `<button type="button" class="carte-mini" data-chap="${c.id}" style="--c:${M.couleur}"><span class="etiquette">${etiquette}</span><b>${majuscule(c.titre.replace(/^[^·]+· /, ""))}</b><small>${M.nom}</small></button>`;
   }
   const CITATIONS = [
     "Chaque petite séance compte : 15 minutes par jour, c'est plus de 60 heures avant le BEPC.",
@@ -752,10 +753,10 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const autre = aTravailler.length ? aTravailler[jour % aTravailler.length] : chapitreDe("fr-dictee");
     const d = decrireDernier(etat.dernier), debut = !meilleur("bases", "test");
     const jours = Math.max(0, Math.ceil((DATE_BEPC - new Date()) / 86400000));
-    const pastilles = [["animations", "Animations", "#7A4FB5", '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'], ["sujets", "Sujets BEPC", "#18283A", ICONES.sujets], ["dictee", "Dictée", "#B8452B", ICONES.francais], ["oral", "Oral d'anglais", "#C23B6B", ICONES.anglais], ["themes", "Grands thèmes", "#D1495B", ICONES.actu]];
+    const pastilles = [["animations", "Animations", "#7A4FB5", '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'], ["sujets", "Sujets BEPC", "#4F6A8F", ICONES.sujets], ["dictee", "Dictée", "#B8452B", ICONES.francais], ["oral", "Oral d'anglais", "#C23B6B", ICONES.anglais], ["themes", "Grands thèmes", "#D1495B", ICONES.actu]];
     vue.innerHTML = `<section class="ecran large accueil">
       <header class="hero">
-        <div class="hero-haut"><div class="avatar" aria-hidden="true">AZ</div><div class="hero-qui"><small>${salutation()}</small><b>Salut ${PRENOM} !</b></div>
+        <div class="hero-haut"><div class="avatar" aria-hidden="true">AZ</div><div class="hero-qui"><small>${salutation()}</small><b>${salutTitre()}</b></div>
           <div class="serie" title="Jours d'affilée">${flamme}<span>${s}</span></div></div>
         <div class="hero-stats">
           <div class="hero-niveau">${anneau(Math.round(r.pct), "#F7C331", 58).replace('stroke="var(--trait)"', 'stroke="rgba(255,255,255,.18)"').replace('fill="var(--encre)"', 'fill="#fff"')}
@@ -893,7 +894,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     MATIERES.filter(m => m.chapitres).forEach(M => M.chapitres.forEach(c => l.push({ titre: c.titre.replace(/^[^·]+· /, ""), sous: M.nom + (c.theme ? " · " + c.theme : ""), couleur: M.couleur, icone: M.icone, go: ["chapitre", c.id],
       t: sansAccent(c.titre + " " + (c.theme || "")), corps: sansAccent(c.cours + " " + (c.exemple ? c.exemple.enonce : "") + " " + (c.qs || []).map(x => x[0] + " " + x[1]).join(" ")) })));
     CHAP_THEMES.forEach(c => l.push({ titre: c.titre, sous: "Grands thèmes 2026", couleur: "#D1495B", icone: "★", go: ["theme", c.id], t: sansAccent(c.titre), corps: sansAccent(c.theme.faits.join(" ") + " " + c.theme.arguments.flat(2).join(" ")) }));
-    SUJETS.forEach(s => l.push({ titre: s.titre, sous: "Sujet type BEPC · " + s.duree, couleur: "#18283A", icone: "✍", go: ["sujet", s.id], t: sansAccent(s.titre), corps: sansAccent(s.questions.map(x => x.enonce).join(" ") + " " + (s.document || "")) }));
+    SUJETS.forEach(s => l.push({ titre: s.titre, sous: "Sujet type BEPC · " + s.duree, couleur: "#4F6A8F", icone: "✍", go: ["sujet", s.id], t: sansAccent(s.titre), corps: sansAccent(s.questions.map(x => x.enonce).join(" ") + " " + (s.document || "")) }));
     IMAGES.forEach(im => l.push({ titre: im.titre + " (" + im.fr + ")", sous: "Oral d'anglais · décrire une image", couleur: "#C23B6B", icone: "En", go: ["oral", "image:" + im.id], t: sansAccent(im.titre + " " + im.fr), corps: sansAccent(im.modele) }));
     MATIERES.filter(m => m.chapitres).forEach(M => M.chapitres.forEach(c => (c.mots || []).forEach(m => l.push({ titre: m[0], sous: "Définition · " + M.nom + " · " + c.titre.replace(/^[^·]+· /, ""), couleur: M.couleur, icone: "≡", go: ["chapitre", c.id], cours: true, t: sansAccent(m[0] + " definition"), corps: sansAccent(m[1] + " " + m[2]) }))));
     ANIMS.forEach(a => { const c = chapitreDe(a.chap), M = matiereDe(c.matiere); l.push({ titre: a.titre, sous: "Animation · " + M.nom, couleur: M.couleur, icone: "▶", go: ["anim", a.id], t: sansAccent(a.titre + " animation video " + c.titre), corps: "" }); });
