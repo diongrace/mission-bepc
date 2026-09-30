@@ -162,6 +162,44 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.tab-l{display:grid;gap:6px}
+.tab-defil{overflow-x:auto;border:1px solid var(--trait);border-radius:12px}
+.tab-l table{border-collapse:collapse;width:100%;font-size:14.5px}
+.tab-l th{background:var(--bleu-doux);color:var(--bleu);text-align:left;padding:8px 10px;font-size:12.5px;letter-spacing:.03em}
+.tab-l td{padding:8px 10px;border-top:1px solid var(--trait);vertical-align:top;overflow-wrap:normal;hyphens:none}
+@media (max-width:480px){.tab-l table{font-size:13.5px}.tab-l th,.tab-l td{padding:7px 6px}}
+@media (max-width:380px){.tab-l th,.tab-l td{padding:7px 3px}.tab-l td:first-child,.tab-l th:first-child{padding-left:8px}}
+.tab-l td[lang]{font-weight:700}
+.tab-l td > span[lang]{font-weight:700;display:block}
+.tr-l{display:block;color:var(--encre-2);font-size:13px}
+.tab-l tbody tr:nth-child(even) td{background:var(--papier)}
+.ex-l-liste{display:grid;gap:8px}
+.ex-l{display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center;background:var(--papier);border-radius:12px;padding:9px 12px}
+.ex-l > span[lang]{font-weight:800;font-size:16px;grid-column:2}
+.ex-l > small{grid-column:2;color:var(--encre-2);font-size:14px}
+.ex-l > .ecouter{grid-row:1 / span 2}
+.pieges-l{border:1.5px solid var(--rouge);background:var(--rouge-doux);border-radius:12px;padding:10px 14px;display:grid;gap:6px}
+.pieges-l .etiquette{color:var(--rouge)}
+.pieges-l ul{margin:0;padding-left:18px;display:grid;gap:8px}
+.pieges-l li small{display:block;color:var(--encre-2);font-size:13.5px}
+.faux-l{text-decoration:line-through;text-decoration-color:var(--rouge);color:var(--encre-2)}
+.consigne-l{color:var(--encre-2);font-weight:700;font-size:15px}
+.phrase-trou{font-size:21px;font-weight:800;line-height:1.45}
+.phrase-trou .trou{display:inline-block;min-width:64px;border-bottom:3px dashed var(--bleu);color:var(--bleu);text-align:center}
+.sens-l{color:var(--encre-2);font-size:14.5px}
+.sens-ordre{font-size:19px;font-weight:800;line-height:1.4}
+.ecrit-rep{width:100%;border:2px solid var(--trait);border-radius:14px;background:var(--carte);padding:13px 14px;font-size:20px;font-weight:700}
+.ecrit-rep:focus{border-color:var(--bleu);outline:none}
+.accents{display:flex;gap:6px;flex-wrap:wrap}
+.accents button{border:1px solid var(--trait);background:var(--carte);border-radius:10px;min-width:44px;height:44px;font-size:19px;font-weight:800;cursor:pointer}
+.ordre-phrase{min-height:62px;border:2px dashed var(--trait);border-radius:14px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ordre-vide{color:var(--encre-2);font-size:14px;padding-left:4px}
+.ordre-tuiles{display:flex;flex-wrap:wrap;gap:8px}
+.tuile-mot{border:2px solid var(--trait);border-bottom-width:4px;background:var(--carte);border-radius:12px;padding:8px 12px;font-size:18px;font-weight:800;cursor:pointer}
+.ordre-phrase .tuile-mot{border-color:var(--bleu);background:var(--bleu-doux)}
+.tuile-mot.fixe{border-color:var(--or)}
+.tuile-mot.juste{border-color:var(--vert);background:var(--vert-doux)}
+.tuile-mot.faux{border-color:var(--rouge);background:var(--rouge-doux)}
 .etoiles-mini{color:var(--or);letter-spacing:1px}
 .bulle-mot{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 24px));z-index:30;background:var(--carte);border:2px solid #0E8A7E;border-radius:18px;padding:12px 14px 14px;box-shadow:0 12px 34px rgba(10,30,50,.28);display:grid;gap:6px;animation:bulle-entree .18s ease-out}
 @keyframes bulle-entree{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
@@ -558,6 +596,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
 /*SCIENCES*/
 /*HGEDHC*/
 /*LANGUES*/
+/*LANGUESPLUS*/
 /*ORALDATA*/
 /*ARTSEPS*/
 /*RAPPELS*/
@@ -600,20 +639,38 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   // =========================================================
   const genQCM = (item, comp, blocs) => { const rappel = blocs ? meilleurRappel(blocs, item) : null; return () => { const expl = item[item.length - 1], faux = item.slice(2, -1);
     return { comp, enonce: item[0], type: "qcm", choix: melanger([item[1], ...faux]), reponse: item[1], affiche: item[1], explication: expl, rappel }; }; };
-  const genEcoute = (item, comp, blocs) => () => { const expl = item[item.length - 1], faux = item.slice(2, -1);
-    return { rappel: blocs ? meilleurRappel(blocs, item) : null, comp, enonce: `<div>${btnEcoute(item[0], "en-GB", "Écouter la phrase")}</div><p>Que signifie cette phrase ?</p>`, type: "qcm", choix: melanger([item[1], ...faux]), reponse: item[1], affiche: item[1], explication: `« <span lang="en">${item[0]}</span> » — ${expl}` }; };
+  const genEcoute = (item, comp, blocs, voix = "en-GB") => () => { const expl = item[item.length - 1], faux = item.slice(2, -1);
+    return { rappel: blocs ? meilleurRappel(blocs, item) : null, comp, enonce: `<div>${btnEcoute(item[0], voix, "Écouter la phrase")}</div><p>Que signifie cette phrase ?</p>`, type: "qcm", choix: melanger([item[1], ...faux]), reponse: item[1], affiche: item[1], explication: `« <span lang="${voix.slice(0, 2)}">${item[0]}</span> » — ${expl}` }; };
+  const genEcrire = (item, comp, blocs, langue) => () => {
+    const [phrase, reponses, fr, expl] = item, debut = /^[¿¡]?___/.test(phrase), complete = phrase.replace(/\s*\([^)]*\)/g, "").replace("___", "<b>" + (debut ? majuscule(reponses[0]) : reponses[0]) + "</b>");
+    return { comp, type: "ecrire", langue, reponses, rappel: blocs ? meilleurRappel(blocs, item) : null,
+      enonce: `<p class="consigne-l">Écris le mot qui manque :</p><p class="phrase-trou" lang="${langue}">${phrase.replace("___", '<span class="trou">?</span>')}</p><small class="sens-l">Sens : ${fr}</small>`,
+      reponse: reponses[0], affiche: `<span lang="${langue}">${complete}</span>`, explication: expl };
+  };
+  const genOrdre = (item, comp, blocs, langue) => () => {
+    const [phrase, fr] = item, mots = phrase.replace(/^[¿¡]/, "").replace(/[.?!]$/, "").split(" ");
+    const d = DICO[langue] || {}, tuiles = mots.map((m, i) => i === 0 && m !== "I" && d[m.toLowerCase()] && !/^[A-Z]/.test(d[m.toLowerCase()]) ? m.toLowerCase() : m);
+    let ordre = melanger(tuiles.map((t, i) => i)); for (let k = 0; k < 5 && ordre.every((x, i) => x === i); k++) ordre = melanger(ordre);
+    return { comp, type: "ordre", langue, tuiles: ordre.map(i => tuiles[i]), bonnes: tuiles, rappel: blocs ? meilleurRappel(blocs, item) : null,
+      enonce: `<p class="consigne-l">Remets les mots dans l'ordre pour dire :</p><p class="sens-ordre">« ${fr} »</p>`,
+      reponse: phrase, affiche: `<span lang="${langue}">${phrase}</span> ${btnEcoute(phrase, langue === "es" ? "es-ES" : "en-GB", "Écouter", true)}`, explication: `Traduction : « ${fr} ». Relis la phrase à voix haute pour retenir l'ordre des mots.` };
+  };
   function construireMatiere(M) {
     M.chapitres.forEach((c, i) => {
       c.matiere = M.id; c.num = String(i + 1);
       const comp = "m-" + c.id;
       const blocs = blocsCours(c.cours);
+      const langue = /^es-/.test(c.id) ? "es" : "en";
       let gens = c.qs.map(it => genQCM(it, comp, blocs));
-      if (c.ecoute) gens = gens.concat(c.ecoute.map(it => genEcoute(it, comp, blocs)));
+      if (c.ecoute) gens = gens.concat(c.ecoute.map(it => genEcoute(it, comp, blocs, langue === "es" ? "es-ES" : "en-GB")));
+      const gensEcrits = (c.ecrire || []).map(it => genEcrire(it, comp, blocs, langue)).concat((c.ordre || []).map(it => genOrdre(it, comp, blocs, langue)));
       if (c.extra) gens = gens.concat(c.extra, c.extra);
       if (c.special === "dictee") { const r = blocs.find(b => /relecture/i.test(b.titre)) || blocs[0]; const gd = genDictees.map(g => () => Object.assign(g(), { rappel: r }));
         c.niveaux = [N("decouverte", "Dictée courte", 5, 4, gd, "5 phrases, 4 sans faute pour réussir"), N("maitrise", "Grande dictée", 10, 8, gd, "10 phrases, 8 sans faute pour maîtriser")]; return; }
-      const m = Math.min(10, gens.length), s = Math.ceil(m * 0.8);
-      c.niveaux = [N("decouverte", "Découverte", 5, 4, gens, "5 questions pour commencer"), N("maitrise", "Maîtrise", m, s, gens, `${s} bonnes réponses sur ${m} pour maîtriser`)];
+      const tout = gens.concat(gensEcrits), m = Math.min(10, tout.length), s = Math.ceil(m * 0.8);
+      c.niveaux = [N("decouverte", "Découverte", 5, 4, gens.length ? gens : tout, "5 questions pour commencer")];
+      if (gensEcrits.length) c.niveaux.push(N("ecrit", "J'écris", 6, 5, gensEcrits, "Tu écris toi-même : 5 bonnes réponses sur 6"));
+      c.niveaux.push(N("maitrise", "Maîtrise", m, s, tout, `${s} bonnes réponses sur ${m} pour maîtriser`));
     });
     return M;
   }
@@ -973,6 +1030,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     vue.querySelector("#retour").addEventListener("click", () => aller("matiere", c.matiere));
     vue.querySelectorAll("[data-niv]").forEach(b => b.addEventListener("click", () => lancerSession(c, c.niveaux.find(n => n.id === b.dataset.niv))));
     const r = vue.querySelector("#rapide"); if (r) r.addEventListener("click", () => lancerSession(c, c.niveaux.find(n => n.id === "maitrise"), true));
+    vue.querySelectorAll(".ex-l[data-voix]").forEach(e => { const p = e.querySelector("[lang]"); if (p && voixOk) e.insertAdjacentHTML("afterbegin", btnEcoute(p.textContent, e.dataset.voix, "Écouter", true)); });
     brancherEcoute();
     if (c.special === "oral") brancherBlocOral();
     if (c.special === "resume") brancherBlocResume();
@@ -1209,6 +1267,12 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     let zone = "";
     if (q.type === "texte") {
       zone = `<textarea id="texte-rep" class="texte-rep" rows="3" autocomplete="off" autocapitalize="sentences" autocorrect="off" spellcheck="false" aria-label="Écris la phrase dictée" placeholder="Écris la phrase ici…"></textarea>`;
+    } else if (q.type === "ecrire") {
+      zone = `<input id="ecrit-rep" class="ecrit-rep" type="text" lang="${q.langue}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Ta réponse" placeholder="Écris ta réponse ici">
+        ${q.langue === "es" ? `<div class="accents" role="group" aria-label="Lettres espagnoles">${["á", "é", "í", "ó", "ú", "ñ", "ü"].map(a => `<button type="button" data-accent="${a}">${a}</button>`).join("")}</div>` : ""}`;
+    } else if (q.type === "ordre") {
+      zone = `<div class="ordre-phrase" id="ordre-phrase" lang="${q.langue}" aria-label="Ta phrase"><span class="ordre-vide">Touche les mots dans le bon ordre</span></div>
+        <div class="ordre-tuiles" id="ordre-tuiles">${q.tuiles.map((t, i) => `<button type="button" class="tuile-mot" lang="${q.langue}" data-tuile="${i}">${t}</button>`).join("")}</div>`;
     } else if (q.type === "qcm") {
       zone = `<div class="choix" role="group" aria-label="Choisis une réponse">${q.choix.map((c, i) => `<button type="button" data-choix="${i}" aria-pressed="false">${c}</button>`).join("")}</div>`;
     } else {
@@ -1243,6 +1307,14 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       q.aIndice = true; e.currentTarget.disabled = true;
       const aide = AIDE_COMP[q.comp];
       let texte = q.rappel ? `<b>Pense à : ${q.rappel.titre}</b><br>${q.rappel.texte}` : aide ? `<b>Méthode</b><br>${aide.indice}` : "Relis la fiche de cours de ce chapitre.";
+      if (q.type === "ecrire") texte = `La réponse commence par « <b lang="${q.langue}">${q.reponse.slice(0, Math.min(2, q.reponse.length - 1))}…</b> » (${q.reponse.split(" ").length > 1 ? q.reponse.split(" ").length + " mots" : q.reponse.length + " lettres"}).<br>` + texte;
+      if (q.type === "ordre") {
+        const phrase = vue.querySelector("#ordre-phrase"), reserve = vue.querySelector("#ordre-tuiles");
+        [...phrase.querySelectorAll(".tuile-mot")].forEach(b => reserve.appendChild(b));
+        const premier = [...reserve.querySelectorAll(".tuile-mot")].find(b => b.textContent === q.bonnes[0]);
+        if (premier) { phrase.appendChild(premier); premier.classList.add("fixe"); phrase.querySelector(".ordre-vide").hidden = true; }
+        texte = "J'ai placé le premier mot pour toi.<br>" + texte;
+      }
       if (q.type === "qcm") {
         const fausses = [...vue.querySelectorAll("[data-choix]")].filter(b => q.choix[+b.dataset.choix] !== q.reponse);
         melanger(fausses).slice(0, Math.max(0, fausses.length - 1)).forEach(b => { b.classList.add("cache"); b.setAttribute("aria-pressed", "false"); });
@@ -1253,6 +1325,21 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     brancherEcoute();
     if (q.type === "texte") {
       const b = vue.querySelector("[data-parle]"); if (b) setTimeout(() => { if (session === s && !s.valide) b.click(); }, 350);
+    } else if (q.type === "ecrire") {
+      const champ = vue.querySelector("#ecrit-rep");
+      champ.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); s.valide ? suivante() : verifier(); } });
+      vue.querySelectorAll("[data-accent]").forEach(b => b.addEventListener("click", () => {
+        if (s.valide) return; const a = champ.selectionStart ?? champ.value.length, z = champ.selectionEnd ?? a;
+        champ.value = champ.value.slice(0, a) + b.dataset.accent + champ.value.slice(z); champ.focus(); champ.setSelectionRange(a + 1, a + 1);
+      }));
+      if (window.matchMedia("(hover:hover)").matches) champ.focus();
+    } else if (q.type === "ordre") {
+      const phrase = vue.querySelector("#ordre-phrase"), vide = phrase.querySelector(".ordre-vide");
+      const maj = () => { vide.hidden = !!phrase.querySelector(".tuile-mot"); };
+      vue.querySelectorAll("[data-tuile]").forEach(b => b.addEventListener("click", () => {
+        if (s.valide) return;
+        (b.parentElement === phrase ? vue.querySelector("#ordre-tuiles") : phrase).appendChild(b); maj();
+      }));
     } else if (q.type === "qcm") {
       vue.querySelectorAll("[data-choix]").forEach(b => b.addEventListener("click", () => { if (s.valide) return; vue.querySelectorAll("[data-choix]").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false")); }));
     } else {
@@ -1277,13 +1364,27 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   }
   function verifier() {
     const s = session, q = s.questions[s.i], msg = vue.querySelector("#message");
-    let ok, presque = false, dictee = null, taRep = "";
+    let ok, presque = false, presqueTitre = "", dictee = null, taRep = "";
     const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
     if (q.type === "texte") {
       const saisie = vue.querySelector("#texte-rep").value.trim();
       if (!saisie) { msg.textContent = "Écris la phrase avant de vérifier."; return; }
       dictee = comparerDictee(q.reponse, saisie); ok = dictee.erreurs === 0; taRep = esc(saisie);
       vue.querySelector("#texte-rep").readOnly = true;
+    } else if (q.type === "ecrire") {
+      const champ = vue.querySelector("#ecrit-rep"), saisie = champ.value.trim();
+      if (!saisie) { msg.textContent = "Écris ta réponse avant de vérifier."; return; }
+      const norme = t => t.toLowerCase().replace(/[’‘`]/g, "'").replace(/\s+/g, " ").trim().replace(/^[¡¿]+/, "").replace(/[.!?,;:]+$/, "");
+      const sansAcc = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      ok = q.reponses.some(r => norme(r) === norme(saisie));
+      if (!ok && q.reponses.some(r => sansAcc(norme(r)) === sansAcc(norme(saisie)))) { presque = true; presqueTitre = "Presque : attention à l'accent !"; }
+      taRep = `<span lang="${q.langue}">${esc(saisie)}</span>`; champ.readOnly = true;
+      if (q.reponses.length > 1) q.explication += ` <small>(Réponses acceptées : ${q.reponses.join(" · ")})</small>`;
+    } else if (q.type === "ordre") {
+      const mots = [...vue.querySelectorAll("#ordre-phrase .tuile-mot")].map(b => b.textContent);
+      if (mots.length < q.bonnes.length) { msg.textContent = "Place tous les mots avant de vérifier."; return; }
+      ok = mots.join(" ").toLowerCase() === q.bonnes.join(" ").toLowerCase(); taRep = `<span lang="${q.langue}">${esc(mots.join(" "))}</span>`;
+      vue.querySelectorAll("#ordre-phrase .tuile-mot").forEach((b, i) => b.classList.add((b.textContent.toLowerCase() === (q.bonnes[i] || "").toLowerCase()) ? "juste" : "faux"));
     } else if (q.type === "qcm") {
       const choisi = vue.querySelector('[data-choix][aria-pressed="true"]');
       if (!choisi) { msg.textContent = "Choisis une réponse."; return; }
@@ -1318,10 +1419,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       + (aide && aide.piege ? `<div class="sec piege-sec"><span>Piège à éviter</span><p>${aide.piege}</p></div>` : "");
     vue.querySelector("#retour-exo").innerHTML = ok
       ? `<div class="retour-exo bien"><h3>${parmi(ENCOURAGE)}${s.suite >= 3 ? ` <span class="suite-q">${s.suite} d'affilée !</span>` : ""}</h3><details><summary style="cursor:pointer;font-weight:800;color:var(--vert)">Voir la correction détaillée</summary>${sections}</details></div>`
-      : `<div class="retour-exo mal"><h3>${presque ? "Presque : c'est juste, mais pas simplifié" : dictee ? dictee.erreurs + " faute" + (dictee.erreurs > 1 ? "s" : "") : "Pas tout à fait"}</h3>${sections}</div>`;
+      : `<div class="retour-exo mal"><h3>${presque ? (presqueTitre || "Presque : c'est juste, mais pas simplifié") : dictee ? dictee.erreurs + " faute" + (dictee.erreurs > 1 ? "s" : "") : "Pas tout à fait"}</h3>${sections}</div>`;
     const bi = vue.querySelector("#btn-indice"); if (bi) bi.classList.add("cache");
     const b = vue.querySelector("#verifier"); b.textContent = s.i + 1 < s.questions.length ? "Continuer" : "Voir mon résultat"; b.classList.toggle("vert", ok);
     sauver();
+    brancherEcoute();
     b.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
   function suivante() {
