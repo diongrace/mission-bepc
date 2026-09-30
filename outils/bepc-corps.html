@@ -162,6 +162,18 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.hero-progres{gap:14px}
+.hero-progres .hero-niveau small{display:block;opacity:.85;font-weight:700;font-size:13px}
+.hero-progres .hero-niveau b{font-size:21px}
+.hero-chiffres{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.hero-chiffres span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:8px 4px;text-align:center;font-size:11.5px;font-weight:700;line-height:1.25;display:grid}
+.hero-chiffres b{font-family:var(--titre);font-size:21px;color:#F7C331;font-variant-numeric:tabular-nums}
+.avec-ic{display:flex;align-items:center;gap:8px;min-width:0}
+.ic-mini{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;color:#fff;flex:none}
+.ic-mini svg{width:15px;height:15px}
+.etapes-methode{margin:6px 0 0;padding-left:0;list-style:none;counter-reset:m;display:grid;gap:8px}
+.etapes-methode li{counter-increment:m;display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;line-height:1.5}
+.etapes-methode li::before{content:counter(m);width:28px;height:28px;border-radius:9px;background:var(--bleu-doux);color:var(--bleu);display:grid;place-items:center;font-family:var(--titre);font-weight:700}
 /* Plus d air dans les cadres */
 .ecran{gap:18px}
 .accueil{gap:20px}
@@ -629,6 +641,18 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   }));
   MATIERES.splice(1, 0, { id: "actu", nom: "Grands thèmes 2026", icone: "★", couleur: "#D1495B" }, { id: "sujets", nom: "Sujets type BEPC", icone: "✍", couleur: "#4F6A8F", examen: "Entraînement complet" });
   MATIERES.forEach(m => { if (ICONES[m.id]) m.icone = ICONES[m.id]; });
+  const ICONES_THEMES = {
+    plastique: ic('<path d="M10 2h4v3l2 3v12a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8l2-3z"/><path d="M8 12h8M8 16h8"/>'),
+    climat: ic('<path d="M7 15a4 4 0 1 1 .8-7.9A5.5 5.5 0 0 1 18.5 9 3.5 3.5 0 0 1 18 15z"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/>'),
+    paludisme: ic('<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M12 9v6M9 12h6"/>'),
+    drogue: ic('<path d="M10.5 20.5a4.95 4.95 0 0 1-7-7l6-6a4.95 4.95 0 0 1 7 7z"/><path d="M8.5 8.5l7 7"/><path d="M19 5l-2 2"/>'),
+    numerique: ic('<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>'),
+    ecole: ic('<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5M22 9v6"/>'),
+    civisme: ic('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'),
+    cacao: ic('<path d="M12 3c4 2 6 6 6 9s-2 7-6 9c-4-2-6-6-6-9s2-7 6-9z"/><path d="M12 3v18M8.4 7.5c2 1 5.2 1 7.2 0M8.4 16.5c2-1 5.2-1 7.2 0"/>'),
+    sport: ic('<circle cx="12" cy="12" r="9"/><path d="M12 7.5l3.8 2.8-1.4 4.5H9.6l-1.4-4.5z"/><path d="M12 3v4.5M20.6 9.6l-4.8.7M17.3 19.4l-2.9-4.6M6.7 19.4l2.9-4.6M3.4 9.6l4.8.7"/>')
+  };
+  const bandeau = (couleur, icone, titre, sous, pct) => `<header class="bandeau" style="--c:${couleur}"><span class="icone">${icone}</span><div><h2>${titre}</h2><p>${sous}</p></div>${pct == null ? "" : anneau(pct, "#fff", 52).replace('stroke="var(--trait)"', 'stroke="rgba(255,255,255,.3)"').replace('fill="var(--encre)"', 'fill="#fff"')}</header>`;
   const themesValides = () => CHAP_THEMES.filter(c => reussi(c, c.niveaux[0])).length;
   const COMPETENCES = {
     "b-fractions": "Fractions", "b-relatifs": "Nombres relatifs", "b-priorites": "Priorités de calcul", "b-equation": "Équations (4e)",
@@ -1070,11 +1094,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   }
   function afficherThemes() {
     vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ Mes matières</button>
-      <h2>Grands thèmes 2026</h2>
-      <p style="color:var(--encre-2)">L'actualité de 2026 qui peut servir en rédaction, en EDHC, en anglais (écrit et oral), en SVT et en géographie. Pour chaque thème : l'essentiel, des chiffres, des arguments, un plan de rédaction, des réponses modèles pour l'oral et un quiz.</p>
+      ${bandeau("#D1495B", ICONES.actu, "Grands thèmes 2026", themesValides() + "/" + THEMES.length + " thèmes validés · faits vérifiés", Math.round(themesValides() / THEMES.length * 100))}
+      <p style="color:var(--encre-2)">L'actualité de 2026 qui peut servir en rédaction, en EDHC, en anglais (écrit et oral), en SVT et en géographie. Pour chaque thème : l'essentiel, des chiffres, des arguments, un plan de rédaction, des réponses modèles et un quiz.</p>
       <div class="liste">${CHAP_THEMES.map(c => {
         const th = c.theme, ok = reussi(c, c.niveaux[0]), m = meilleur(c.id, "quiz");
-        return `<button type="button" class="theme-carte" data-theme="${c.id}"><span class="icone" style="background:${th.couleur}">${th.lettre}</span>
+        return `<button type="button" class="theme-carte" data-theme="${c.id}"><span class="icone" style="background:${th.couleur}">${ICONES_THEMES[th.id] || th.lettre}</span>
           <span class="txt"><b>${th.titre}</b><small>${th.matieres}</small></span>
           <span>${ok ? '<span class="pastille vert">Validé</span>' : m ? `<span class="pastille">${m}/6</span>` : ""}</span></button>`;
       }).join("")}</div>
@@ -1085,8 +1109,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   function afficherTheme(id) {
     const c = chapitreDe(id), th = c.theme, niv = c.niveaux[0], m = meilleur(c.id, "quiz");
     vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ Grands thèmes 2026</button>
-      <h2>${th.titre}</h2>
-      <p style="color:var(--encre-2);font-weight:700;font-size:14px">Utile en : ${th.matieres}</p>
+      ${bandeau(th.couleur, ICONES_THEMES[th.id] || th.lettre, th.titre, "Utile en : " + th.matieres, null)}
       <div class="stats">${th.chiffres.map(([v, l]) => `<div class="stat"><b style="font-size:19px">${v}</b><small>${l}</small></div>`).join("")}</div>
       <div class="carte" style="display:grid;gap:10px"><span class="etiquette">L'essentiel 2026</span><ul class="faits">${th.faits.map(f => `<li>${f}</li>`).join("")}</ul></div>
       <details class="bloc"><summary>Arguments et idées</summary><div class="corps">${th.arguments.map(([t, l]) => `<h4>${t}</h4><ul>${l.map(x => `<li>${x}</li>`).join("")}</ul>`).join("")}</div></details>
@@ -1333,13 +1356,14 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const comps = Object.entries(etat.comp).filter(([, s]) => s.total >= 1).map(([id, s]) => ({ id, nom: COMPETENCES[id] || id, pct: Math.round(s.ok / s.total * 100), total: s.total })).sort((a, b) => a.pct - b.pct);
     const faibles = comps.filter(c => c.pct < 60 && c.total >= 3);
     const couleur = p => p >= 80 ? "var(--vert)" : p >= 60 ? "var(--or)" : "var(--rouge)";
-    vue.innerHTML = `<section class="ecran"><h2>Mes progrès</h2>
-      <button type="button" class="reprendre" id="vers-suivi" style="--c:var(--vert)"><span class="icone" style="background:var(--vert)">↗</span><span class="txt"><small>Pour la famille</small><b>Envoyer mon bilan · sauvegarder</b><small>Un résumé à partager, et un code pour ne rien perdre</small></span><span class="fleche">›</span></button>
-      <div class="stats"><div class="stat"><b>${etat.xp}</b><small>points</small></div><div class="stat"><b>${serieActuelle()}</b><small>jours d'affilée</small></div><div class="stat"><b>${etat.bonnes}</b><small>bonnes réponses</small></div></div>
-      <div class="carte" style="display:grid;gap:6px"><span class="etiquette">Rang</span><b style="font-family:var(--titre);font-size:22px">Niveau ${r.niveau} · ${r.nom}</b>
-        <div class="barre-xp"><i style="width:${r.pct}%"></i></div><small style="color:var(--encre-2);font-weight:700">${r.suivant ? r.reste + " points avant « " + r.suivant + " »" : "Rang maximum atteint !"}</small></div>
+    vue.innerHTML = `<section class="ecran"><header class="hero hero-progres">
+        <div class="hero-niveau">${anneau(Math.round(r.pct), "#F7C331", 64).replace('stroke="var(--trait)"', 'stroke="rgba(255,255,255,.18)"').replace('fill="var(--encre)"', 'fill="#fff"')}
+          <div><small>Mes progrès</small><b>Niveau ${r.niveau} · ${r.nom}</b><small>${r.suivant ? r.reste + " points avant « " + r.suivant + " »" : "Rang maximum atteint !"}</small></div></div>
+        <div class="hero-chiffres"><span><b>${etat.xp}</b>points</span><span><b>${serieActuelle()}</b>jours d'affilée</span><span><b>${etat.bonnes}</b>bonnes réponses</span><span><b>${etat.badges.length}</b>badges</span></div>
+      </header>
+      <button type="button" class="reprendre" id="vers-suivi" style="--c:var(--vert)"><span class="icone" style="background:var(--vert)">${ic('<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4M12 2v13"/>')}</span><span class="txt"><small>Pour la famille</small><b>Envoyer mon bilan · sauvegarder</b><small>Un résumé à partager, et un code pour ne rien perdre</small></span><span class="fleche">›</span></button>
       <div class="carte" style="display:grid;gap:10px"><span class="etiquette">Par matière</span>
-        ${MATIERES.map(m => { const p = pctMatiere(m); return `<div class="ligne-comp"><span>${m.nom}</span><span class="mini"><i style="width:${p}%;background:${m.couleur}"></i></span><span>${p} %</span></div>`; }).join("")}</div>
+        ${MATIERES.map(m => { const p = pctMatiere(m); return `<div class="ligne-comp"><span class="avec-ic"><span class="ic-mini" style="background:${m.couleur}">${m.icone}</span>${m.nom}</span><span class="mini"><i style="width:${p}%;background:${m.couleur}"></i></span><span>${p} %</span></div>`; }).join("")}</div>
       ${faibles.length ? `<div class="carte" style="display:grid;gap:10px;border-color:var(--rouge)"><span class="etiquette" style="color:var(--rouge)">À retravailler</span>
         ${faibles.map(c => `<div class="ligne-comp"><span>${c.nom}</span><span class="mini"><i style="width:${c.pct}%;background:${couleur(c.pct)}"></i></span><span>${c.pct} %</span></div>`).join("")}
         <p style="color:var(--encre-2);font-size:14px">La mission du jour te donne surtout ces exercices-là.</p></div>` : ""}

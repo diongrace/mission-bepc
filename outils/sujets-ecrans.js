@@ -24,13 +24,14 @@
   const sujetsFaits = () => SUJETS.filter(s => noteSujet(s.id)).length;
   function afficherSujets() {
     vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ Mes matières</button>
-      <h2>Sujets type BEPC</h2>
-      <p style="color:var(--encre-2)">De vrais sujets d'entraînement, à faire <b>sur ta feuille</b> comme le jour de l'examen, puis à corriger toi-même avec le corrigé détaillé et le barème. Ta note sur 20 est enregistrée.</p>
+      ${(() => { const notes = SUJETS.map(x => noteSujet(x.id)).filter(Boolean); const moy = notes.length ? notes.reduce((a, n) => a + n.meilleure, 0) / notes.length : null;
+        return bandeau(matiereDe("sujets").couleur, ICONES.sujets, "Sujets type BEPC", sujetsFaits() + "/" + SUJETS.length + " sujets faits" + (moy != null ? " · moyenne " + String(Math.round(moy * 10) / 10).replace(".", ",") + "/20" : ""), Math.round(sujetsFaits() / SUJETS.length * 100)); })()}
+      <p style="color:var(--encre-2)">De vrais sujets d'entraînement, à faire <b>sur ta feuille</b> comme le jour de l'examen, puis à corriger toi-même avec le corrigé détaillé et le barème.</p>
       <div class="liste">${SUJETS.map(s => { const m = matiereDe(s.matiere), n = noteSujet(s.id);
         return `<button type="button" class="theme-carte" data-sujet="${s.id}"><span class="icone" style="background:${m.couleur}">${m.icone}</span>
           <span class="txt"><b>${s.titre}</b><small>Durée ${s.duree} · ${s.questions.length} questions</small></span>
           ${n ? `<span class="pastille${n.meilleure >= 10 ? " vert" : ""}">${String(n.meilleure).replace(".", ",")}/20</span>` : ""}</button>`; }).join("")}</div>
-      <div class="carte"><span class="etiquette">Méthode</span><p style="margin-top:6px">1) Lance le chrono et fais le sujet sans regarder le corrigé. 2) Pour chaque question, ouvre le corrigé et compare honnêtement. 3) Donne-toi les points : juste, à moitié ou faux. 4) Refais plus tard les questions ratées.</p></div>
+      <div class="carte"><span class="etiquette">La méthode en 4 étapes</span><ol class="etapes-methode"><li>Lance le chrono et fais le sujet sans regarder le corrigé.</li><li>Pour chaque question, ouvre le corrigé et compare honnêtement.</li><li>Donne-toi les points : juste, à moitié ou faux.</li><li>Refais plus tard les questions ratées.</li></ol></div>
     </section>`;
     vue.querySelector("#retour").addEventListener("click", () => aller("matieres"));
     vue.querySelectorAll("[data-sujet]").forEach(b => b.addEventListener("click", () => aller("sujet", b.dataset.sujet)));
