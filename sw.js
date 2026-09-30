@@ -1,5 +1,5 @@
 // Mission BEPC : fonctionne hors ligne. Réseau d'abord (pour recevoir les mises à jour), sinon le cache.
-const CACHE = "mission-bepc-202609301314";
+const CACHE = "mission-bepc-202609301325";
 const FICHIERS = ["./","index.html","manifest.webmanifest","icones/icone-192.png","icones/icone-512.png","icones/icone-masquable-512.png","icones/icone-180.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FICHIERS)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(l => Promise.all(l.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
