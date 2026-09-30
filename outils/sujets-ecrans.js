@@ -68,7 +68,9 @@
       return { faits, note: Math.round(note * 4) / 4 };
     };
     majNote();
-    vue.querySelectorAll("[data-brouillon]").forEach(t => t.addEventListener("input", () => { etat.brouillons[t.dataset.brouillon] = t.value.slice(0, 4000); sauver(); }));
+    vue.querySelectorAll("[data-brouillon]").forEach(t => { const c = document.createElement("small"); c.className = "mots-sujet"; t.after(c);
+      const m = () => { const k = compterMots(t.value); c.textContent = k ? k + " mot" + (k > 1 ? "s" : "") : ""; }; m();
+      t.addEventListener("input", () => { etat.brouillons[t.dataset.brouillon] = t.value.slice(0, 4000); sauver(); m(); }); });
     vue.querySelectorAll("[data-voir]").forEach(b => b.addEventListener("click", () => { b.nextElementSibling.classList.remove("cache"); b.classList.add("cache"); }));
     vue.querySelectorAll("[data-eval]").forEach(b => b.addEventListener("click", () => {
       const [i, v] = b.dataset.eval.split("|"); evals[+i] = +v; sauver();
@@ -86,6 +88,8 @@
       const nouveaux = verifierBadges(); sauver();
       info.style.color = "var(--vert)";
       info.textContent = `Note enregistrée : ${fmt(note)}/20${gain ? ` · +${gain} points` : ""}${nouveaux.length ? " · Badge : " + nouveaux.map(x => x.nom).join(", ") : ""}.`;
+      if (nouveaux.length) grandeFete({ titre: "Nouveau badge !", texte: `${fmt(note)}/20 à ce sujet type BEPC. Bravo !`, couleur: "#C9941A", lettre: nouveaux[0].lettre, badges: nouveaux });
+      else if (note >= 10) { sonReussite(); confettis(note >= 14 ? 140 : 70); }
     });
     const chrono = vue.querySelector("#chrono-sujet");
     chrono.addEventListener("click", () => {

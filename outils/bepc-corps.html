@@ -162,6 +162,42 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.confettis{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
+.grande-fete{position:fixed;inset:0;z-index:55;background:rgba(15,23,34,.55);display:grid;place-items:center;padding:20px;animation:fondu .2s ease-out}
+.grande-fete.sortie{opacity:0;transition:opacity .2s}
+.fete-carte{background:var(--carte);border-radius:24px;padding:26px 22px 20px;max-width:360px;width:100%;text-align:center;display:grid;gap:10px;justify-items:center;border-top:8px solid var(--c);box-shadow:0 20px 50px rgba(0,0,0,.3);animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+.fete-carte h2{font-size:28px;color:var(--c)}
+.fete-carte .bouton{width:100%}
+.medaille-fete{width:92px;height:92px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-family:var(--titre);font-size:40px;box-shadow:0 0 0 8px color-mix(in srgb,var(--c) 25%,transparent)}
+.fete-badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.fete-badges span{background:var(--papier);border-radius:99px;padding:4px 10px;font-weight:800;font-size:13px;display:flex;gap:6px;align-items:center}
+.fete-badges b{color:var(--or)}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes fondu{from{opacity:0}to{opacity:1}}
+.retour-exo.bien{animation:pop .3s ease-out}
+.suite-q{display:inline-block;background:var(--orange);color:#fff;border-radius:99px;padding:1px 10px;font-size:13px;vertical-align:middle;font-family:var(--texte)}
+.salut{font-weight:800;color:var(--encre-2);margin-top:-6px}
+.badge-nouveau.record{border-color:var(--vert);color:var(--vert);background:var(--vert-doux)}
+.badge-nouveau.serie-msg{border-color:var(--orange);color:var(--orange)}
+.mots-sujet{color:var(--encre-2);font-weight:700;text-align:right;margin-top:-6px}
+.texte-a-resumer{display:grid;gap:8px;line-height:1.65;font-size:15.5px}
+.texte-a-resumer p{margin:0}
+.num-para{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:6px;background:var(--bleu-doux);color:var(--bleu);font-size:12px;font-weight:800;margin-right:6px}
+.objectif{background:var(--bleu-doux);border-radius:10px;padding:10px 12px;font-size:14.5px}
+.idees-liste{display:grid;gap:6px}
+.idee{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start;border:2px solid var(--trait);border-radius:12px;padding:9px 11px;cursor:pointer}
+.idee input{width:20px;height:20px;margin-top:2px;accent-color:var(--bleu)}
+.idee em{grid-column:2;font-style:normal;font-size:13px;font-weight:800}
+.idee.juste{border-color:var(--vert);background:var(--vert-doux)}.idee.juste em{color:var(--vert)}
+.idee.faux{border-color:var(--rouge);background:var(--rouge-doux)}.idee.faux em{color:var(--rouge)}
+.compteur{border-radius:10px;padding:8px 12px;background:var(--grille);font-size:14.5px}
+.compteur.ok{background:var(--vert-doux);color:var(--vert)}
+.compteur.court,.compteur.long{background:var(--orange-doux);color:var(--orange)}
+.controles-resume{margin:0;padding-left:0;list-style:none;display:grid;gap:6px;font-size:14px}
+.controles-resume li{border-radius:10px;padding:8px 12px}
+.controles-resume .alerte{background:var(--rouge-doux);color:var(--rouge);font-weight:700}
+.controles-resume .bien{background:var(--vert-doux);color:var(--vert);font-weight:700}
+@media (prefers-reduced-motion:reduce){.fete-carte,.retour-exo.bien,.grande-fete{animation:none}}
 .anim{background:var(--carte);border:2px solid #7A4FB5;border-radius:18px;padding:12px;display:grid;gap:10px}
 .anim-tete{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .anim-tete b{font-family:var(--titre);font-size:18px;line-height:1.15}
@@ -358,6 +394,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
 /*RAPPELS*/
 /*EXEMPLES*/
 /*SUJETSDATA*/
+/*FRANCAIS2*/
 /*ACTU*/
 
   // =========================================================
@@ -539,11 +576,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     arreterEnregistrement();
     nettoyerAnims();
     if (chronoSujet) { clearInterval(chronoSujet); chronoSujet = null; }
-    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral"].includes(e) ? "matieres" : e;
+    const onglet = ["animations", "anim"].includes(e) ? "accueil" : e === "suivi" ? "progres" : ["sujets", "sujet"].includes(e) ? "sujets" : ["chapitre", "themes", "theme", "matiere", "oral", "atelier"].includes(e) ? "matieres" : e;
     document.querySelectorAll(".nav button").forEach(b => b.setAttribute("aria-current", b.dataset.aller === onglet ? "page" : "false"));
     if (["chapitre", "theme", "sujet", "oral"].includes(e) && params) { etat.dernier = { e, p: params }; sauver(); }
     document.querySelector(".nav").classList.toggle("cache", e === "exercice" || e === "fin");
-    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
+    ({ accueil: afficherAccueil, matieres: afficherMatieres, matiere: afficherMatiere, chercher: afficherChercher, suivi: afficherSuivi, atelier: afficherAtelier, animations: afficherAnimations, anim: afficherAnim, oral: afficherOral, sujets: afficherSujets, sujet: afficherSujet, chapitre: afficherChapitre, themes: afficherThemes, theme: afficherTheme, progres: afficherProgres, exercice: afficherQuestion, fin: afficherFin })[e](params);
     window.scrollTo(0, 0);
   }
   document.querySelectorAll(".nav button").forEach(b => b.addEventListener("click", () => aller(b.dataset.aller)));
@@ -583,6 +620,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const d = decrireDernier(etat.dernier);
     const debut = !meilleur("bases", "test");
     vue.innerHTML = `<section class="ecran large">${entete()}
+      <p class="salut">${salutation()}</p>
       <button type="button" class="recherche-faux" id="vers-chercher">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>'}<span>Chercher une leçon, un mot, un thème…</span></button>
       <div class="accueil-grille">
         <div class="col">
@@ -650,7 +688,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const c = chapitreDe(id);
     const M = matiereDe(c.matiere);
     const dejaFait = !!meilleur(c.id, c.niveaux[0].id);
-    const actif = ongletChapitre[id] || (dejaFait || c.special === "oral" ? "exos" : "cours");
+    const actif = ongletChapitre[id] || (dejaFait || c.special === "oral" || c.special === "resume" ? "exos" : "cours");
     vue.innerHTML = `<section class="ecran"><button type="button" class="retour" id="retour">‹ ${M.nom}</button>
       <header class="titre-chap" style="--c:${M.couleur}"><span class="pastille-mat">${M.nom}${c.matiere === "maths" && c.num !== "0" ? " · leçon " + c.num : ""}</span><h2>${c.titre.replace(/^[^·]+· /, "")}</h2></header>
       <div class="onglets" role="tablist" style="--c:${M.couleur}">
@@ -663,7 +701,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       <div class="panneau" data-panneau="exemple" ${actif === "exemple" ? "" : "hidden"}>${blocExemple(c.exemple)}
         <button type="button" class="bouton" data-aller-onglet="exos">Passer aux exercices ›</button></div>
       <div class="panneau" data-panneau="exos" ${actif === "exos" ? "" : "hidden"}>
-      ${c.special === "oral" ? blocOral() : `<span class="etiquette">Niveaux</span>`}
+      ${c.special === "oral" ? blocOral() : c.special === "resume" ? blocResume() : `<span class="etiquette">Niveaux</span>`}
       <div class="liste">${c.niveaux.map((n, i) => {
         const ok = reussi(c, n), ouv = ouvert(c, i), m = meilleur(c.id, n.id);
         return `<button type="button" class="niveau ${ok ? "reussi" : ouv ? "ouvert" : "ferme"}" data-niv="${n.id}" ${ouv ? "" : "disabled"}>
@@ -684,6 +722,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     vue.querySelectorAll("[data-niv]").forEach(b => b.addEventListener("click", () => lancerSession(c, c.niveaux.find(n => n.id === b.dataset.niv))));
     const r = vue.querySelector("#rapide"); if (r) r.addEventListener("click", () => lancerSession(c, c.niveaux.find(n => n.id === "maitrise"), true));
     if (c.special === "oral") brancherBlocOral();
+    if (c.special === "resume") brancherBlocResume();
     brancherExemple();
     monterAnims();
   }
@@ -807,6 +846,8 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     });
   }
 
+/*FETE*/
+/*ATELIER*/
 /*ANIMS*/
 /*SUJETSECRAN*/
 /*ORALECRAN*/
@@ -1007,6 +1048,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const pave = vue.querySelector(".pave"); if (pave) pave.classList.add("cache");
     const st = etat.comp[q.comp] || { ok: 0, total: 0 };
     st.total++; if (ok) st.ok++; st.dernier = aujourdhui(); etat.comp[q.comp] = st;
+    s.suite = ok ? (s.suite || 0) + 1 : 0; if (ok) sonJuste(); else sonFaux();
     if (ok) { s.bonnes++; const g = (q.aIndice ? 5 : 10) + (q.defi ? 10 : 0) + (s.niv && s.niv.id === "maitrise" ? 5 : 0); s.xp += g; etat.bonnes++; }
     const bravo = ["Bravo !", "Excellent !", "Juste !", "Parfait !", "Bien joué, " + PRENOM + " !"];
     const aide = AIDE_COMP[q.comp];
@@ -1017,7 +1059,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       + (rappel ? `<div class="sec"><span>Rappel de cours</span><p>${rappel}</p></div>` : "")
       + (aide && aide.piege ? `<div class="sec piege-sec"><span>Piège à éviter</span><p>${aide.piege}</p></div>` : "");
     vue.querySelector("#retour-exo").innerHTML = ok
-      ? `<div class="retour-exo bien"><h3>${parmi(bravo)}</h3><details><summary style="cursor:pointer;font-weight:800;color:var(--vert)">Voir la correction détaillée</summary>${sections}</details></div>`
+      ? `<div class="retour-exo bien"><h3>${parmi(ENCOURAGE)}${s.suite >= 3 ? ` <span class="suite-q">${s.suite} d'affilée !</span>` : ""}</h3><details><summary style="cursor:pointer;font-weight:800;color:var(--vert)">Voir la correction détaillée</summary>${sections}</details></div>`
       : `<div class="retour-exo mal"><h3>${presque ? "Presque : c'est juste, mais pas simplifié" : dictee ? dictee.erreurs + " faute" + (dictee.erreurs > 1 ? "s" : "") : "Pas tout à fait"}</h3>${sections}</div>`;
     const bi = vue.querySelector("#btn-indice"); if (bi) bi.classList.add("cache");
     const b = vue.querySelector("#verifier"); b.textContent = s.i + 1 < s.questions.length ? "Continuer" : "Voir mon résultat"; b.classList.toggle("vert", ok);
@@ -1032,6 +1074,8 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
   }
   function terminer() {
     const s = session, n = s.questions.length;
+    const maitriseAvant = s.type === "niveau" ? chapitreMaitrise(s.chap) : false;
+    const ancienMeilleur = s.type === "niveau" ? (etat.meilleurs[s.chap.id + "/" + s.niv.id] || 0) : 0;
     etat.xp += s.xp; etat.sessions++;
     // Série de jours
     const j = aujourdhui();
@@ -1049,6 +1093,9 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       }
     }
     s.nouveauxBadges = verifierBadges();
+    s.maitriseNouvelle = s.type === "niveau" && !maitriseAvant && chapitreMaitrise(s.chap) && !s.chap.ecran;
+    s.record = s.type === "niveau" && ancienMeilleur > 0 && s.bonnes > ancienMeilleur ? ancienMeilleur : null;
+    s.niveauReussi = s.type === "niveau" && s.bonnes >= s.niv.seuil;
     s.debloque = debloque;
     sauver();
     aller("fin");
@@ -1063,6 +1110,8 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       <div class="etoiles" aria-label="${et} étoile(s) sur 3">${"★".repeat(et)}${"☆".repeat(3 - et)}</div>
       <div class="score">${s.bonnes}/${n}</div>
       <p style="font-weight:800">${message}</p>
+      ${s.record != null ? `<div class="badge-nouveau record">Nouveau record : ${s.bonnes}/${n} (avant ${s.record}/${n})</div>` : ""}
+      ${s.type === "mission" && etat.serie >= 2 ? `<div class="badge-nouveau serie-msg">${etat.serie} jours d'affilée : continue comme ça !</div>` : ""}
       <div class="gain"><span>+${s.xp} points</span><span>${flamme.replace('<svg', '<svg style="width:16px;height:16px;vertical-align:-2px;color:var(--orange)"')} ${etat.serie} jour${etat.serie > 1 ? "s" : ""}</span></div>
       ${s.debloque ? `<div class="badge-nouveau">Nouveau niveau débloqué : ${s.debloque.nom}</div>` : ""}
       ${s.type === "niveau" && !reussite ? `<p style="color:var(--encre-2)">Il faut ${s.niv.seuil}/${n} pour réussir ce niveau.</p>` : ""}
@@ -1075,6 +1124,13 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     if (s.debloque) vue.querySelector("#suivant").addEventListener("click", () => lancerSession(s.chap, s.debloque));
     vue.querySelector("#refaire").addEventListener("click", () => s.type === "mission" ? lancerMission() : lancerSession(s.chap, s.niv, s.rapide));
     vue.querySelector("#retour-fin").addEventListener("click", () => s.type === "mission" ? aller("accueil") : aller(s.chap.ecran || "chapitre", s.chap.id));
+    if (!s.fete) {
+      s.fete = true;
+      const M = s.chap && matiereDe(s.chap.matiere);
+      if (s.maitriseNouvelle) setTimeout(() => grandeFete({ titre: "Leçon maîtrisée !", texte: `Tu maîtrises « ${s.chap.titre.replace(/^[^·]+· /, "")} ». Chaque leçon maîtrisée te rapproche du BEPC. Bravo, ${PRENOM} !`, couleur: M ? M.couleur : "#1A8F5F", lettre: "✓", badges: s.nouveauxBadges }), 300);
+      else if (s.nouveauxBadges.length) setTimeout(() => grandeFete({ titre: s.nouveauxBadges.length > 1 ? "Nouveaux badges !" : "Nouveau badge !", texte: "Tu viens de débloquer une récompense. Continue !", couleur: "#C9941A", lettre: s.nouveauxBadges[0].lettre, badges: s.nouveauxBadges }), 300);
+      else if (s.niveauReussi || s.type === "mission" || pct >= 0.9) { sonReussite(); confettis(pct === 1 ? 140 : 80); }
+    }
   }
 
   // =========================================================
@@ -1101,6 +1157,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       <div class="badges">${BADGES.map(b => `<div class="badge${etat.badges.includes(b.id) ? " gagne" : ""}"><span class="medaille">${b.lettre}</span>${b.nom}</div>`).join("")}</div>
       <div class="carte" style="display:grid;gap:12px"><span class="etiquette">Réglages</span>
         <div class="reglage"><span>Taille du texte</span><div class="segments" role="group" aria-label="Taille du texte">${[["petit", "A−"], ["normal", "A"], ["grand", "A+"], ["tresgrand", "A++"]].map(([v, l]) => `<button type="button" data-taille="${v}" aria-pressed="${(etat.reglages || {}).taille === v || (!(etat.reglages || {}).taille && v === "normal")}">${l}</button>`).join("")}</div></div>
+        <div class="reglage"><span>Sons de réussite</span><div class="segments" role="group" aria-label="Sons">${[["oui", "Activés"], ["non", "Coupés"]].map(([v, l]) => `<button type="button" data-sons="${v}" aria-pressed="${(sonsActifs() ? "oui" : "non") === v}">${l}</button>`).join("")}</div></div>
         <div class="reglage"><span>Thème</span><div class="segments" role="group" aria-label="Thème">${[["auto", "Auto"], ["light", "Clair"], ["dark", "Sombre"]].map(([v, l]) => `<button type="button" data-theme-choix="${v}" aria-pressed="${((etat.reglages || {}).theme || "auto") === v}">${l}</button>`).join("")}</div></div>
       </div>
       <div class="carte" style="display:grid;gap:8px"><span class="etiquette">Recommencer à zéro</span>
@@ -1110,6 +1167,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     </section>`;
     vue.querySelector("#vers-suivi").addEventListener("click", () => aller("suivi"));
     vue.querySelectorAll("[data-taille]").forEach(b => b.addEventListener("click", () => { etat.reglages = Object.assign({}, etat.reglages, { taille: b.dataset.taille }); sauver(); appliquerReglages(); afficherProgres(); }));
+    vue.querySelectorAll("[data-sons]").forEach(b => b.addEventListener("click", () => { etat.reglages = Object.assign({}, etat.reglages, { sons: b.dataset.sons === "oui" }); sauver(); if (b.dataset.sons === "oui") sonJuste(); afficherProgres(); }));
     vue.querySelectorAll("[data-theme-choix]").forEach(b => b.addEventListener("click", () => { etat.reglages = Object.assign({}, etat.reglages, { theme: b.dataset.themeChoix }); sauver(); appliquerReglages(); afficherProgres(); }));
     const eff = vue.querySelector("#effacer");
     eff.addEventListener("click", () => {

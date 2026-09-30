@@ -1,5 +1,5 @@
 const fs = require("fs");
-const files = ["bepc-exercices.js", "bepc-maths2.js", "bepc-sciences.js", "bepc-hg-edhc.js", "bepc-langues.js", "bepc-oral-data.js", "bepc-arts-eps.js", "bepc-rappels.js", "bepc-exemples.js", "bepc-sujets.js"];
+const files = ["bepc-exercices.js", "bepc-maths2.js", "bepc-sciences.js", "bepc-hg-edhc.js", "bepc-langues.js", "bepc-oral-data.js", "bepc-arts-eps.js", "bepc-rappels.js", "bepc-exemples.js", "bepc-sujets.js","bepc-francais2.js"];
 const src = files.map(f => fs.readFileSync(f, "utf8")).join("\n");
 const G = new Function("N", "btnEcoute", src + ";return {MAT_SVT,MAT_PC,MAT_HG,MAT_EDHC,MAT_FR,MAT_EN,MAT_ES,MAT_ARTS,MAT_EPS,CHAP_MATHS2,EXEMPLES,SUJETS,AIDE_COMP,blocsCours,meilleurRappel,TR,CN,AI,VE,EI,CO,DR,ST,SY,AF,PY,B,L,T,R,PCG};")(() => ({}), () => "");
 let pb = 0; const dire = m => { pb++; console.log("✗", m); };
