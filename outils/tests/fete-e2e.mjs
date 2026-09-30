@@ -5,7 +5,7 @@ const p=await nav.newPage(); await p.setViewport({width:390,height:844,deviceSca
 const errs=[]; p.on('pageerror',e=>errs.push(e.message)); p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
 await p.goto('file:///'+dir+'mission-bepc-test.html');
 const c=async s=>{await p.waitForSelector(s);await p.$eval(s,e=>e.click())};
-console.log('salutation :', await p.$eval('.salut',e=>e.textContent));
+console.log('salutation :', await p.$eval('.hero-qui small',e=>e.textContent));
 // Réussir le test de maîtrise d'un chapitre de banque en trichant (on lit la bonne réponse via l'indice 50/50 puis la correction) : on répond juste en cliquant la réponse marquée juste après un premier essai impossible -> on utilise l'état interne : bonne réponse = celle qui reste juste après vérification. Plus simple : chapitre EPS (8 questions), on joue jusqu'à obtenir le niveau.
 async function jouer(chap, niv){ await c('#nav-matieres'); await c(`[data-mat="${chap.split('-')[0]==='eps'?'eps':'francais'}"]`); await c(`.liste [data-chap="${chap}"]`); await c('[data-onglet="exos"]'); await c(niv==="maitrise" ? "#rapide" : `[data-niv="${niv}"]`);
   let bonnes=0; while(!(await p.$('.fin'))){ await p.waitForSelector('#verifier');

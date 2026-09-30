@@ -5,11 +5,11 @@ const p=await nav.newPage(); await p.setViewport({width:390,height:844,deviceSca
 const errs=[]; p.on('pageerror',e=>errs.push(e.message)); p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
 await p.goto('file:///'+dir+'mission-bepc-test.html');
 const c=async s=>{await p.waitForSelector(s);await p.$eval(s,e=>e.click())};
-await c('#vers-anims'); await p.waitForSelector('[data-a]'); const ids=await p.$$eval('[data-a]',l=>l.map(b=>b.dataset.a));
+await c('[data-raccourci="animations"]'); await p.waitForSelector('[data-a]'); const ids=await p.$$eval('[data-a]',l=>l.map(b=>b.dataset.a));
 console.log('animations :',ids.length);
 let largeur=0;
 for(const id of ids){
-  await c('#nav-accueil'); await c('#vers-anims'); await c(`[data-a="${id}"]`); await p.waitForSelector('.anim-legende .etiquette');
+  await c('#nav-accueil'); await c('[data-raccourci="animations"]'); await c(`[data-a="${id}"]`); await p.waitForSelector('.anim-legende .etiquette');
   const n=(await p.$$('.anim-points button')).length;
   for(let k=1;k<n;k++){ await c('[data-suiv]'); }
   for(const r of await p.$$('.anim input[type=range]')) { await r.evaluate(i=>{i.value=i.min;i.dispatchEvent(new Event('input'))}); await r.evaluate(i=>{i.value=i.max;i.dispatchEvent(new Event('input'))}); }

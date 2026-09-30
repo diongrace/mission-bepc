@@ -181,6 +181,45 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.accueil{gap:16px}
+.hero{background:linear-gradient(145deg,#16305E 0%,#1F4A86 60%,#2B63B8 100%);color:#fff;border-radius:24px;padding:18px 16px 16px;display:grid;gap:14px;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(22,48,94,.25)}
+.hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:22px 22px;pointer-events:none}
+.hero > *{position:relative;z-index:1}
+.hero-haut{display:flex;align-items:center;gap:12px}
+.hero-qui{flex:1;min-width:0;display:grid}
+.hero-qui small{opacity:.85;font-weight:700;font-size:13px;line-height:1.3}
+.hero-qui b{font-family:var(--titre);font-size:26px;line-height:1.1}
+.hero .serie{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.25);color:#F7C331}
+.hero-stats{display:grid;gap:10px}
+.hero-niveau{display:flex;align-items:center;gap:10px;min-width:0}
+.hero-niveau b{display:block;font-family:var(--titre);font-size:17px;line-height:1.15}
+.hero-niveau small{display:block;opacity:.85;font-weight:700;font-size:12.5px;line-height:1.35}
+
+.hero-compte{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:8px 14px;display:flex;align-items:center;gap:12px}
+.hero-compte b{font-family:var(--titre);font-size:26px;line-height:1;color:#F7C331;font-variant-numeric:tabular-nums}
+.hero-compte small{font-weight:700;font-size:12px;line-height:1.25}
+.hero-compte span{opacity:.7;font-size:10.5px}
+.hero-recherche{background:rgba(255,255,255,.95);border:0;color:var(--encre-2)}
+:root[data-theme="dark"] .hero-recherche{background:rgba(255,255,255,.12);color:#dfe7f2}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hero-recherche{background:rgba(255,255,255,.12);color:#dfe7f2}}
+.mission{position:relative}
+.mission-cta{justify-self:start;margin-top:6px;background:#fff;color:var(--orange);border-radius:99px;padding:6px 14px;font-family:var(--titre);font-size:16px;opacity:1!important}
+.mission.faite .mission-cta{color:var(--vert)}
+.raccourcis{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.raccourcis::-webkit-scrollbar{display:none}
+.raccourci{flex:none;display:flex;align-items:center;gap:8px;border:1px solid var(--trait);background:var(--carte);border-radius:99px;padding:7px 14px 7px 7px;font-weight:800;font-size:14px;cursor:pointer;color:var(--encre)}
+.raccourci-ic{width:30px;height:30px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center}
+.raccourci-ic svg{width:17px;height:17px}
+.icone svg{width:58%;height:58%}
+.grille-mat.compacte{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.grille-mat.compacte .mat{min-height:0;padding:12px 10px;gap:6px;border-top:0;border-radius:16px;align-content:start;box-shadow:0 1px 0 var(--trait)}
+.grille-mat.compacte .mat .icone{width:40px;height:40px;border-radius:12px}
+.grille-mat.compacte .mat b{font-size:14.5px;line-height:1.15}
+.grille-mat.compacte .mat small{font-size:12px}
+.grille-mat.compacte .mini{height:6px}
+.citation{text-align:center;color:var(--encre-2);font-style:italic;font-size:14.5px;padding:4px 12px 8px;margin:0}
+.nav button[aria-current="page"] svg{background:var(--orange-doux);border-radius:12px;padding:3px 14px;box-sizing:content-box}
+@media (min-width:760px){.grille-mat.compacte{grid-template-columns:repeat(6,minmax(0,1fr))}.hero{padding:22px 24px}.hero-stats{grid-template-columns:minmax(0,1fr) auto}}
 .mots{display:grid;gap:10px;border-left:5px solid var(--vert)}
 .mots-tete{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .mots-tete .etiquette{color:var(--vert)}
@@ -4508,6 +4547,21 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
       ] },
     ...AUTRES
   ];
+  const ic = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const ICONES = {
+    maths: ic('<path d="M12 3v3"/><circle cx="12" cy="8" r="2"/><path d="M10.8 9.7 5 21M13.2 9.7 19 21M7.5 16h9"/>'),
+    actu: ic('<path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 8h3v9a2 2 0 0 1-2 2"/><path d="M8 9h5M8 13h5M8 17h3"/>'),
+    sujets: ic('<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="m9 15 2 2 4-4"/>'),
+    francais: ic('<path d="M3 5.5C5 4 8.5 4 12 6c3.5-2 7-2 9-.5V19c-2-1.5-5.5-1.5-9 .5-3.5-2-7-2-9-.5z"/><path d="M12 6v13.5"/>'),
+    anglais: ic('<path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 9h3M8.5 12h2.5M11.5 9v3M14 12V9l2.5 3V9"/>'),
+    pc: ic('<path d="M9 3h6M10 3v6L5 18a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3"/><path d="M7.5 14h9"/>'),
+    svt: ic('<path d="M5 19c0-8 5-13 14-14 0 9-5 14-13 14"/><path d="M5 19 13 11"/>'),
+    hg: ic('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/>'),
+    edhc: ic('<path d="M12 3v18M6 21h12M4 7h16"/><path d="m6 7-3 7h6zM18 7l-3 7h6z"/>'),
+    espagnol: ic('<path d="M4 5h16v11H9l-5 4z"/><path d="M11 9H8.5v3H11M8.5 10.5H10.5M15 9h-2v1.5h2V12h-2"/>'),
+    arts: ic('<path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2 0-1.5-1-2 0-3s3 0 4.5-1 2.5-2.5 2.5-4A9 9 0 0 0 12 3z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10" cy="7" r="1.2"/><circle cx="15" cy="7.5" r="1.2"/>'),
+    eps: ic('<circle cx="13" cy="4.5" r="2"/><path d="m7 21 3-6 3 3v3M9.5 10.5 13 8l3 3h3M13 8l-2 4 3 2M6 11l3.5-.5"/>')
+  };
   const CHAP_THEMES = THEMES.map(th => ({ id: th.id, titre: th.titre, ecran: "theme", theme: th,
     niveaux: [N("quiz", "Quiz", 6, 5, genQuizTheme(th), "6 questions, 5 bonnes pour valider le thème")] }));
   MATIERES[0].chapitres.forEach(c => c.matiere = "maths");
@@ -4526,6 +4580,7 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     if (c.mots && c.mots.length >= 4 && c.special !== "dictee") c.niveaux[0].gens = c.niveaux[0].gens.concat(genDefinitions(c));
   }));
   MATIERES.splice(1, 0, { id: "actu", nom: "Grands thèmes 2026", icone: "★", couleur: "#D1495B" }, { id: "sujets", nom: "Sujets type BEPC", icone: "✍", couleur: "#18283A", examen: "Entraînement complet" });
+  MATIERES.forEach(m => { if (ICONES[m.id]) m.icone = ICONES[m.id]; });
   const themesValides = () => CHAP_THEMES.filter(c => reussi(c, c.niveaux[0])).length;
   const COMPETENCES = {
     "b-fractions": "Fractions", "b-relatifs": "Nombres relatifs", "b-priorites": "Priorités de calcul", "b-equation": "Équations (4e)",
@@ -4662,46 +4717,71 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     const M = matiereDe(c.matiere);
     return `<button type="button" class="carte-mini" data-chap="${c.id}" style="--c:${M.couleur}"><span class="etiquette">${etiquette}</span><b>${c.titre.replace(/^[^·]+· /, "")}</b><small>${M.nom}</small></button>`;
   }
+  const CITATIONS = [
+    "Chaque petite séance compte : 15 minutes par jour, c'est plus de 60 heures avant le BEPC.",
+    "Une erreur, c'est une leçon gratuite. Lis la correction et recommence.",
+    "Les champions ne sont pas ceux qui ne tombent jamais, mais ceux qui se relèvent.",
+    "Ce que tu comprends aujourd'hui, tu n'auras pas à l'apprendre la veille de l'examen.",
+    "La régularité bat le talent quand le talent ne travaille pas.",
+    "Petit à petit, l'oiseau fait son nid.",
+    "Ton avenir se prépare maintenant, une question à la fois."
+  ];
+  const DATE_BEPC = new Date(2027, 4, 25); // estimation : fin mai 2027 (date officielle pas encore publiée)
   function afficherAccueil() {
-    const faite = etat.missions[aujourdhui()];
+    const faite = etat.missions[aujourdhui()], r = rang(), s = serieActuelle();
     const lecon = chapitreDe(leconDuMoment()), pc = chapitreDe(pcDuMoment());
     const jour = Math.floor(Date.now() / 86400000);
     const aTravailler = AUTRES.flatMap(M => M.chapitres.filter(c => c.matiere !== "pc" && !chapitreMaitrise(c)));
     const autre = aTravailler.length ? aTravailler[jour % aTravailler.length] : chapitreDe("fr-dictee");
-    const d = decrireDernier(etat.dernier);
-    const debut = !meilleur("bases", "test");
-    vue.innerHTML = `<section class="ecran large">${entete()}
-      <p class="salut">${salutation()}</p>
-      <button type="button" class="recherche-faux" id="vers-chercher">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>'}<span>Chercher une leçon, un mot, un thème…</span></button>
+    const d = decrireDernier(etat.dernier), debut = !meilleur("bases", "test");
+    const jours = Math.max(0, Math.ceil((DATE_BEPC - new Date()) / 86400000));
+    const pastilles = [["animations", "Animations", "#7A4FB5", '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'], ["sujets", "Sujets BEPC", "#18283A", ICONES.sujets], ["dictee", "Dictée", "#B8452B", ICONES.francais], ["oral", "Oral d'anglais", "#C23B6B", ICONES.anglais], ["themes", "Grands thèmes", "#D1495B", ICONES.actu]];
+    vue.innerHTML = `<section class="ecran large accueil">
+      <header class="hero">
+        <div class="hero-haut"><div class="avatar" aria-hidden="true">AZ</div><div class="hero-qui"><small>${salutation()}</small><b>Salut ${PRENOM} !</b></div>
+          <div class="serie" title="Jours d'affilée">${flamme}<span>${s}</span></div></div>
+        <div class="hero-stats">
+          <div class="hero-niveau">${anneau(Math.round(r.pct), "#F7C331", 58).replace('stroke="var(--trait)"', 'stroke="rgba(255,255,255,.18)"').replace('fill="var(--encre)"', 'fill="#fff"')}
+            <div><b>Niveau ${r.niveau} · ${r.nom}</b><small>${etat.xp} points</small><small>${r.suivant ? r.reste + " avant « " + r.suivant + " »" : "Rang maximum !"}</small></div></div>
+          <div class="hero-compte"><b>J−${jours}</b><small>avant le BEPC<br><span>fin mai 2027 · date officielle pas encore publiée</span></small></div>
+        </div>
+        <button type="button" class="recherche-faux hero-recherche" id="vers-chercher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span>Chercher une leçon, un mot, un thème…</span></button>
+      </header>
       <div class="accueil-grille">
         <div class="col">
-          ${d ? `<button type="button" class="reprendre" id="reprendre" style="--c:${d.couleur}"><span class="icone" style="background:${d.couleur}">${d.icone}</span><span class="txt"><small>Reprendre là où tu t'es arrêté</small><b>${d.titre}</b><small>${d.sous}</small></span><span class="fleche">›</span></button>` : ""}
           <button type="button" class="mission${faite ? " faite" : ""}" id="mission">
-            <span class="etiquette" style="color:#fff;opacity:.85">Mission du jour</span>
-            <b>${faite ? "Mission accomplie !" : "10 questions, 15 minutes"}</b>
+            <span class="etiquette" style="color:#fff;opacity:.85">Mission du jour${faite ? " · accomplie ✓" : ""}</span>
+            <b>${faite ? "Bravo, mission accomplie !" : "10 questions, 15 minutes"}</b>
             <span>${faite ? "Reviens demain pour garder ta série. Tu peux en refaire une pour gagner des points." : "Maths du moment, révisions, une autre matière et l'actualité."}</span>
+            <span class="mission-cta">${faite ? "Refaire une mission" : "Commencer"} ›</span>
           </button>
+          ${d ? `<button type="button" class="reprendre" id="reprendre" style="--c:${d.couleur}"><span class="icone" style="background:${d.couleur}">${d.icone}</span><span class="txt"><small>Reprendre là où tu t'es arrêté</small><b>${d.titre}</b><small>${d.sous}</small></span><span class="fleche">›</span></button>` : ""}
           ${debut ? `<button type="button" class="carte-mini" data-chap="bases" style="--c:var(--bleu)"><span class="etiquette">Pour bien commencer</span><b>Test de départ en maths</b><small>10 questions pour voir où tu en es</small></button>` : ""}
         </div>
         <div class="col">
           <span class="etiquette">En classe ce mois-ci</span>
           <div class="deux-mini">${carteMini(lecon, "Maths")}${carteMini(pc, "Physique-Chimie")}</div>
-          <button type="button" class="reprendre" id="vers-anims" style="--c:#7A4FB5"><span class="icone" style="background:#7A4FB5">▶</span><span class="txt"><small>Comme des petites vidéos</small><b>Apprendre en animations</b><small>${ANIMS.length} leçons expliquées à voix haute</small></span><span class="fleche">›</span></button>
-          <span class="etiquette">Idée de révision</span>
-          ${carteMini(autre, "Aujourd'hui")}
+          <span class="etiquette">Accès rapide</span>
+          <div class="raccourcis">${pastilles.map(([id, n, c, svgI]) => `<button type="button" class="raccourci" data-raccourci="${id}" style="--c:${c}"><span class="raccourci-ic">${svgI}</span>${n}</button>`).join("")}</div>
+          ${carteMini(autre, "Idée de révision du jour")}
         </div>
       </div>
       <div class="titre-section"><span class="etiquette">Mes matières</span><button type="button" class="lien" id="tout-voir">Tout voir ›</button></div>
-      <div class="grille-mat">${MATIERES.map(m => { const pct = pctMatiere(m);
-        return `<button type="button" class="mat" data-mat="${m.id}" style="--c:${m.couleur}"><span class="mat-haut"><span class="icone" style="background:${m.couleur}">${m.icone}</span>${anneau(pct, m.couleur, 40)}</span><b>${m.nom}</b><small>${sousTitreMat(m)}</small></button>`; }).join("")}</div>
+      <div class="grille-mat compacte">${MATIERES.map(m => { const pct = pctMatiere(m);
+        return `<button type="button" class="mat" data-mat="${m.id}" style="--c:${m.couleur}"><span class="icone" style="background:${m.couleur}">${m.icone}</span><b>${m.nom}</b><span class="mini"><i style="width:${Math.max(pct, 2)}%;background:${m.couleur}"></i></span><small>${pct} %</small></button>`; }).join("")}</div>
+      <p class="citation">« ${CITATIONS[jour % CITATIONS.length]} »</p>
     </section>`;
     vue.querySelector("#mission").addEventListener("click", lancerMission);
     vue.querySelector("#vers-chercher").addEventListener("click", () => aller("chercher"));
     vue.querySelector("#tout-voir").addEventListener("click", () => aller("matieres"));
-    vue.querySelector("#vers-anims").addEventListener("click", () => aller("animations"));
     const rep = vue.querySelector("#reprendre"); if (rep) rep.addEventListener("click", () => aller(etat.dernier.e, etat.dernier.p));
     vue.querySelectorAll("[data-chap]").forEach(b => b.addEventListener("click", () => aller("chapitre", b.dataset.chap)));
     vue.querySelectorAll("[data-mat]").forEach(b => b.addEventListener("click", () => ouvrirMat(b.dataset.mat)));
+    vue.querySelectorAll("[data-raccourci]").forEach(b => b.addEventListener("click", () => {
+      const k = b.dataset.raccourci;
+      if (k === "animations") aller("animations"); else if (k === "sujets") aller("sujets"); else if (k === "themes") aller("themes");
+      else if (k === "dictee") aller("chapitre", "fr-dictee"); else { ongletChapitre["en-oral-bepc"] = "exos"; aller("chapitre", "en-oral-bepc"); }
+    }));
   }
   function afficherMatieres() {
     vue.innerHTML = `<section class="ecran large"><h2>Mes matières</h2>

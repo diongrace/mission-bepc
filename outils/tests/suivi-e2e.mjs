@@ -18,6 +18,6 @@ await p.evaluate(()=>localStorage.clear()); await p.reload(); await c('#nav-prog
 await p.type('#restaurer','n importe quoi'); await c('#btn-restaurer'); console.log('code faux →', await p.$eval('#msg-restaurer',e=>e.textContent));
 await p.$eval('#restaurer',t=>t.value=''); await p.type('#restaurer',code); await c('#btn-restaurer'); await c('#btn-restaurer');
 console.log('restauration →', await p.$eval('#msg-restaurer',e=>e.textContent));
-await c('#nav-accueil'); console.log('points à l\'accueil :', await p.$eval('.xp-info span',e=>e.textContent));
+await c('#nav-accueil'); console.log('points à l\'accueil :', await p.$eval('.hero-niveau small',e=>e.textContent));
 console.log('largeur', await p.evaluate(()=>document.documentElement.scrollWidth),'erreurs',errs);
 await nav.close();
