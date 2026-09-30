@@ -162,6 +162,7 @@ details.cours[open] summary::after{content:"Fermer"}
 .nav button svg{width:24px;height:24px}
 .nav button[aria-current="page"]{color:var(--orange)}
 .cache,[hidden]{display:none!important}
+.etoiles-mini{color:var(--or);letter-spacing:1px}
 .bulle-mot{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 24px));z-index:30;background:var(--carte);border:2px solid #0E8A7E;border-radius:18px;padding:12px 14px 14px;box-shadow:0 12px 34px rgba(10,30,50,.28);display:grid;gap:6px;animation:bulle-entree .18s ease-out}
 @keyframes bulle-entree{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
 .bulle-tete{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#0E8A7E}
@@ -822,9 +823,11 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
     if (d.e === "oral") return { titre: "Oral d'anglais", sous: "Anglais", couleur: "#C23B6B", icone: "En" };
     return null;
   }
-  function carteMini(c, etiquette) {
-    const M = matiereDe(c.matiere);
-    return `<button type="button" class="carte-mini" data-chap="${c.id}" style="--c:${M.couleur}"><span class="etiquette">${etiquette}</span><b>${majuscule(c.titre.replace(/^[^·]+· /, ""))}</b><small>${M.nom}</small></button>`;
+  function carteMini(c, etiquette, avecMatiere) {
+    const M = matiereDe(c.matiere), et = etoiles(c), n = c.niveaux.length;
+    const lecon = c.matiere === "maths" && c.num && c.num !== "0" ? "Leçon " + c.num + " · " : "";
+    const avance = et === 0 ? "à commencer" : et === n ? "maîtrisée ✓" : et + "/" + n + " réussis";
+    return `<button type="button" class="carte-mini" data-chap="${c.id}" style="--c:${M.couleur}"><span class="etiquette">${etiquette}</span><b>${majuscule(c.titre.replace(/^[^·]+· /, ""))}</b><small>${avecMatiere ? M.nom + " · " : lecon}<span class="etoiles-mini" aria-label="${et} niveau(x) réussi(s) sur ${n}">${"★".repeat(et)}${"☆".repeat(n - et)}</span> ${avance}</small></button>`;
   }
   const CITATIONS = [
     "Chaque petite séance compte : 15 minutes par jour, c'est plus de 60 heures avant le BEPC.",
@@ -865,14 +868,14 @@ mark.faute{background:var(--rouge-doux);color:var(--rouge);font-weight:800;borde
             <span class="mission-cta">${faite ? "Refaire une mission" : "Commencer"} ›</span>
           </button>
           ${d ? `<button type="button" class="reprendre" id="reprendre" style="--c:${d.couleur}"><span class="icone" style="background:${d.couleur}">${d.icone}</span><span class="txt"><small>Reprendre là où tu t'es arrêté</small><b>${d.titre}</b><small>${d.sous}</small></span><span class="fleche">›</span></button>` : ""}
-          ${debut ? `<button type="button" class="carte-mini" data-chap="bases" style="--c:var(--bleu)"><span class="etiquette">Pour bien commencer</span><b>Test de départ en maths</b><small>10 questions pour voir où tu en es</small></button>` : ""}
+          ${debut && !(etat.dernier && etat.dernier.e === "chapitre" && etat.dernier.p === "bases") ? `<button type="button" class="carte-mini" data-chap="bases" style="--c:var(--bleu)"><span class="etiquette">Pour bien commencer</span><b>Test de départ en maths</b><small>10 questions pour voir où tu en es</small></button>` : ""}
         </div>
         <div class="col">
           <span class="etiquette">En classe ce mois-ci</span>
           <div class="deux-mini">${carteMini(lecon, "Maths")}${carteMini(pc, "Physique-Chimie")}</div>
           <span class="etiquette">Accès rapide</span>
           <div class="raccourcis">${pastilles.map(([id, n, c, svgI]) => `<button type="button" class="raccourci" data-raccourci="${id}" style="--c:${c}"><span class="raccourci-ic">${svgI}</span>${n}</button>`).join("")}</div>
-          ${carteMini(autre, "Idée de révision du jour")}
+          ${carteMini(autre, "Idée de révision du jour", true)}
         </div>
       </div>
       <div class="titre-section"><span class="etiquette">Mes matières</span><button type="button" class="lien" id="tout-voir">Tout voir ›</button></div>
